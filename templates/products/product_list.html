@@ -1,0 +1,90 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">All Products</h2>
+
+    <!-- ✅ Search & Filter Form -->
+    <form method="GET" class="mb-3">
+        <div class="row g-2">
+            <!-- ✅ Search Input -->
+            <div class="col-md-4">
+                <input type="text" name="search" value="{{ query }}" class="form-control" placeholder="Search products...">
+            </div>
+
+            <!-- ✅ Price Range Filter -->
+            <div class="col-md-2">
+                <input type="number" name="min_price" value="{{ min_price }}" class="form-control" placeholder="Min Price">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="max_price" value="{{ max_price }}" class="form-control" placeholder="Max Price">
+            </div>
+
+            <!-- ✅ Category Filter -->
+            <div class="col-md-2">
+                <select name="category" class="form-control">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- ✅ Subcategory Filter -->
+            <div class="col-md-2">
+                <select name="subcategory" class="form-control">
+                    <option value="">All Subcategories</option>
+                    {% for subcategory in subcategories %}
+                        <option value="{{ subcategory.id }}" {% if subcategory.id|stringformat:"s" == selected_subcategory %}selected{% endif %}>
+                            {{ subcategory.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- ✅ Sorting Option -->
+            <div class="col-md-3">
+                <select name="sort_by" class="form-control">
+                    <option value="">Sort By</option>
+                    <option value="price_low" {% if sort_by == "price_low" %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_high" {% if sort_by == "price_high" %}selected{% endif %}>Price: High to Low</option>
+                </select>
+            </div>
+
+            <!-- ✅ Submit Button -->
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Apply</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- ✅ Product Grid -->
+    <div class="row">
+        {% for product in products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card shadow-sm border-0 text-center p-2">
+                <img src="{{ product.image.url }}" class="card-img-top rounded" alt="{{ product.name }}" style="height: 180px; object-fit: cover;">
+                <div class="card-body p-2">
+                    <h6 class="card-title text-truncate">{{ product.name }}</h6>
+
+                    {% if product.discount > 0 %}
+                    <p class="text-danger">
+                        <strong>Discounted Price: ₹{{ product.discounted_price }}</strong>
+                    </p>
+                    <p class="text-muted">
+                        <del>Original Price: ₹{{ product.price }}</del> ({{ product.discount }}% off)
+                    </p>
+                    {% else %}
+                    <p><strong>Price: ₹{{ product.price }}</strong></p>
+                    {% endif %}
+
+                    <a href="{% url 'Products:product_detail' product.slug %}" class="btn btn-sm btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No products found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

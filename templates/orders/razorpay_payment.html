@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Payment Summary</h2>
+
+<p><strong>Total Price:</strong> ₹{{ cart_data.total_price|floatformat:2 }}</p>
+<!-- ✅ Show correct total price -->
+
+<hr>
+
+<h3>Proceed to Payment</h3>
+<form action="{% url 'razorpay-callback' %}" method="POST">
+    {% csrf_token %}
+    <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="{{ razorpay_key }}" data-amount="{{ amount }}" data-currency="{{ currency }}" data-order_id="{{ razorpay_order_id }}" data-buttontext="Pay Now" data-name="QTip Store" data-description="Payment for Order"
+        data-theme.color="#F37254">
+    </script>
+</form>
+{% endblock %}

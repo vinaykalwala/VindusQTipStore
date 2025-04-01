@@ -1,0 +1,60 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Products in {{ subcategory.name }}</h2>
+
+    {% if products %}
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+
+                    <!-- Price Display with Discount -->
+                    <p class="product-price">
+                        {% if product.discount > 0 %}
+                        <s class="text-danger">₹{{ product.price }}</s>
+                        <strong class="text-success">₹{{ product.discounted_price }}</strong> {% else %} ₹{{ product.price }} {% endif %}
+                    </p>
+
+                    <a href="{% url 'Products:product_detail' product.slug %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center mt-3">No products found in this subcategory.</p>
+    {% endif %}
+</div>
+
+<!-- Bootstrap & Custom Styling -->
+<style>
+    .card {
+        border-radius: 10px;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-img-top {
+        height: 250px;
+        object-fit: cover;
+        border-radius: 10px 10px 0 0;
+    }
+    
+    .product-price {
+        font-size: 18px;
+    }
+    
+    .product-price s {
+        color: red;
+        margin-right: 8px;
+    }
+</style>
+{% endblock %}

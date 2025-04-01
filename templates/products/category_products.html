@@ -1,0 +1,66 @@
+{% extends 'base.html' %} {% block content %}
+<h2 style="text-align: center; margin-bottom: 20px;">Products in {{ category.name }}</h2>
+
+<div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+        <a href="{% url 'Products:product_detail' product.slug %}">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+            <h3 class="product-title">{{ product.name }}</h3>
+        </a>
+        <p class="product-price">
+            {% if product.discount > 0 %}
+            <s>₹{{ product.price }}</s> <strong>₹{{ product.discounted_price }}</strong> {% else %} ₹{{ product.price }} {% endif %}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        justify-items: center;
+        padding: 20px;
+    }
+    
+    .product-card {
+        width: 100%;
+        max-width: 250px;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .product-card:hover {
+        transform: scale(1.05);
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    .product-title {
+        margin: 10px 0;
+        font-size: 18px;
+    }
+    
+    .product-price {
+        font-size: 16px;
+        color: #333;
+    }
+    
+    .product-price s {
+        color: red;
+        margin-right: 5px;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Your Cart</h2>
+
+{% if cart_items %}
+<ul>
+    {% for item in cart_items %}
+    <li class="d-flex align-items-center mb-3">
+        <!-- ✅ Display Product Image -->
+        <!-- ✅ Show Variant Image if Available, Otherwise Show Product Image -->
+        {% if item.variant and item.variant.image %}
+        <img src="{{ item.variant.image.url }}" alt="{{ item.variant.color }} Variant" width="50" class="me-3"> {% else %}
+        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="50" class="me-3"> {% endif %}
+
+
+        <div>
+            <!-- ✅ Display Product Name -->
+            <strong>{{ item.product.name }}</strong>
+
+            <!-- ✅ Show Variant Details (if selected) -->
+            {% if item.variant %}
+            <p class="text-muted small">({{ item.variant.color }} / {{ item.variant.size }})</p>
+            {% endif %}
+
+            <!-- ✅ Display Correct Price -->
+            <p class="mb-0">
+                <strong>Price:</strong> {% if item.product.discount > 0 %}
+                <span class="text-danger fw-bold">
+                        ${{ item.total_price }}  <!-- ✅ Use total_price from view -->
+                    </span>
+                <span class="text-muted text-decoration-line-through small">
+                        ${{ item.product.price }}
+                    </span> {% else %}
+                <span class="text-success fw-bold">
+                        ${{ item.total_price }}  <!-- ✅ Use total_price -->
+                    </span> {% endif %}
+            </p>
+
+            <!-- ✅ Quantity Controls -->
+            <form method="post" action="{% url 'update-cart' item.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" name="action" value="decrease" class="btn btn-secondary btn-sm">-</button>
+                <span class="mx-2">{{ item.quantity }}</span>
+                <button type="submit" name="action" value="increase" class="btn btn-secondary btn-sm">+</button>
+            </form>
+
+            <!-- ✅ Remove Item -->
+            <a href="{% url 'remove-from-cart' item.id %}" class="btn btn-danger btn-sm ms-3">Remove</a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% if messages %}
+<div class="alert alert-warning">
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- ✅ Checkout Button -->
+<div class="mt-4">
+    <a href="{% url 'place-order' %}" class="btn btn-primary">Proceed to Checkout</a>
+</div>
+
+{% else %}
+<p>Your cart is empty.</p>
+{% endif %} {% endblock %}

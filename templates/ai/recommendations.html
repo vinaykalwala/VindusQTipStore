@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Recommended Products</h2>
+<ul>
+    {% for product in recommended_products %}
+    <li><a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

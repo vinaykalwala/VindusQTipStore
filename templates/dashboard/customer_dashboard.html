@@ -1,0 +1,245 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+
+    <!-- Continuous Scrolling Banner -->
+    {% if sliders %}
+    <div class="banner-wrapper">
+        <div class="banner-track">
+            {% for slider in sliders %}
+            <span class="banner-item">
+                <img src="{{ slider.image.url }}" alt="{{ slider.title }}" class="banner-image">
+            </span> {% endfor %} {% for slider in sliders %}
+            <!-- Duplicate to make it seamless -->
+            <span class="banner-item">
+                <img src="{{ slider.image.url }}" alt="{{ slider.title }}" class="banner-image">
+            </span> {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <p class="text-center mt-3">No banners available.</p>
+    {% endif %} {% if recommended_products %}
+    <h3 class="text-center mt-4">✨ Recommended Specially for You ✨</h3>
+    <div class="row">
+        {% for product in recommended_products %}
+        <div class="col-md-3">
+            <div class="card">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">${{ product.price }}</p>
+                    <a href="{% url 'Products:product_detail' product.slug %}" class="btn btn-success">View</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+
+
+    <!-- Categories Section -->
+    {% if categories %}
+    <div class="categories-section">
+        <h3 class="text-center mt-4">Browse by Category</h3>
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-md-4 mb-4">
+                <div class="card category-card">
+                    <a href="{% url 'Products:category_products' category.slug %}" class="card-link">
+                        <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ category.name }}</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Subcategories Section (Now Styled Like Categories) -->
+    {% if subcategories %}
+    <div class="categories-section">
+        <h3 class="text-center mt-4">Browse by Subcategory</h3>
+        <div class="row">
+            {% for subcategory in subcategories %}
+            <div class="col-md-4 mb-4">
+                <div class="card category-card">
+                    <a href="{% url 'Products:subcategory_products' subcategory.slug %}" class="card-link">
+                        <img src="{{ subcategory.image.url }}" class="card-img-top" alt="{{ subcategory.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ subcategory.name }}</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %} {% if recently_viewed_products %}
+    <h3 class="mt-4">Recently Viewed Products</h3>
+    <div class="row">
+        {% for product in recently_viewed_products %}
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <a href="{% url 'Products:product_detail' product.slug %}">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                </a>
+                <div class="card-body text-center">
+                    <h6 class="card-title">
+                        <a href="{% url 'Products:product_detail' product.slug %}" class="text-decoration-none text-dark">
+                                {{ product.name }}
+                            </a>
+                    </h6>
+                    <p class="text-muted">₹{{ product.discounted_price }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %} {% endif %} {% if top_featured_products %}
+    <div class="top-featured-section">
+        <h3 class="text-center mt-4">Top Featured Products</h3>
+        <div class="row">
+            {% for product in top_featured_products %}
+            <div class="col-md-4 mb-4">
+                <div class="card product-card">
+                    <a href="{% url 'Products:product_detail' product.slug %}" class="card-link">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ product.name }}</h5>
+
+                            <p class="text-center price">
+                                {% if product.discount > 0 %}
+
+                                <strong class="text-success">${{ product.final_price }}</strong> {% else %}
+                                <strong>${{ product.price }}</strong> {% endif %}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %} {% if top_discount_deals %}
+    <div class="top-discount-section">
+        <h3 class="text-center mt-4">🔥 Top Discount Deals 🔥</h3>
+        <div class="row">
+            {% for product in top_discount_deals %}
+            <div class="col-md-4 mb-4">
+                <div class="card product-card">
+                    <a href="{% url 'Products:product_detail' product.slug %}" class="card-link">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ product.name }}</h5>
+
+                            <p class="text-center price">
+                                <del class="text-danger">${{ product.price }}</del>
+                                <strong class="text-success">${{ product.final_price|floatformat:2 }}</strong>
+                                <span class="badge bg-warning text-dark">-{{ product.discount }}% OFF</span>
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+
+
+    <!-- CSS for Styling -->
+    <style>
+        .container {
+            width: 100vw;
+            /* Full device width */
+            max-width: 97%;
+            /* Override Bootstrap's max-width */
+            padding-left: 0;
+            padding-right: 0;
+        }
+        /* Ensure proper alignment */
+        
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        /* Banner Styling */
+        
+        .banner-wrapper {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            background: #f8f9fa;
+            padding: 10px 0;
+        }
+        
+        .banner-track {
+            display: flex;
+            width: 200%;
+            animation: scrollBanner 15s linear infinite;
+        }
+        
+        .banner-item {
+            flex: 0 0 auto;
+            width: 100vw;
+        }
+        
+        .banner-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes scrollBanner {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        /* Categories & Subcategories Styling */
+        
+        .categories-section {
+            margin-top: 40px;
+        }
+        
+        .category-card {
+            border: none;
+            transition: transform 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .category-card .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        
+        .card-title {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+
+    {% endblock %}

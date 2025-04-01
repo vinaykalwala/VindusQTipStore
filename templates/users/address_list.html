@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Your Addresses</h2>
+<ul>
+    {% for address in addresses %}
+    <li>{{ address.street }}, {{ address.city }}, {{ address.zip_code }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'users:add_address' %}">Add Address</a> {% endblock %}

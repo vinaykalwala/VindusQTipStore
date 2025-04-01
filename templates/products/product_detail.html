@@ -1,0 +1,203 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+    <!-- Product Name -->
+    <h2 class="mt-4">{{ product.name }}</h2>
+
+    <!-- Main Product Image -->
+    <img id="main-product-image" src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow mt-3" width="400">
+
+    <!-- Variant Images -->
+    {% if variants %}
+    <div class="variant-images mt-3">
+        {% for variant in variant_data %}
+        <img src="{{ variant.image }}" alt="{{ variant.color }} / {{ variant.size }}" class="variant-image img-thumbnail mx-1" width="80" data-price="{{ variant.final_price }}" data-image="{{ variant.image }}" data-variant-id="{{ variant.id }}"> {% endfor%}
+    </div>
+    {% endif %}
+
+
+    <!-- Product Details -->
+    <p class="mt-3"><strong>Description:</strong> {{ product.description }}</p>
+    <p><strong>Category:</strong> {{ product.category.name }}</p>
+
+    <!-- Price Display -->
+    <p id="price-container">
+        {% if product.discount > 0 %}
+        <span class="text-danger">
+                <strong>Discounted Price: ₹<span id="product-price">{{ discounted_price }}</span></strong>
+        </span>
+        <br>
+        <span class="text-muted">
+                <del>Original Price: ₹{{ product.price }}</del> ({{ product.discount }}% off)
+            </span> {% else %}
+        <strong>Price: ₹<span id="product-price">{{ product.price }}</span></strong> {% endif %}
+    </p>
+    <!-- Stock Quantity -->
+    <p id="stock-container">
+        <strong>Stock:</strong> {% if product.stock > 0 %}
+        <span id="stock-quantity">{{ product.stock }}</span> Available {% else %}
+        <span class="text-danger">Out of Stock</span> {% endif %}
+    </p>
+
+    <!-- Star Rating (Precomputed in Views) -->
+    <p>
+        <strong>Rating:</strong>
+        <span class="text-warning">
+            {% for i in "12345" %}
+                {% if i|add:"-1" < avg_rating %} ⭐
+                {% elif i|add:"-0.5" < avg_rating %} ⭐️½
+                {% else %} ☆
+                {% endif %}
+            {% endfor %}
+            ({{ avg_rating|floatformat:1 }} / 5) — {{ total_reviews }} reviews
+        </span>
+    </p>
+
+    <!-- Product Variants Selection -->
+    {% if variants %}
+    <label for="variant-select"><strong>Choose a Variant:</strong></label>
+    <select id="variant-select" name="variant_id" class="form-select">
+        <option value="" data-price="{{ discounted_price }}" data-image="{{ product.image.url }}">Default - ₹{{ discounted_price }}</option>
+        {% for variant in variant_data %}
+        <option value="{{ variant.id }}" 
+            data-price="{{ variant.final_price }}" 
+            data-image="{{ variant.image }}">
+            {{ variant.color }} / {{ variant.size }} (+₹{{ variant.additional_price }})
+        </option>
+        {% endfor %}
+    </select> {% endif %}
+
+    <!-- Add to Cart Button -->
+    {% if product.stock > 0 %}
+    <form action="{% url 'add-to-cart' product.id %}" method="POST" class="mt-3">
+        {% csrf_token %}
+        <input type="hidden" name="variant_id" id="selected-variant">
+        <button type="submit" class="btn btn-success">🛒 Add to Cart</button>
+    </form>
+
+    <!-- Add to Wishlist Button -->
+    <form action="{% url 'add-to-wishlist' product.id %}" method="POST" class="mt-2">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-primary">❤️ Add to Wishlist</button>
+    </form>
+    {% endif %}
+    <h3 class="mt-4">Similar Products</h3>
+    <div class="row">
+        {% for similar_product in similar_products %}
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <a href="{% url 'Products:product_detail' similar_product.slug %}">
+                    <img src="{{ similar_product.image.url }}" alt="{{ similar_product.name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                </a>
+                <div class="card-body text-center">
+                    <h6 class="card-title">
+                        <a href="{% url 'Products:product_detail' similar_product.slug %}" class="text-decoration-none text-dark">
+                        {{ similar_product.name }}
+                    </a>
+                    </h6>
+                    <p class="text-muted">₹{{ similar_product.discounted_price }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No similar products found.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Recently Viewed Products Section -->
+    <h3 class="mt-4">Recently Viewed Products</h3>
+    <div class="row">
+        {% for viewed_product in recently_viewed_products %}
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <a href="{% url 'Products:product_detail' viewed_product.slug %}">
+                    <img src="{{ viewed_product.image.url }}" alt="{{ viewed_product.name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                </a>
+                <div class="card-body text-center">
+                    <h6 class="card-title">
+                        <a href="{% url 'Products:product_detail' viewed_product.slug %}" class="text-decoration-none text-dark">
+                        {{ viewed_product.name }}
+                    </a>
+                    </h6>
+                    <p class="text-muted">₹{{ viewed_product.discounted_price }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>You haven't viewed any other products yet.</p>
+        {% endfor %}
+    </div>
+
+
+    <h3 class="mt-4">Add Review</h3>
+    {% if user.is_authenticated %}
+    <form action="{% url 'add-review' product.id %}" method="POST" enctype="multipart/form-data" class="mt-3">
+        {% csrf_token %}
+        <label for="rating">Rating:</label>
+        <select name="rating" class="form-select">
+            <option value="5">5 ⭐</option>
+            <option value="4">4 ⭐</option>
+            <option value="3">3 ⭐</option>
+            <option value="2">2 ⭐</option>
+            <option value="1">1 ⭐</option>
+        </select>
+        <label for="comment" class="mt-2">Review:</label>
+        <textarea name="comment" class="form-control" rows="3" required></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Submit Review</button>
+    </form>
+    {% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to leave a review.</p>
+    {% endif %}
+
+    <h3 class="mt-4">Customer Reviews</h3>
+    {% for review in reviews %}
+    <div class="review p-3 mb-2 border rounded">
+        <p><strong>{{ review.user.username }}</strong> -
+            <span class="text-warning">
+            {% for i in "12345" %}
+                {% if i|add:"-1" < review.rating %} ⭐
+                {% elif i|add:"-0.5" < review.rating %} ⭐️½
+                {% else %} ☆
+                {% endif %}
+            {% endfor %}
+        </span>
+        </p>
+        <p>{{ review.comment }}</p>
+        {% if review.image %}
+        <img src="{{ review.image.url }}" alt="Review Image" class="img-thumbnail mt-2" width="200"> {% endif %}
+        <small class="text-muted">{{ review.created_at|date:"F d, Y" }}</small>
+    </div>
+    {% empty %}
+    <p>No reviews yet. Be the first to review this product!</p>
+    {% endfor %}
+</div>
+
+
+
+<!-- JavaScript for Variant Selection -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mainImage = document.getElementById("main-product-image");
+        const priceElement = document.getElementById("product-price");
+        const variantSelect = document.getElementById("variant-select");
+        const hiddenVariantInput = document.getElementById("selected-variant");
+
+        if (variantSelect) {
+            variantSelect.addEventListener("change", function() {
+                let selectedOption = this.options[this.selectedIndex];
+                priceElement.innerText = selectedOption.getAttribute("data-price");
+                mainImage.src = selectedOption.getAttribute("data-image");
+                hiddenVariantInput.value = selectedOption.value;
+            });
+        }
+
+        document.querySelectorAll('.variant-image').forEach(function(img) {
+            img.addEventListener('click', function() {
+                priceElement.innerText = this.getAttribute('data-price');
+                mainImage.src = this.getAttribute('data-image');
+                hiddenVariantInput.value = this.getAttribute('data-variant-id');
+                variantSelect.value = this.getAttribute('data-variant-id');
+            });
+        });
+    });
+</script>
+{% endblock %}

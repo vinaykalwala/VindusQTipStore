@@ -1,0 +1,12 @@
+{% for product in top_featured %}
+<div class="product-card">
+    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    <h2>{{ product.name }}</h2>
+    <p>{{ product.description }}</p>
+    {% if product.discount > 0 %}
+    <p><del>${{ product.price }}</del> <strong>${{ product.final_price }}</strong> (-{{ product.discount }}%)</p>
+    {% else %}
+    <p><strong>${{ product.price }}</strong></p>
+    {% endif %}
+</div>
+{% endfor %}

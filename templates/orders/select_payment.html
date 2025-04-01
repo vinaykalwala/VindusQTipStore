@@ -1,0 +1,81 @@
+{% extends 'base.html' %} {% block content %}
+
+<h2>Select Payment Method</h2>
+<p>Total Price: ₹{{ total_price }}</p>
+
+<!-- Order Summary -->
+<h3>Order Summary</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Item Name</th>
+            <th>Variant</th>
+            <th>Price (₹)</th>
+            <th>Quantity</th>
+            <th>Subtotal (₹)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>
+                {% if item.variant %} {{ item.variant.color|default:"N/A" }} / {{ item.variant.size|default:"N/A" }} {% else %} Default {% endif %}
+            </td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.subtotal }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<p><strong>Total Price: ₹{{ total_price }}</strong></p>
+
+<!-- Select Address Section -->
+<h3>Select a Shipping Address</h3>
+
+{% if addresses %}
+<form action="{% url 'select-address' %}" method="POST">
+    {% csrf_token %}
+    <select name="selected_address">
+        {% for address in addresses %}
+        <option value="{{ address.id }}" {% if address.id|stringformat:"s" == selected_address_id %}selected{% endif %}>
+            {{ address.full_name }}, {{ address.street_address }}, {{ address.city }} - {{ address.postal_code }}, {{ address.country }}
+        </option>
+        {% endfor %}
+    </select>
+    <button type="submit">Use This Address</button>
+</form>
+{% else %}
+<p style="color: red;">⚠ No shipping address found. Please add one before proceeding.</p>
+{% endif %}
+
+<!-- Option to Add a New Address -->
+<h3>Or, Add a New Shipping Address</h3>
+<form action="{% url 'add-address' %}" method="POST">
+    {% csrf_token %}
+    <input type="text" name="full_name" placeholder="Full Name" required><br>
+    <input type="text" name="phone_number" placeholder="Phone Number" required><br>
+    <input type="text" name="street_address" placeholder="Street Address" required><br>
+    <input type="text" name="city" placeholder="City" required><br>
+    <input type="text" name="state" placeholder="State" required><br>
+    <input type="text" name="country" placeholder="Country" required><br>
+    <input type="text" name="postal_code" placeholder="Postal Code" required><br>
+    <button type="submit">Save Address</button>
+</form>
+
+<!-- Payment Options (Disabled if No Address Selected) -->
+{% if selected_address_id %}
+<form action="{% url 'razorpay-payment' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Pay with Razorpay</button>
+</form>
+
+<form action="{% url 'cod-payment' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Cash on Delivery</button>
+</form>
+{% else %}
+<p style="color: red;">⚠ Please select an address before proceeding to payment.</p>
+{% endif %} {% endblock %}

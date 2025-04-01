@@ -1,0 +1,6 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Order Confirmation</h2>
+<p>Your order #{{ order.id }} has been placed successfully!</p>
+<p>Total Price: ₹{{ order.total_price }}</p>
+<p>Payment Status: {{ order.payment_status }}</p>
+<a href="{% url 'dashboard' %}">Go to Home</a> {% endblock %}

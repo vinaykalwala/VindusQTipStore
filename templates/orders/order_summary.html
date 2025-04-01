@@ -1,0 +1,78 @@
+{% extends "base.html" %} {% block title %}Order Summary{% endblock %} {% block content %}
+<h2>Order Summary</h2>
+
+<!-- Display Messages -->
+{% if messages %} {% for message in messages %}
+<div class="alert alert-info">{{ message }}</div>
+{% endfor %} {% endif %} {% for order in orders %}
+<div>
+    <h3>Order ID: {{ order.id }}</h3>
+
+    <!-- Order Items Table -->
+    <h4>Order Items</h4>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Variant</th>
+                <th>Vendor</th>
+                <th>Price (₹)</th>
+                <th>Quantity</th>
+                <th>Subtotal (₹)</th>
+                <th>Status</th>
+                <th>Expected Delivery</th>
+                <th>Delivered Date</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items.all %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>
+                    {% if item.variant %} {{ item.variant.color|default:"No Color" }} / {{ item.variant.size|default:"No Size" }} {% else %} - {% endif %}
+                </td>
+                <td>{{ item.product.vendor }}</td>
+                <td>₹{{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>₹{{ item.subtotal }}</td>
+                <td>{{ item.status }}</td>
+                <td>{{ item.expected_delivery_date|default:"Not Set" }}</td>
+                <td>{{ item.delivered_date|default:"Not Delivered" }}</td>
+
+                <!-- Actions for Order Items -->
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><strong>Total Price:</strong> ₹{{ order.total_price }}</p>
+    <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+    <p><strong>Order Status:</strong> {{ order.status }}</p>
+    <p><strong>Payment Status:</strong> {{ order.payment_status }}</p>
+
+    {% if order.payment_method == "Razorpay" and order.razorpay_payment_id %}
+    <p><strong>Payment ID:</strong> {{ order.razorpay_payment_id }}</p>
+    {% endif %}
+
+    <p><strong>Order Date:</strong> {{ order.created_at }}</p>
+
+    <h3>Grand Total: ₹{{ order.total_price }}</h3>
+
+    <!-- Cancel Entire Order -->
+    <!-- {% if order.status != "cancelled" and order.status != "delivered" %}
+    <form action="{% url 'cancel_order' order.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" style="background-color: red; color: white;">
+                {% if order.items.count == 1 %}
+                    Cancel Order
+                {% else %}
+                    Cancel Entire Order
+                {% endif %}
+            </button>
+    </form>
+    {% endif %} -->
+</div>
+<hr> {% endfor %} {% endblock %}
