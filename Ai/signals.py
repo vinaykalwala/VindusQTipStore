@@ -58,17 +58,18 @@ def create_cart_activity(sender, instance, created, **kwargs):
         )
 
 
-### 4️⃣ Track when a product is viewed ###
 def track_product_view(user, product):
-    """Logs when a user views a product (should be called in views.py)."""
+    """Logs when a user views a product (ensuring uniqueness)."""
     print(f"👀 {user} viewed {product.name}")  # Debugging
 
-    UserActivity.objects.create(
+    UserActivity.objects.get_or_create(
         user=user,
         product=product,
-        category=product.category,
-        subcategory=product.subcategory,
-        activity_type="view"
+        activity_type="view",
+        defaults={  
+            "category": product.category,
+            "subcategory": product.subcategory,
+        }
     )
 
 
