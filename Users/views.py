@@ -5,22 +5,118 @@ from django.contrib import messages
 
 from Ai.models import Recommendation
 from .models import CustomUser, Address
-from .forms import UserRegistrationForm, UserLoginForm, AddressForm
+from .forms import UserLoginForm, AddressForm
+from .forms import CustomerRegistrationForm, VendorRegistrationForm, DeliveryPersonRegistrationForm
+import random
+from django.core.mail import send_mail
+from django.contrib.auth import login
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from .forms import CustomerRegistrationForm, VendorRegistrationForm, DeliveryPersonRegistrationForm
+from .models import CustomUser
 
+import random
+from django.core.mail import send_mail
+from django.contrib.auth import login
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
+from .forms import CustomerRegistrationForm, VendorRegistrationForm, DeliveryPersonRegistrationForm
 
-def register(request):
+# Function to send OTP via email
+def send_otp(email, request):
+    otp = get_random_string(6, allowed_chars='1234567890')  # Generate 6-digit OTP
+    request.session['otp'] = otp  # Store OTP in session
+    request.session['email'] = email  # Store email
+
+    subject = "Your OTP for Registration"
+    message = f"Your OTP for account registration is {otp}. Please do not share it with anyone. If you did not receive the email, please check your Spam or Junk folder."
+    sender_email = "durgaprakash1102@gmail.com"  # Replace with your SMTP email
+
+    send_mail(subject, message, sender_email, [email])
+
+# Customer Registration View (with OTP)
+def register_customer(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST, request.FILES)  # Ensure FILES is included
+        form = CustomerRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save()
-            login(request, user)  # Auto-login after registration
-            messages.success(request, "Account created successfully!")
-            return redirect('dashboard')  # Redirect to dashboard instead of login page
-        else:
-            messages.error(request, "Registration failed. Please check the form.")
+            request.session['user_data'] = form.cleaned_data  # Store user data in session
+            send_otp(form.cleaned_data['email'], request)  # Send OTP
+            messages.success(request, "OTP sent to your email. Please verify.")
+            return redirect('verify_registration_otp')  # Redirect to OTP verification
     else:
-        form = UserRegistrationForm()
-    return render(request, 'users/register.html', {'form': form})
+        form = CustomerRegistrationForm()
+
+    return render(request, 'users/register_customer.html', {'form': form})
+
+# Vendor Registration View (with OTP)
+def register_vendor(request):
+    if request.method == 'POST':
+        form = VendorRegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            request.session['user_data'] = form.cleaned_data  # Store user data in session
+            send_otp(form.cleaned_data['email'], request)  # Send OTP
+            messages.success(request, "OTP sent to your email. Please verify.")
+            return redirect('verify_registration_otp')  # Redirect to OTP verification
+    else:
+        form = VendorRegistrationForm()
+
+    return render(request, 'users/register_vendor.html', {'form': form})
+
+# Delivery Person Registration View (with OTP)
+def register_delivery_person(request):
+    if request.method == 'POST':
+        form = DeliveryPersonRegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            request.session['user_data'] = form.cleaned_data  # Store user data in session
+            send_otp(form.cleaned_data['email'], request)  # Send OTP
+            messages.success(request, "OTP sent to your email. Please verify.")
+            return redirect('verify_registration_otp')  # Redirect to OTP verification
+    else:
+        form = DeliveryPersonRegistrationForm()
+
+    return render(request, 'users/register_delivery.html', {'form': form})
+
+# OTP Verification for Registration
+def verify_registration_otp(request):
+    if request.method == 'POST':
+        entered_otp = request.POST.get('otp')
+        stored_otp = request.session.get('otp')
+        email = request.session.get('email')
+        user_data = request.session.get('user_data')
+
+        if entered_otp == stored_otp:
+            user_model = get_user_model()
+            existing_user = user_model.objects.filter(email=email).first()
+            if existing_user:
+                messages.error(request, "User with this email already exists.")
+                return redirect('home')  # Redirect to appropriate registration
+
+            # Create user after OTP verification
+            role = user_data.get('role', 'customer')  # Default to customer
+            if role == 'vendor':
+                form = VendorRegistrationForm(user_data)
+            elif role == 'delivery':
+                form = DeliveryPersonRegistrationForm(user_data)
+            else:
+                form = CustomerRegistrationForm(user_data)
+
+            if form.is_valid():
+                user = form.save()
+                login(request, user)  # Log the user in
+                del request.session['otp']
+                del request.session['email']
+                del request.session['user_data']
+                messages.success(request, "Registration successful!")
+                return redirect('dashboard')
+            else:
+                messages.error(request, "Something went wrong. Please try again.")
+                return redirect('home')
+        else:
+            messages.error(request, "Invalid OTP. Please try again.")
+
+    return render(request, 'users/verify_registration_otp.html')
 
 # User Login
 def login_view(request):
@@ -45,11 +141,14 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
-# User Profile
 @login_required
 def profile(request):
-    return render(request, 'users/profile.html', {'user': request.user})
-
+    user = request.user
+    addresses = Address.objects.filter(user=user)  # Fetch all addresses for the logged-in user
+    return render(request, 'users/profile.html', {
+        'user': user,
+        'addresses': addresses  # Pass addresses to the template
+    })
 # Address Management
 @login_required
 def address_list(request):
@@ -194,3 +293,88 @@ def add_address(request):
         request.session["selected_address_id"] = str(new_address.id)  # Auto-select new address
         return redirect("select-payment-method")
     return redirect("select-payment-method")
+
+
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.utils.crypto import get_random_string
+from .forms import ForgotPasswordForm, OTPForm, ResetPasswordForm
+
+# Password Change View (logged-in user)
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Keeps user logged in
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('user-profile')  # Redirect to profile or any other page
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(user=request.user)
+    
+    return render(request, 'users/change_password.html', {'form': form})
+
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
+from .forms import ForgotPasswordForm, OTPForm, ResetPasswordForm
+
+# Forgot Password Request (Generate OTP)
+def forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = get_user_model().objects.filter(email=email).first()
+
+        if user:
+            otp = get_random_string(6, allowed_chars='1234567890')  # Generate OTP
+            # Send OTP to user's email (real email delivery using SMTP)
+            send_mail(
+                'Password Reset OTP',
+                f'Your OTP for password reset is {otp}.',
+                'no-reply@yourdomain.com',  # You can use any placeholder here
+                [email],
+                fail_silently=False,  # Set this to True in case you want to ignore errors
+            )
+            request.session['otp'] = otp
+            request.session['email'] = email
+            messages.success(request, 'OTP sent to your email address.')
+            return redirect('verify_otp')  # Redirect to OTP verification page
+        else:
+            messages.error(request, 'No account found with that email address.')
+
+    return render(request, 'users/forgot_password.html')
+
+
+# OTP Verification View
+def verify_otp(request):
+    if request.method == 'POST':
+        otp_entered = request.POST.get('otp')
+        if otp_entered == request.session.get('otp'):
+            return redirect('reset_password')  # Proceed to reset password
+        else:
+            messages.error(request, 'Invalid OTP')
+    
+    return render(request, 'users/verify_otp.html')
+
+# Reset Password View
+def reset_password(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        user = get_user_model().objects.filter(email=request.session.get('email')).first()
+        if user:
+            user.set_password(password)
+            user.save()
+            messages.success(request, 'Your password has been reset successfully.')
+            return redirect('user-login')  # Redirect to login page after password reset
+        else:
+            messages.error(request, 'Failed to reset password.')
+    
+    return render(request, 'users/reset_password.html')
