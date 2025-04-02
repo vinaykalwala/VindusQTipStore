@@ -1,8 +1,16 @@
 {% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content %}
 <h1 class="text-center">Welcome to Our Store!</h1>
+
 <div class="text-center mt-3">
     {% if user.is_authenticated %}
     <a href="{% url 'dashboard' %}" class="btn btn-primary">Shop Now</a> {% else %}
-    <a href="{% url 'user-login' %}" class="btn btn-warning">Login to Continue Shopping</a> {% endif %}
+    <a href="{% url 'user-login' %}" class="btn btn-warning">Login to Continue Shopping</a>
+    <h3 class="mt-4">New Here? Register as:</h3>
+    <div class="mt-2">
+        <a href="{% url 'register_customer' %}" class="btn btn-success">Customer</a>
+        <a href="{% url 'register_vendor' %}" class="btn btn-info">Vendor</a>
+        <a href="{% url 'register_delivery_person' %}" class="btn btn-secondary">Delivery Person</a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

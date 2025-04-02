@@ -1,0 +1,10 @@
+<!-- verify_otp.html -->
+{% extends 'base.html' %} {% block content %}
+<h2>Enter OTP</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="otp">Enter the OTP sent to your email:</label>
+    <input type="text" name="otp" required>
+    <button type="submit">Verify OTP</button>
+</form>
+{% endblock %}

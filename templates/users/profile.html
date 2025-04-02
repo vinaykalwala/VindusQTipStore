@@ -1,3 +1,42 @@
 {% extends 'base.html' %} {% block content %}
 <h2>Welcome, {{ user.username }}</h2>
-<a href="{% url 'dashboard' %}">Back To Dashboard</a> {% endblock %}
+
+<div>
+    <strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
+</div>
+
+<div>
+    <strong>Email:</strong> {{ user.email }}
+</div>
+
+<div>
+    <strong>Username:</strong> {{ user.username }}
+</div>
+
+<div>
+    <strong>Profile Picture:</strong> {% if user.profile_picture %}
+    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" width="100"> {% else %}
+    <p>No profile picture</p>
+    {% endif %}
+</div>
+
+<div>
+    <strong>Addresses:</strong> {% if addresses %}
+    <ul>
+        {% for address in addresses %}
+        <li>
+            {{ address.street }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No addresses available.</p>
+    {% endif %}
+</div>
+
+<!-- Link to go back to the dashboard -->
+<a href="{% url 'dashboard' %}">Back To Dashboard</a>
+
+<!-- Change Password Link -->
+<p><a href="{% url 'change_password' %}">Change Password</a></p>
+{% endblock %}

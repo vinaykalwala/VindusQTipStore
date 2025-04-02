@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Delivery Person Registration</h2>
+{% if messages %} {% for message in messages %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %} {% endif %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+{% endblock %}
