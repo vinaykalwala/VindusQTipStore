@@ -95,9 +95,9 @@ AUTH_USER_MODEL = 'Users.CustomUser'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Ecommerce',
-        'USER': 'root',
-        'PASSWORD': 'Durgaprakash@143',
+        'NAME': 'QTips_Store',
+        'USER': 'surya',
+        'PASSWORD': 'surya',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -139,9 +139,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
 import os
 
+STATIC_URL = '/static/'
+
+# Ensure the STATICFILES_DIRS is set (for development)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+# Ensure STATIC_ROOT is set (for production when using collectstatic)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'  # URL for accessing images
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Where images are stored
 

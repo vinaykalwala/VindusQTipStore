@@ -1,29 +1,40 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 <div class="container">
-
-    <!-- Continuous Scrolling Banner -->
+    <!-- Continuous Scrolling Banner with Navigation -->
     {% if sliders %}
     <div class="banner-wrapper">
         <div class="banner-track">
             {% for slider in sliders %}
-            <span class="banner-item">
+            <div class="banner-item">
                 <img src="{{ slider.image.url }}" alt="{{ slider.title }}" class="banner-image">
-            </span> {% endfor %} {% for slider in sliders %}
+            </div>
+            {% endfor %}
+            {% for slider in sliders %}
             <!-- Duplicate to make it seamless -->
-            <span class="banner-item">
+            <div class="banner-item">
                 <img src="{{ slider.image.url }}" alt="{{ slider.title }}" class="banner-image">
-            </span> {% endfor %}
+            </div>
+            {% endfor %}
         </div>
+        <!-- Navigation Buttons -->
+        <button class="banner-nav prev-btn">❮</button>
+        <button class="banner-nav next-btn">❯</button>
     </div>
     {% else %}
     <p class="text-center mt-3">No banners available.</p>
-    {% endif %} {% if recommended_products %}
-    <h3 class="text-center mt-4">✨ Recommended Specially for You ✨</h3>
+    {% endif %}
+
+    <!-- Recommended Products -->
+    {% if recommended_products %}
+    <h3 class="text-center mt-5">✨ Recommended Specially for You ✨</h3>
     <div class="row">
         {% for product in recommended_products %}
-        <div class="col-md-3">
+        <div class="col-md-3 mb-4">
             <div class="card">
-                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-img-wrapper">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                </div>
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">${{ product.price }}</p>
@@ -35,19 +46,18 @@
     </div>
     {% endif %}
 
-
-
-
     <!-- Categories Section -->
     {% if categories %}
     <div class="categories-section">
-        <h3 class="text-center mt-4">Browse by Category</h3>
+        <h3 class="text-center mt-5">Browse by Category</h3>
         <div class="row">
             {% for category in categories %}
             <div class="col-md-4 mb-4">
                 <div class="card category-card">
                     <a href="{% url 'Products:category_products' category.slug %}" class="card-link">
-                        <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+                        <div class="card-img-wrapper">
+                            <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title text-center">{{ category.name }}</h5>
                         </div>
@@ -59,16 +69,18 @@
     </div>
     {% endif %}
 
-    <!-- Subcategories Section (Now Styled Like Categories) -->
+    <!-- Subcategories Section -->
     {% if subcategories %}
     <div class="categories-section">
-        <h3 class="text-center mt-4">Browse by Subcategory</h3>
+        <h3 class="text-center mt-5">Browse by Subcategory</h3>
         <div class="row">
             {% for subcategory in subcategories %}
             <div class="col-md-4 mb-4">
                 <div class="card category-card">
                     <a href="{% url 'Products:subcategory_products' subcategory.slug %}" class="card-link">
-                        <img src="{{ subcategory.image.url }}" class="card-img-top" alt="{{ subcategory.name }}">
+                        <div class="card-img-wrapper">
+                            <img src="{{ subcategory.image.url }}" class="card-img-top" alt="{{ subcategory.name }}">
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title text-center">{{ subcategory.name }}</h5>
                         </div>
@@ -78,44 +90,52 @@
             {% endfor %}
         </div>
     </div>
-    {% endif %} {% if recently_viewed_products %}
-    <h3 class="mt-4">Recently Viewed Products</h3>
+    {% endif %}
+
+    <!-- Recently Viewed Products -->
+    {% if recently_viewed_products %}
+    <h3 class="text-center mt-5">Recently Viewed Products</h3>
     <div class="row">
         {% for product in recently_viewed_products %}
         <div class="col-md-3 mb-4">
             <div class="card">
                 <a href="{% url 'Products:product_detail' product.slug %}">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="card-img-wrapper">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    </div>
                 </a>
                 <div class="card-body text-center">
                     <h6 class="card-title">
-                        <a href="{% url 'Products:product_detail' product.slug %}" class="text-decoration-none text-dark">
-                                {{ product.name }}
-                            </a>
+                        <a href="{% url 'Products:product_detail' product.slug %}" class="text-decoration-none" style="color: #2D2D2D;">{{ product.name }}</a>
                     </h6>
-                    <p class="text-muted">₹{{ product.discounted_price }}</p>
+                    <p class="text-muted">${{ product.discounted_price }}</p>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-    {% else %} {% endif %} {% if top_featured_products %}
+    {% endif %}
+
+    <!-- Top Featured Products -->
+    {% if top_featured_products %}
     <div class="top-featured-section">
-        <h3 class="text-center mt-4">Top Featured Products</h3>
+        <h3 class="text-center mt-5">Top Featured Products</h3>
         <div class="row">
             {% for product in top_featured_products %}
             <div class="col-md-4 mb-4">
                 <div class="card product-card">
                     <a href="{% url 'Products:product_detail' product.slug %}" class="card-link">
-                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-img-wrapper">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title text-center">{{ product.name }}</h5>
-
                             <p class="text-center price">
                                 {% if product.discount > 0 %}
-
-                                <strong class="text-success">${{ product.final_price }}</strong> {% else %}
-                                <strong>${{ product.price }}</strong> {% endif %}
+                                <strong class="text-success">${{ product.final_price }}</strong>
+                                {% else %}
+                                <strong>${{ product.price }}</strong>
+                                {% endif %}
                             </p>
                         </div>
                     </a>
@@ -124,18 +144,22 @@
             {% endfor %}
         </div>
     </div>
-    {% endif %} {% if top_discount_deals %}
+    {% endif %}
+
+    <!-- Top Discount Deals -->
+    {% if top_discount_deals %}
     <div class="top-discount-section">
-        <h3 class="text-center mt-4">🔥 Top Discount Deals 🔥</h3>
+        <h3 class="text-center mt-5">🔥 Top Discount Deals 🔥</h3>
         <div class="row">
             {% for product in top_discount_deals %}
             <div class="col-md-4 mb-4">
                 <div class="card product-card">
                     <a href="{% url 'Products:product_detail' product.slug %}" class="card-link">
-                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-img-wrapper">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title text-center">{{ product.name }}</h5>
-
                             <p class="text-center price">
                                 <del class="text-danger">${{ product.price }}</del>
                                 <strong class="text-success">${{ product.final_price|floatformat:2 }}</strong>
@@ -150,96 +174,256 @@
     </div>
     {% endif %}
 
-
-
-    <!-- CSS for Styling -->
+    <!-- Enhanced CSS -->
     <style>
+        /* General Container Styling */
         .container {
-            width: 100vw;
-            /* Full device width */
-            max-width: 97%;
-            /* Override Bootstrap's max-width */
-            padding-left: 0;
-            padding-right: 0;
-        }
-        /* Ensure proper alignment */
-        
-        .row {
-            margin-left: 0;
-            margin-right: 0;
-        }
-        /* Banner Styling */
-        
-        .banner-wrapper {
             width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            position: relative;
-            background: #f8f9fa;
-            padding: 10px 0;
+            max-width: 1200px; /* More reasonable max-width */
+            padding: 0 15px;
+            margin: 0 auto;
         }
-        
+
+        .row {
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+
+        /* Continuous Scrolling Banner with Navigation */
+        .banner-wrapper {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            overflow: hidden;
+            background: #4A90E2; /* Primary Color */
+            padding: 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
         .banner-track {
             display: flex;
-            width: 200%;
-            animation: scrollBanner 15s linear infinite;
+            transition: transform 0.5s ease-in-out;
+            will-change: transform;
         }
-        
+
         .banner-item {
-            flex: 0 0 auto;
-            width: 100vw;
+            flex: 0 0 100vw;
+            min-width: 100vw;
         }
-        
+
         .banner-image {
             width: 100%;
-            height: 350px;
+            height: 300px; /* Adjusted height */
             object-fit: cover;
-            border-radius: 10px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            filter: brightness(0.9);
+            transition: filter 0.3s ease;
         }
-        
-        @keyframes scrollBanner {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
+
+        .banner-wrapper:hover .banner-image {
+            filter: brightness(1);
         }
-        /* Categories & Subcategories Styling */
-        
+
+        /* Navigation Buttons */
+        .banner-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .banner-nav:hover {
+            background: #FF6B35; /* Secondary Color */
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev-btn {
+            left: 20px;
+            border-radius: 50%;
+        }
+
+        .next-btn {
+            right: 20px;
+            border-radius: 50%;
+        }
+
+        /* Card Styling */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #fff;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            height: 200px; /* Fixed height for consistency */
+            overflow: hidden;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Changed to contain instead of cover */
+            background-color: #F4F7FA; /* Background Color for empty space */
+            padding: 10px; /* Add padding to prevent edge touching */
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2D2D2D; /* Text Color */
+        }
+
+        .card-text, .price {
+            font-size: 1.1rem;
+            color: #2D2D2D; /* Text Color */
+        }
+
+        /* Categories & Subcategories */
         .categories-section {
-            margin-top: 40px;
+            margin-top: 50px;
         }
-        
+
         .category-card {
             border: none;
             transition: transform 0.3s ease-in-out;
-            cursor: pointer;
         }
-        
+
         .category-card:hover {
             transform: scale(1.05);
         }
-        
+
         .category-card .card-link {
             text-decoration: none;
-            color: inherit;
+            color: #2D2D2D; /* Text Color */
             display: block;
         }
-        
-        .card-img-top {
-            height: 200px;
-            object-fit: cover;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+
+        /* Section Headers */
+        h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2D2D2D; /* Text Color */
+            margin-bottom: 30px;
+            position: relative;
         }
-        
-        .card-title {
-            margin-top: 10px;
-            font-size: 18px;
-            font-weight: bold;
+
+        h3::after {
+            content: '';
+            width: 60px;
+            height: 3px;
+            background: #4A90E2; /* Primary Color */
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        /* Buttons */
+        .btn-success {
+            background-color: #4A90E2; /* Primary Color */
+            border: none;
+            border-radius: 5px;
+            padding: 8px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background-color: #FF6B35; /* Secondary Color */
+        }
+
+        /* Discount Badge */
+        .badge {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: #FF6B35; /* Secondary Color */
+            color: #FFFFFF;
+        }
+
+        .text-danger {
+            color: #FF6B35 !important; /* Secondary Color for deleted price */
+        }
+
+        .text-success {
+            color: #4A90E2 !important; /* Primary Color for final price */
+        }
+
+        .text-muted {
+            color: #2D2D2D !important; /* Text Color */
+            opacity: 0.7;
         }
     </style>
 
-    {% endblock %}
+    <!-- JavaScript for Navigation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const track = document.querySelector('.banner-track');
+            const items = document.querySelectorAll('.banner-item');
+            const itemCount = items.length / 2; // Half are duplicates
+            let currentIndex = 0;
+
+            const updatePosition = () => {
+                const offset = -currentIndex * 100;
+                track.style.transform = `translateX(${offset}vw)`;
+            };
+
+            document.querySelector('.next-btn').addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % itemCount;
+                updatePosition();
+                if (currentIndex === 0) {
+                    setTimeout(() => {
+                        track.style.transition = 'none';
+                        currentIndex = 0;
+                        updatePosition();
+                        setTimeout(() => {
+                            track.style.transition = 'transform 0.5s ease-in-out';
+                        }, 50);
+                    }, 500);
+                }
+            });
+
+            document.querySelector('.prev-btn').addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + itemCount) % itemCount;
+                updatePosition();
+            });
+
+            // Auto-scroll
+            let autoScroll = setInterval(() => {
+                document.querySelector('.next-btn').click();
+            }, 5000);
+
+            // Pause auto-scroll on hover
+            document.querySelector('.banner-wrapper').addEventListener('mouseenter', () => {
+                clearInterval(autoScroll);
+            });
+
+            document.querySelector('.banner-wrapper').addEventListener('mouseleave', () => {
+                autoScroll = setInterval(() => {
+                    document.querySelector('.next-btn').click();
+                }, 5000);
+            });
+        });
+    </script>
+</div>
+{% endblock %}
