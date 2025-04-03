@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, Category, SubCategory
+from .models import Product, Category, ProductVariant, SubCategory
 
 from django import forms
 from .models import Product
@@ -27,3 +27,9 @@ class SubCategoryForm(forms.ModelForm):
     class Meta:
         model = SubCategory
         fields = ['name', 'category', 'slug']
+
+class ProductVariantForm(forms.ModelForm):
+    class Meta:
+        model = ProductVariant
+        fields = ['size', 'color', 'additional_price', 'image']
+

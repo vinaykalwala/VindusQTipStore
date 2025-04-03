@@ -1,9 +1,25 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container">
     <h2>Admin Dashboard</h2>
-    <p>Welcome, {{ user.username }}! You have full control over the platform.</p>
-    <ul>
+    <p>Welcome, {{ user.username }}! Here you can manage vendors and their products.</p>
 
+    <h3>All Vendors & Their Products</h3>
+    {% if vendors_with_products %} {% for vendor in vendors_with_products %}
+    <h4>Vendor: {{ vendor.username }} ({{ vendor.email }})</h4>
+    <ul>
+        {% for product in vendor.products.all %}
+        <li>
+            <strong>{{ product.name }}</strong> - ${{ product.price }}
+            <p>{{ product.description }}</p>
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="100"> {% endif %}
+        </li>
+        {% empty %}
+        <p>No products added yet.</p>
+        {% endfor %}
     </ul>
+    {% endfor %} {% else %}
+    <p>No vendors found.</p>
+    {% endif %}
 </div>
 {% endblock %}

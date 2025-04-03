@@ -175,7 +175,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from Products.models import Product, Category, SubCategory, Slider
 from Ai.models import Recommendation
+from django.db.models import Prefetch
 
+User = get_user_model() 
 @login_required
 def dashboard_view(request):
     user = request.user
@@ -187,12 +189,21 @@ def dashboard_view(request):
     recommended_products = set()  # Use a set to avoid duplicates
     top_discount_deals = []
     final_products = []
+    vendor_products = None
+    vendors_with_products = None 
 
     if user.is_superuser:
         template = 'dashboard/admin_dashboard.html'
+        vendors = User.objects.filter(role='vendor')
+
+        # Prefetch products for each vendor to optimize queries
+        vendors_with_products = vendors.prefetch_related(
+            Prefetch('products', queryset=Product.objects.all().order_by('-created_at'))
+        )
 
     elif user.role == 'vendor':
         template = 'dashboard/vendor_dashboard.html'
+        vendor_products = Product.objects.filter(vendor=user).order_by('-created_at')
 
     elif user.role == 'customer':
         template = 'dashboard/customer_dashboard.html'
@@ -265,7 +276,9 @@ def dashboard_view(request):
         'top_featured_products': top_featured_products,
         'top_discount_deals': top_discount_deals,
         'recently_viewed_products': recently_viewed_products,
-        'recommended_products': final_products  # Final cleaned-up list with no duplicates (Latest 10)
+        'recommended_products': final_products ,
+        'vendor_products': vendor_products,  
+        'vendors_with_products': vendors_with_products,
     })
 
 
