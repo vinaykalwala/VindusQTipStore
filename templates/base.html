@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-         :root {
+        :root {
             --primary-color: #4A90E2;
             --secondary-color: #FF6B35;
             --background-color: #F4F7FA;
@@ -17,8 +17,8 @@
             --light-gray: #E8EFF5;
             --white: #FFFFFF;
         }
-        /* Base Styles */
         
+        /* Base Styles */
         body {
             background-color: var(--background-color);
             color: var(--text-color);
@@ -33,8 +33,8 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
-        /* Navigation Bar */
         
+        /* Navigation Bar */
         .navbar {
             background-color: var(--primary-color);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -60,6 +60,10 @@
             font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: 0.5px;
+        }
+
+        .navbar-brand span:hover {
+            color: gold;
         }
         
         .navbar-nav .nav-link {
@@ -92,8 +96,8 @@
         .navbar-toggler:focus {
             box-shadow: none;
         }
-        /* Main Content */
         
+        /* Main Content */
         .main-container {
             flex: 1;
             padding: 2rem 0;
@@ -102,8 +106,8 @@
         .container {
             width: 100%;
         }
-        /* Cards */
         
+        /* Cards */
         .card {
             border: none;
             border-radius: 10px;
@@ -123,8 +127,8 @@
             border-radius: 10px 10px 0 0 !important;
             padding: 1rem;
         }
-        /* Buttons */
         
+        /* Buttons */
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
@@ -154,36 +158,46 @@
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        /* Alerts */
         
+        /* Alerts */
         .alert {
             border-radius: 8px;
         }
-        /* Forms */
         
+        /* Forms */
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
         }
-        /* Footer */
         
+        /* Footer */
         footer {
             background-color: var(--primary-color);
             color: var(--white);
             padding: 2rem 0;
             margin-top: auto;
+            width: 100%;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
         
         .footer-links {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
             gap: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .footer-links a {
             color: var(--white);
             font-weight: 500;
+            padding: 0.5rem 0;
         }
         
         .footer-links a:hover {
@@ -199,7 +213,7 @@
         
         .social-icons a {
             color: var(--white);
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -218,9 +232,10 @@
         .copyright {
             font-size: 0.9rem;
             opacity: 0.8;
+            margin-top: 1rem;
         }
-        /* Responsive Adjustments */
         
+        /* Responsive Adjustments */
         @media (max-width: 991.98px) {
             .navbar-collapse {
                 background-color: var(--primary-color);
@@ -235,9 +250,14 @@
                 padding: 0.75rem;
                 justify-content: center;
             }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
         }
-        /* Utility Classes */
         
+        /* Utility Classes */
         .text-primary {
             color: var(--primary-color) !important;
         }
@@ -250,6 +270,25 @@
             background-color: var(--light-gray) !important;
         }
         
+        /* Dropdown Menu */
+        .dropdown-menu {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--secondary-color);
+            color: var(--white);
+        }
+        
         .dropdown-submenu {
             position: relative;
         }
@@ -257,13 +296,22 @@
         .dropdown-submenu .dropdown-menu {
             top: 0;
             left: 100%;
-            margin-top: -1px;
+            margin-top: -6px;
+            margin-left: -1px;
             display: none;
-            position: absolute;
         }
         
         .dropdown-submenu:hover .dropdown-menu {
             display: block;
+        }
+        
+        @media (max-width: 991.98px) {
+            .dropdown-submenu .dropdown-menu {
+                position: static;
+                margin-top: 0;
+                margin-left: 1rem;
+                border-left: 2px solid rgba(255, 255, 255, 0.1);
+            }
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -282,118 +330,126 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %} {% if user.is_superuser %}
-                    <!-- Admin Navigation -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-tachometer-alt"></i> Admin Panel
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-users-cog"></i> Manage Users
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-tags"></i> Categories
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-boxes"></i> Products
-                        </a>
-                    </li>
-                    {% elif user.role == "vendor" %}
-                    <!-- Vendor Navigation -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboard' %}">
-                            <i class="fas fa-tachometer-alt"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Products:add_product' %}">
-                            <i class="fas fa-plus-circle"></i> Add Product
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Products:manage_products' %}">
-                            <i class="fas fa-edit"></i> Manage Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'orders_page'%}">
-                            <i class="fas fa-clipboard-list"></i> Orders
-                        </a>
-                    </li>
-                    {% elif user.role == "customer" %}
-                    <!-- Customer Navigation -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboard' %}">
-                            <i class="fas fa-home"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown" id="shopMenu">
-                        <a class="nav-link" href="{% url 'Products:product_list' %}" id="shopDropdown">
-                            <i class="fas fa-shopping-bag"></i> Shop
-                        </a>
-                        <button class="btn dropdown-toggle dropdown-toggle-split d-inline-block d-lg-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="shopDropdown">
-                            {% for category in nav_categories %}
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="{% url 'Products:category_products' category.slug %}">
-                                    {{ category.name }}
-                                </a> {% if category.subcategories.all %}
-                                <ul class="dropdown-menu">
-                                    {% for sub in category.subcategories.all %}
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'Products:subcategory_products' sub.slug %}">
-                                            {{ sub.name }}
-                                        </a>
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                                {% endif %}
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'view-cart' %}">
-                                    <i class="fas fa-shopping-cart"></i> Cart
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'view-wishlist' %}">
-                                    <i class="fas fa-heart"></i> Wishlist
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'order-summary' %}">
-                                    <i class="fas fa-receipt"></i> Orders
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'user-profile' %}">
-                                    <i class="fas fa-user-circle"></i> Profile
-                                </a>
-                            </li>
+                    {% if user.is_authenticated %} 
+                        {% if user.is_superuser %}
+                        <!-- Admin Navigation -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-tachometer-alt"></i> Admin Panel
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-users-cog"></i> Manage Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-tags"></i> Categories
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-boxes"></i> Products
+                            </a>
+                        </li>
+                        {% elif user.role == "vendor" %}
+                        <!-- Vendor Navigation -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">
+                                <i class="fas fa-tachometer-alt"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'Products:add_product' %}">
+                                <i class="fas fa-plus-circle"></i> Add Product
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'Products:manage_products' %}">
+                                <i class="fas fa-edit"></i> Manage Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'orders_page'%}">
+                                <i class="fas fa-clipboard-list"></i> Orders
+                            </a>
+                        </li>
+                        {% elif user.role == "customer" %}
+                        <!-- Customer Navigation - Reordered as requested -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">
+                                <i class="fas fa-home"></i> Home
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-shopping-bag"></i> Shop
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="shopDropdown">
+                                {% for category in nav_categories %}
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="{% url 'Products:category_products' category.slug %}">
+                                        {{ category.name }}
+                                    </a> 
+                                    {% if category.subcategories.all %}
+                                    <ul class="dropdown-menu">
+                                        {% for sub in category.subcategories.all %}
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'Products:subcategory_products' sub.slug %}">
+                                                {{ sub.name }}
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'order-summary' %}">
+                                <i class="fas fa-receipt"></i> Orders
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user-profile' %}">
+                                <i class="fas fa-user-circle"></i> Profile
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'view-wishlist' %}">
+                                <i class="fas fa-heart"></i> Wishlist
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'view-cart' %}">
+                                <i class="fas fa-shopping-cart"></i> Cart
+                            </a>
+                        </li>
+                        
                         {% elif user.role == "delivery" %}
-                            <!-- Delivery Personnel Navigation -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-truck"></i> Assigned Orders
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fas fa-history"></i> Delivery History
-                                </a>
-                            </li>
+                        <!-- Delivery Personnel Navigation -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-truck"></i> Assigned Orders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-history"></i> Delivery History
+                            </a>
+                        </li>
                         {% endif %}
                         <!-- Logout Button for All Users -->
                         <li class="nav-item">
@@ -402,17 +458,17 @@
                             </a>
                         </li>
                     {% else %}
-                    <!-- If Not Logged In -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user-login' %}">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register_customer' %}">
-                            <i class="fas fa-user-plus"></i> Register
-                        </a>
-                    </li>
+                        <!-- If Not Logged In -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user-login' %}">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register_customer' %}">
+                                <i class="fas fa-user-plus"></i> Register
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
@@ -433,34 +489,33 @@
                     {% endfor %}
                 </div>
             </div>
-            {% endif %} {% block content %}{% endblock %}
+            {% endif %} 
+            {% block content %}{% endblock %}
         </div>
     </main>
 
     <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <div class="footer-links">
-                        <a href="{% url 'home' %}">Home</a>
-                        <a href="{% url 'Products:product_list' %}">Shop</a>
-                        <a href="#">About Us</a>
-                        <a href="#">Contact</a>
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
-                    </div>
-
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                    </div>
-
-                    <p class="copyright">© 2025 QTipStore. All Rights Reserved.</p>
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="{% url 'home' %}">Home</a>
+                    <a href="{% url 'Products:product_list' %}">Shop</a>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
                 </div>
+
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                </div>
+
+                <p class="copyright">© 2025 QTipStore. All Rights Reserved.</p>
             </div>
         </div>
     </footer>
@@ -470,44 +525,48 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const shopMenu = document.getElementById("shopMenu");
-            const dropdownMenu = shopMenu.querySelector(".dropdown-menu");
-            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            // Initialize Bootstrap dropdowns
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl);
+            });
 
-            if (!isTouchDevice) {
-                // Desktop: Hover functionality
-                shopMenu.addEventListener("mouseenter", () => {
-                    shopMenu.classList.add("show");
-                    dropdownMenu.classList.add("show");
-                });
-
-                shopMenu.addEventListener("mouseleave", () => {
-                    shopMenu.classList.remove("show");
-                    dropdownMenu.classList.remove("show");
-                });
-            } else {
-                // Mobile: Toggle dropdown on first tap, go to link on second tap
-                let tappedOnce = false;
-                const shopLink = shopMenu.querySelector("a.nav-link");
-
-                shopLink.addEventListener("click", function(e) {
-                    if (!tappedOnce) {
-                        e.preventDefault(); // prevent navigation
-                        dropdownMenu.classList.toggle("show");
-                        tappedOnce = true;
-
-                        // Reset tap after short delay
-                        setTimeout(() => {
-                            tappedOnce = false;
-                        }, 1000);
+            // Handle dropdown submenus
+            document.querySelectorAll('.dropdown-submenu a.dropdown-toggle').forEach(function(element) {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    var submenu = this.nextElementSibling;
+                    var isShowing = submenu.classList.contains('show');
+                    
+                    // Hide all other open submenus
+                    document.querySelectorAll('.dropdown-submenu .dropdown-menu').forEach(function(menu) {
+                        if (menu !== submenu) {
+                            menu.classList.remove('show');
+                        }
+                    });
+                    
+                    // Toggle current submenu
+                    if (!isShowing) {
+                        submenu.classList.add('show');
+                    } else {
+                        submenu.classList.remove('show');
                     }
                 });
-            }
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.matches('.dropdown-toggle, .dropdown-toggle *')) {
+                    document.querySelectorAll('.dropdown-menu').forEach(function(menu) {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
         });
     </script>
 
-
     {% block extra_js %}{% endblock %}
 </body>
-
 </html>
