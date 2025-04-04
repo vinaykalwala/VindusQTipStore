@@ -1,0 +1,101 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+    <h2 class="text-center my-4">Manage Products</h2>
+
+    {% if products %}
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <!-- Main Product Image -->
+                <div class="text-center">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+
+                    <!-- Display Discounted Price if Available -->
+                    <p class="card-text">
+                        <strong>Price:</strong> {% if product.discount and product.discount > 0 %}
+                        <span class="text-danger">${{ product.discounted_price|floatformat:2 }}</span>
+                        <del class="text-muted">${{ product.price|floatformat:2 }}</del>
+                        <span class="badge bg-success">{{ product.discount }}% OFF</span> {% else %} ${{ product.price|floatformat:2 }} {% endif %}
+                    </p>
+
+                    <p class="text-muted">{{ product.description|truncatechars:100 }}</p>
+
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'Products:edit_product' product.id %}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                        <a href="{% url 'Products:delete_product' product.id %}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">🗑 Delete</a>
+                    </div>
+
+                    <!-- Variants Section -->
+                    <div class="mt-3">
+                        <h6 class="fw-bold">Variants:</h6>
+                        {% if product.variants.all %}
+                        <div class="row">
+                            {% for variant in product.variants.all %}
+                            <div class="col-6 text-center mb-2">
+                                <!-- Variant Image -->
+                                <img src="{{ variant.image.url }}" alt="{{ variant }}" class="img-fluid rounded" style="height: 80px; object-fit: cover;">
+
+                                <p class="mb-0"><strong>{{ variant.color|default:"N/A" }} / {{ variant.size|default:"N/A" }}</strong></p>
+
+                                <!-- Variant Price -->
+                                <small class="text-primary">${{ variant.additional_price|floatformat:2 }}</small>
+
+                                <!-- Variant Actions -->
+                                <div class="btn-group mt-1" role="group">
+                                    <a href="{% url 'Products:edit_variant' variant.id %}" class="btn btn-sm btn-info">✏️</a>
+                                    <a href="{% url 'Products:delete_variant' variant.id %}" onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">🗑</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-muted small">No variants available for this product.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center">No products found.</p>
+    {% endif %}
+</div>
+
+<!-- Styling -->
+<style>
+    .card {
+        transition: 0.3s;
+    }
+    
+    .card:hover {
+        transform: scale(1.03);
+    }
+    
+    .img-fluid {
+        border: 1px solid #ddd;
+        padding: 5px;
+        background: #f8f8f8;
+    }
+    
+    del {
+        font-size: 0.9rem;
+        margin-left: 5px;
+    }
+    
+    .btn {
+        width: 48%;
+    }
+    
+    .btn-group {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+{% endblock %}

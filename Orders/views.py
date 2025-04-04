@@ -242,7 +242,7 @@ def razorpay_callback(request):
                 address=selected_address,
                 total_price=cart_data['total_price'],
                 payment_method='Razorpay',
-                status='pending',
+                status='Processing',
                 payment_status='Completed',
                 razorpay_order_id=razorpay_order_id,
                 razorpay_payment_id=razorpay_payment_id,
@@ -420,3 +420,48 @@ def cancel_order(request, order_id):
             messages.success(request, "Order has been canceled successfully.")
 
     return redirect("order-summary")
+
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, F
+from .models import Order, OrderItem
+
+@login_required
+def orders_page(request):
+    user = request.user
+
+    if user.is_superuser:
+        # Superuser sees all orders
+        orders = Order.objects.prefetch_related('items__product__vendor', 'address').all()
+    else:
+        # Vendors see only their products within orders
+        orders = Order.objects.filter(items__product__vendor=user).distinct()
+
+    # Process orders based on vendor-specific view
+    vendor_orders = []
+    for order in orders:
+        order_items = order.items.filter(product__vendor=user)
+        vendor_subtotal = order_items.aggregate(subtotal=Sum(F('price') * F('quantity')))['subtotal'] or 0
+
+        if order.items.filter(product__vendor=user).count() == order.items.count():
+            # If the order contains only this vendor's items, show the full order
+            vendor_orders.append({
+                "order": order,
+                "items": order.items.all(),
+                "subtotal": order.total_price,
+                "shipping_address": order.address,  # ✅ Include Address
+            })
+        else:
+            # Otherwise, show only the vendor's specific items and subtotal
+            vendor_orders.append({
+                "order": order,
+                "items": order_items,
+                "subtotal": vendor_subtotal,
+                "shipping_address": order.address,  # ✅ Include Address
+            })
+
+    context = {
+        "orders": vendor_orders
+    }
+    return render(request, "orders/orders_page.html", context)

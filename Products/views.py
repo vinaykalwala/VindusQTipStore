@@ -130,23 +130,75 @@ def product_detail(request, product_slug):
         'similar_products': similar_products 
     })
 
-# Add Product View
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Product
-from .forms import ProductForm
+from .forms import ProductForm, CategoryForm, SubCategoryForm, ProductVariantForm
 
-@login_required
 def add_product(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)  # Handle image uploads
-        if form.is_valid():
-            form.save(user=request.user)  # Auto-assign vendor if applicable
-            return redirect('product_list')  # Redirect after success
-    else:
-        form = ProductForm()
+    if request.method == "POST":
+        if "category_submit" in request.POST:
+            category_form = CategoryForm(request.POST)
+            if category_form.is_valid():
+                category_form.save()
+                return redirect('Products:add_product')  # Reload page to update choices
+        
+        elif "subcategory_submit" in request.POST:
+            subcategory_form = SubCategoryForm(request.POST)
+            if subcategory_form.is_valid():
+                subcategory_form.save()
+                return redirect('Products:add_product')  
+        
+        elif "variant_submit" in request.POST:
+            variant_form = ProductVariantForm(request.POST, request.FILES)
+            if variant_form.is_valid():
+                variant_form.save()
+                return redirect('Products:add_product')
 
-    return render(request, 'products/add_product.html', {'form': form})
+        elif "product_submit" in request.POST:
+            product_form = ProductForm(request.POST, request.FILES)
+            if product_form.is_valid():
+                product_form.save(user=request.user)
+                return redirect('dashboard')
+
+    else:
+        product_form = ProductForm()
+        category_form = CategoryForm()
+        subcategory_form = SubCategoryForm()
+        variant_form = ProductVariantForm()
+
+    return render(request, "products/add_product.html", {
+        "product_form": product_form,
+        "category_form": category_form,
+        "subcategory_form": subcategory_form,
+        "variant_form": variant_form
+    })
+
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Product, ProductVariant
+from Reviews.models import Review
+from django.db.models import Avg
+
+# View for Product Details (Including Reviews)
+def view_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    variants = product.variants.all()  # Get all variants related to this product
+    reviews = Review.objects.filter(product=product).order_by('-created_at')  # Get reviews for this product
+    avg_rating = reviews.aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0  # Calculate average rating
+    
+    return render(request, 'Products/view_product.html', {
+        'product': product,
+        'variants': variants,
+        'reviews': reviews,
+        'avg_rating': round(avg_rating, 1),  # Round to 1 decimal place
+    })
+
+# View for Variant Details
+def view_variant(request, variant_id):
+    variant = get_object_or_404(ProductVariant, id=variant_id)
+    return render(request, 'Products/view_variant.html', {'variant': variant})
+
+
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -215,3 +267,47 @@ def featured_products(request):
         product.final_price = product.discounted_price()  # Add final price to each product
 
     return render(request, 'featured_products.html', {'top_featured': top_featured})
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Product
+
+@login_required
+def manage_products(request):
+    if request.user.is_superuser:
+        products = Product.objects.prefetch_related('variants').all()  # Prefetch variants
+    else:
+        products = Product.objects.filter(vendor=request.user).prefetch_related('variants')
+
+    return render(request, 'products/manage_products.html', {'products': products})
+
+
+@login_required
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.user != product.vendor and not request.user.is_superuser:
+        messages.error(request, "You do not have permission to delete this product.")
+        return redirect('Products:manage_products')
+
+    product.delete()
+    messages.success(request, "Product deleted successfully.")
+    return redirect('Products:manage_products')
+
+
+@login_required
+def delete_variant(request, variant_id):
+    variant = get_object_or_404(ProductVariant, id=variant_id)
+
+    if request.user != variant.product.vendor and not request.user.is_superuser:
+        messages.error(request, "You do not have permission to delete this variant.")
+        return redirect('Products:manage_products')
+
+    variant.delete()
+    messages.success(request, "Variant deleted successfully.")
+    return redirect('Products:manage_products')

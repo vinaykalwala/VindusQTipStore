@@ -6,7 +6,7 @@ from .models import Product
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['category', 'subcategory', 'name', 'description', 'price', 'discount', 'stock', 'image']  # ✅ Add discount
+        fields = '__all__'
 
     def save(self, user=None, commit=True):
         product = super().save(commit=False)
@@ -29,7 +29,12 @@ class SubCategoryForm(forms.ModelForm):
         fields = ['name', 'category', 'slug']
 
 class ProductVariantForm(forms.ModelForm):
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.all(),  # Show all products
+        empty_label="Select Product",
+        widget=forms.Select
+    )
+
     class Meta:
         model = ProductVariant
-        fields = ['size', 'color', 'additional_price', 'image']
-
+        fields = ['product', 'size', 'color', 'additional_price', 'image']

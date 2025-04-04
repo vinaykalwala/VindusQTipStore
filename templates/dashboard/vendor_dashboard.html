@@ -22,18 +22,16 @@
                     <p class="card-text">
                         <strong>Price:</strong> {% if product.discount and product.discount > 0 %}
                         <span class="text-danger">${{ product.discounted_price|floatformat:2 }}</span>
-                        <del class="text-muted">${{ product.original_price|floatformat:2 }}</del>
+                        <del class="text-muted">${{ product.price|floatformat:2 }}</del>
                         <span class="badge bg-success">{{ product.discount }}% OFF</span> {% else %} ${{ product.price|floatformat:2 }} {% endif %}
                     </p>
 
-                    <p class="text-muted">{{ product.description }}</p>
+                    <p class="text-muted">{{ product.description|truncatechars:100 }}</p>
 
-                    <a href="{% url 'Products:edit_product' product.id %}" class="btn btn-warning btn-sm d-block my-2">
-                        ✏️ Edit Product
+                    <!-- View Product Button -->
+                    <a href="{% url 'Products:view_product' product.id %}" class="btn btn-primary btn-sm d-block my-2">
+                        👁 View Product
                     </a>
-
-
-
 
                     <!-- Variants Section -->
                     {% if product.variants.all %}
@@ -47,11 +45,11 @@
                             <p class="mb-0"><strong>{{ variant.color|default:"N/A" }} / {{ variant.size|default:"N/A" }}</strong></p>
 
                             <!-- Variant Price -->
-                            <small class="text-primary">${{ variant.variant_price|floatformat:2 }}</small>
+                            <small class="text-primary">${{ variant.additional_price|floatformat:2 }}</small>
 
-                            <!-- Edit Variant Button -->
-                            <a href="{% url 'Products:edit_variant' variant.id %}" class="btn btn-info btn-sm mt-1 d-block">
-                                ✏️ Edit Variant
+                            <!-- View Variant Button -->
+                            <a href="{% url 'Products:view_variant' variant.id %}" class="btn btn-info btn-sm mt-1 d-block">
+                                👁 View Variant
                             </a>
                         </div>
                         {% endfor %}
@@ -67,7 +65,7 @@
     {% endif %}
 </div>
 
-<!-- Bootstrap CSS (Make sure it's included in your base template) -->
+<!-- Bootstrap CSS -->
 <style>
     .card {
         transition: 0.3s;
