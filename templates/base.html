@@ -17,7 +17,7 @@
             --light-gray: #E8EFF5;
             --white: #FFFFFF;
         }
-        
+
         /* Base Styles */
         body {
             background-color: var(--background-color);
@@ -28,33 +28,32 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         a {
             text-decoration: none;
             transition: all 0.3s ease;
         }
-        
+
         /* Navigation Bar */
         .navbar {
             background-color: var(--primary-color);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             padding: 0.8rem 0;
-            padding-bottom: 1rem;
             width: 100% !important;
         }
-        
+
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
+
         .navbar-logo {
             height: 40px;
             width: auto;
             border-radius: 6px;
         }
-        
+
         .navbar-brand span {
             color: var(--white);
             font-size: 1.5rem;
@@ -65,7 +64,7 @@
         .navbar-brand span:hover {
             color: gold;
         }
-        
+
         .navbar-nav .nav-link {
             color: var(--white);
             font-weight: 500;
@@ -76,37 +75,37 @@
             align-items: center;
             gap: 6px;
         }
-        
+
         .navbar-nav .nav-link:hover,
         .navbar-nav .nav-link:focus {
             background-color: var(--secondary-color);
             color: var(--white);
         }
-        
+
         .navbar-nav .nav-link i {
             font-size: 1rem;
         }
-        
+
         .navbar-toggler {
             border: none;
             color: var(--white);
             padding: 0.5rem;
         }
-        
+
         .navbar-toggler:focus {
             box-shadow: none;
         }
-        
+
         /* Main Content */
         .main-container {
             flex: 1;
             padding: 2rem 0;
         }
-        
+
         .container {
             width: 100%;
         }
-        
+
         /* Cards */
         .card {
             border: none;
@@ -115,61 +114,51 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             margin-bottom: 1.5rem;
         }
-        
+
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
-        
+
         .card-header {
             background-color: var(--primary-color);
             color: var(--white);
             border-radius: 10px 10px 0 0 !important;
             padding: 1rem;
         }
-        
+
         /* Buttons */
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        
+
         .btn-primary:hover {
             background-color: #3a7bc8;
             border-color: #3a7bc8;
         }
-        
+
         .btn-secondary {
             background-color: var(--secondary-color);
             border-color: var(--secondary-color);
         }
-        
+
         .btn-secondary:hover {
             background-color: #e05a2a;
             border-color: #e05a2a;
         }
-        
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
+
         /* Alerts */
         .alert {
             border-radius: 8px;
         }
-        
+
         /* Forms */
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
         }
-        
+
         /* Footer */
         footer {
             background-color: var(--primary-color);
@@ -178,14 +167,14 @@
             margin-top: auto;
             width: 100%;
         }
-        
+
         .footer-content {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
         }
-        
+
         .footer-links {
             display: flex;
             flex-wrap: wrap;
@@ -193,24 +182,23 @@
             gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .footer-links a {
             color: var(--white);
             font-weight: 500;
-            padding: 0.5rem 0;
         }
-        
+
         .footer-links a:hover {
             color: var(--secondary-color);
         }
-        
+
         .social-icons {
             display: flex;
             justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .social-icons a {
             color: var(--white);
             font-size: 1.25rem;
@@ -223,19 +211,76 @@
             background-color: rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
         }
-        
+
         .social-icons a:hover {
             background-color: var(--secondary-color);
             transform: translateY(-3px);
         }
-        
+
         .copyright {
             font-size: 0.9rem;
             opacity: 0.8;
             margin-top: 1rem;
         }
-        
-        /* Responsive Adjustments */
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+            min-width: 200px;
+            display: none; /* Hidden by default */
+        }
+
+        .dropdown-item {
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background-color: var(--secondary-color);
+            color: var(--white);
+        }
+
+        /* Shop Dropdown and Submenu */
+        .nav-item.dropdown {
+            position: relative;
+        }
+
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -6px;
+            display: none; /* Hidden by default */
+        }
+
+        /* Desktop Hover Behavior */
+        @media (min-width: 992px) {
+            .nav-item.dropdown:hover .dropdown-menu {
+                display: block;
+                margin-top: 0;
+            }
+
+            .dropdown-submenu:hover .dropdown-menu {
+                display: block;
+            }
+
+            .nav-link.dropdown-toggle::after {
+                display: none; /* Hide Bootstrap arrow on desktop */
+            }
+        }
+
+        /* Mobile Click Behavior */
         @media (max-width: 991.98px) {
             .navbar-collapse {
                 background-color: var(--primary-color);
@@ -243,75 +288,51 @@
                 border-radius: 0 0 10px 10px;
                 margin-top: 0.5rem;
             }
+
             .navbar-nav {
                 gap: 0.5rem;
             }
+
             .navbar-nav .nav-link {
                 padding: 0.75rem;
-                justify-content: center;
+                justify-content: flex-start;
             }
-            
+
+            .dropdown-menu {
+                background-color: rgba(255, 255, 255, 0.1);
+                margin-left: 1rem;
+                display: none; /* Controlled by JS on mobile */
+            }
+
+            .dropdown-submenu .dropdown-menu {
+                left: 0;
+                top: 100%;
+                margin-top: 0;
+                margin-left: 1rem;
+            }
+
+            .dropdown-item.dropdown-toggle::after {
+                display: inline-block; /* Show arrow on mobile */
+                margin-left: 0.5rem;
+            }
+
             .footer-links {
                 flex-direction: column;
                 gap: 0.5rem;
             }
         }
-        
+
         /* Utility Classes */
         .text-primary {
             color: var(--primary-color) !important;
         }
-        
+
         .text-secondary {
             color: var(--secondary-color) !important;
         }
-        
+
         .bg-light {
             background-color: var(--light-gray) !important;
-        }
-        
-        /* Dropdown Menu */
-        .dropdown-menu {
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            padding: 0.5rem;
-        }
-        
-        .dropdown-item {
-            color: var(--white);
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-        }
-        
-        .dropdown-item:hover {
-            background-color: var(--secondary-color);
-            color: var(--white);
-        }
-        
-        .dropdown-submenu {
-            position: relative;
-        }
-        
-        .dropdown-submenu .dropdown-menu {
-            top: 0;
-            left: 100%;
-            margin-top: -6px;
-            margin-left: -1px;
-            display: none;
-        }
-        
-        .dropdown-submenu:hover .dropdown-menu {
-            display: block;
-        }
-        
-        @media (max-width: 991.98px) {
-            .dropdown-submenu .dropdown-menu {
-                position: static;
-                margin-top: 0;
-                margin-left: 1rem;
-                border-left: 2px solid rgba(255, 255, 255, 0.1);
-            }
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -330,7 +351,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %} 
+                    {% if user.is_authenticated %}
                         {% if user.is_superuser %}
                         <!-- Admin Navigation -->
                         <li class="nav-item">
@@ -376,15 +397,14 @@
                             </a>
                         </li>
                         {% elif user.role == "customer" %}
-                        <!-- Customer Navigation - Reordered as requested -->
+                        <!-- Customer Navigation -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'dashboard' %}">
                                 <i class="fas fa-home"></i> Home
                             </a>
                         </li>
-                        
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="{% url 'Products:product_list' %}" id="shopDropdown" aria-expanded="false">
                                 <i class="fas fa-shopping-bag"></i> Shop
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="shopDropdown">
@@ -392,7 +412,7 @@
                                 <li class="dropdown-submenu">
                                     <a class="dropdown-item dropdown-toggle" href="{% url 'Products:category_products' category.slug %}">
                                         {{ category.name }}
-                                    </a> 
+                                    </a>
                                     {% if category.subcategories.all %}
                                     <ul class="dropdown-menu">
                                         {% for sub in category.subcategories.all %}
@@ -408,31 +428,26 @@
                                 {% endfor %}
                             </ul>
                         </li>
-                        
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'order-summary' %}">
                                 <i class="fas fa-receipt"></i> Orders
                             </a>
                         </li>
-                        
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'user-profile' %}">
                                 <i class="fas fa-user-circle"></i> Profile
                             </a>
                         </li>
-                        
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'view-wishlist' %}">
                                 <i class="fas fa-heart"></i> Wishlist
                             </a>
                         </li>
-                        
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'view-cart' %}">
                                 <i class="fas fa-shopping-cart"></i> Cart
                             </a>
                         </li>
-                        
                         {% elif user.role == "delivery" %}
                         <!-- Delivery Personnel Navigation -->
                         <li class="nav-item">
@@ -489,7 +504,7 @@
                     {% endfor %}
                 </div>
             </div>
-            {% endif %} 
+            {% endif %}
             {% block content %}{% endblock %}
         </div>
     </main>
@@ -525,43 +540,44 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Initialize Bootstrap dropdowns
-            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-                return new bootstrap.Dropdown(dropdownToggleEl);
-            });
+            // Mobile dropdown toggle behavior
+            const dropdowns = document.querySelectorAll('.nav-item.dropdown');
+            dropdowns.forEach(dropdown => {
+                const toggle = dropdown.querySelector('.dropdown-toggle');
+                const menu = dropdown.querySelector('.dropdown-menu');
 
-            // Handle dropdown submenus
-            document.querySelectorAll('.dropdown-submenu a.dropdown-toggle').forEach(function(element) {
-                element.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    var submenu = this.nextElementSibling;
-                    var isShowing = submenu.classList.contains('show');
-                    
-                    // Hide all other open submenus
-                    document.querySelectorAll('.dropdown-submenu .dropdown-menu').forEach(function(menu) {
-                        if (menu !== submenu) {
-                            menu.classList.remove('show');
-                        }
+                // Handle mobile click
+                if (window.innerWidth < 992) {
+                    toggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
                     });
-                    
-                    // Toggle current submenu
-                    if (!isShowing) {
-                        submenu.classList.add('show');
-                    } else {
-                        submenu.classList.remove('show');
+                }
+
+                // Submenu toggle for mobile
+                const submenus = dropdown.querySelectorAll('.dropdown-submenu');
+                submenus.forEach(submenu => {
+                    const subToggle = submenu.querySelector('.dropdown-item.dropdown-toggle');
+                    const subMenu = submenu.querySelector('.dropdown-menu');
+
+                    if (window.innerWidth < 992) {
+                        subToggle.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            subMenu.style.display = subMenu.style.display === 'block' ? 'none' : 'block';
+                        });
                     }
                 });
             });
 
-            // Close dropdowns when clicking outside
+            // Close dropdowns when clicking outside on mobile
             document.addEventListener('click', function(e) {
-                if (!e.target.matches('.dropdown-toggle, .dropdown-toggle *')) {
-                    document.querySelectorAll('.dropdown-menu').forEach(function(menu) {
-                        menu.classList.remove('show');
-                    });
+                if (window.innerWidth < 992) {
+                    if (!e.target.closest('.nav-item.dropdown')) {
+                        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                            menu.style.display = 'none';
+                        });
+                    }
                 }
             });
         });
