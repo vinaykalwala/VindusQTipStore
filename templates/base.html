@@ -101,7 +101,6 @@
         
         .container {
             width: 100%;
-            /* max-width: 1200px; */
         }
         
         /* Cards */
@@ -315,7 +314,7 @@
                                 </a>
                             </li>
                         {% elif user.role == "customer" %}
-                            <!-- Customer Navigation -->
+                            <!-- Customer Navigation (Updated Order) -->
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'dashboard' %}">
                                     <i class="fas fa-home"></i> Home
@@ -327,8 +326,13 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'view-cart' %}">
-                                    <i class="fas fa-shopping-cart"></i> Cart
+                                <a class="nav-link" href="{% url 'order-summary' %}">
+                                    <i class="fas fa-receipt"></i> Orders
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'user-profile' %}">
+                                    <i class="fas fa-user-circle"></i> Profile
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -337,13 +341,8 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'order-summary' %}">
-                                    <i class="fas fa-receipt"></i> Orders
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'user-profile' %}">
-                                    <i class="fas fa-user-circle"></i> Profile
+                                <a class="nav-link" href="{% url 'view-cart' %}">
+                                    <i class="fas fa-shopping-cart"></i> Cart
                                 </a>
                             </li>
                         {% elif user.role == "delivery" %}

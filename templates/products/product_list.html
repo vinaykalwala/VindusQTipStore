@@ -6,9 +6,10 @@
     <!-- Enhanced Filter Section -->
     <div class="filter-section mb-4">
         <form method="GET" class="filter-form">
-            <div class="filter-grid">
+            <!-- First Line - Search and Price Range -->
+            <div class="filter-line first-line">
                 <!-- Search Input -->
-                <div class="filter-group">
+                <div class="filter-group search-group">
                     <div class="search-input">
                         <i class="fas fa-search"></i>
                         <input type="text" name="search" value="{{ query }}" placeholder="Search products...">
@@ -16,14 +17,17 @@
                 </div>
 
                 <!-- Price Range -->
-                <div class="filter-group">
+                <div class="filter-group price-group">
                     <div class="price-range">
                         <input type="number" name="min_price" value="{{ min_price }}" placeholder="Min ₹">
                         <span class="range-separator">to</span>
                         <input type="number" name="max_price" value="{{ max_price }}" placeholder="Max ₹">
                     </div>
                 </div>
+            </div>
 
+            <!-- Second Line - Other Filters -->
+            <div class="filter-line second-line">
                 <!-- Category Dropdown -->
                 <div class="filter-group">
                     <select name="category" class="styled-select">
@@ -130,6 +134,7 @@
     .container {
         max-width: 1400px;
         padding: 0 20px;
+        margin: 0 auto;
     }
 
     /* Page Title */
@@ -164,15 +169,41 @@
         margin-bottom: 2rem;
     }
 
-    .filter-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    .filter-line {
+        display: flex;
+        flex-wrap: wrap;
         gap: 15px;
+        margin-bottom: 15px;
         align-items: center;
+    }
+
+    .filter-line:last-child {
+        margin-bottom: 0;
     }
 
     .filter-group {
         position: relative;
+    }
+
+    /* First line groups */
+    .search-group {
+        flex: 2;
+        min-width: 300px;
+    }
+
+    .price-group {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    /* Second line groups */
+    .second-line .filter-group {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .second-line .filter-group:last-child {
+        flex: 0 0 auto;
     }
 
     /* Search Input */
@@ -412,8 +443,12 @@
 
     /* Responsive Adjustments */
     @media (max-width: 992px) {
-        .filter-grid {
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        .search-group {
+            min-width: 250px;
+        }
+        
+        .price-group {
+            min-width: 200px;
         }
         
         .product-grid {
@@ -422,9 +457,16 @@
     }
 
     @media (max-width: 768px) {
-        .filter-grid {
-            grid-template-columns: 1fr;
+        .filter-line {
+            flex-direction: column;
             gap: 10px;
+        }
+        
+        .search-group,
+        .price-group,
+        .second-line .filter-group {
+            min-width: 100%;
+            width: 100%;
         }
         
         .page-title {
