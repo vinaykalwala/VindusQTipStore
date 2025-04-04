@@ -1,12 +1,12 @@
 from django import forms
-from .models import Product, Category, SubCategory
+from .models import Product, Category, ProductVariant, SubCategory
 
 from django import forms
 from .models import Product
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['category', 'subcategory', 'name', 'description', 'price', 'discount', 'stock', 'image']  # ✅ Add discount
+        fields = '__all__'
 
     def save(self, user=None, commit=True):
         product = super().save(commit=False)
@@ -27,3 +27,14 @@ class SubCategoryForm(forms.ModelForm):
     class Meta:
         model = SubCategory
         fields = ['name', 'category', 'slug']
+
+class ProductVariantForm(forms.ModelForm):
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.all(),  # Show all products
+        empty_label="Select Product",
+        widget=forms.Select
+    )
+
+    class Meta:
+        model = ProductVariant
+        fields = ['product', 'size', 'color', 'additional_price', 'image']

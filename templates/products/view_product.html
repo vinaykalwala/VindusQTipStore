@@ -1,0 +1,70 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+    <h2 class="text-center my-4">{{ product.name }}</h2>
+
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-6 text-center">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;">
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <p><strong>Category:</strong> {{ product.category.name }}</p>
+            {% if product.subcategory %}
+            <p><strong>Subcategory:</strong> {{ product.subcategory.name }}</p>
+            {% endif %}
+            <p><strong>Vendor:</strong> {{ product.vendor.username }}</p>
+            <p><strong>Stock:</strong> {{ product.stock }} units</p>
+
+            <p><strong>Price:</strong> {% if product.discount > 0 %}
+                <span class="text-danger">${{ product.discounted_price }}</span>
+                <del class="text-muted">${{ product.price }}</del>
+                <span class="badge bg-success">{{ product.discount }}% OFF</span> {% else %} ${{ product.price }} {% endif %}
+            </p>
+
+            <p><strong>Return Policy:</strong> {% if product.return_eligible %} Eligible ({{ product.return_days }} days) {% else %} Not Eligible {% endif %}
+            </p>
+
+            <p><strong>Replacement Policy:</strong> {% if product.replacement_eligible %} Eligible ({{ product.replacement_days }} days) {% else %} Not Eligible {% endif %}
+            </p>
+
+            <p><strong>Description:</strong> {{ product.description }}</p>
+
+            <p><strong>Average Rating:</strong> ⭐ {{ avg_rating }}/5</p>
+        </div>
+    </div>
+
+    <!-- Variants Section -->
+    {% if variants %}
+    <h3 class="mt-4">Available Variants</h3>
+    <div class="row">
+        {% for variant in variants %}
+        <div class="col-md-4 text-center">
+            <img src="{{ variant.image.url }}" alt="{{ variant }}" class="img-fluid rounded" style="max-height: 150px; object-fit: cover;">
+            <p><strong>Color:</strong> {{ variant.color|default:"N/A" }}</p>
+            <p><strong>Size:</strong> {{ variant.size|default:"N/A" }}</p>
+            <p><strong>Additional Price:</strong> ${{ variant.additional_price }}</p>
+            <a href="{% url 'Products:view_variant' variant.id %}" class="btn btn-info btn-sm">👁 View Variant</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Reviews Section -->
+    <h3 class="mt-4">Customer Reviews</h3>
+    {% if reviews %} {% for review in reviews %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ review.user.username }} ⭐ {{ review.rating }}/5</h5>
+            <p class="card-text">{{ review.comment }}</p>
+            {% if review.image %}
+            <img src="{{ review.image.url }}" alt="Review Image" class="img-fluid rounded" style="max-height: 150px;"> {% endif %}
+            <p class="text-muted">Reviewed on {{ review.created_at|date:"F j, Y" }}</p>
+        </div>
+    </div>
+    {% endfor %} {% else %}
+    <p>No reviews yet. Be the first to review this product!</p>
+    {% endif %}
+</div>
+{% endblock %}
