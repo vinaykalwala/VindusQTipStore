@@ -1,42 +1,244 @@
-{% extends 'base.html' %} {% block content %}
-<h2>Welcome, {{ user.username }}</h2>
+{% extends 'base.html' %}
+{% block content %}
+<div class="profile-container">
+    <h2>Welcome, {{ user.username }}</h2>
 
-<div>
-    <strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
+    <div class="profile-card">
+        <div class="profile-header">
+            {% if user.profile_picture %}
+            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+            {% else %}
+            <div class="profile-placeholder">
+                <i class="fas fa-user"></i>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="profile-details">
+            <div class="profile-item">
+                <strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
+            </div>
+            <div class="profile-item">
+                <strong>Email:</strong> {{ user.email }}
+            </div>
+            <div class="profile-item">
+                <strong>Username:</strong> {{ user.username }}
+            </div>
+            <div class="profile-item">
+                <strong>Addresses:</strong>
+                {% if addresses %}
+                <ul class="address-list">
+                    {% for address in addresses %}
+                    <li>{{ address.street }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No addresses available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="{% url 'change_password' %}" class="btn btn-primary">Change Password</a>
+        </div>
+    </div>
 </div>
+{% endblock %}
 
-<div>
-    <strong>Email:</strong> {{ user.email }}
-</div>
+{% block extra_css %}
+<style>
+    /* General Container */
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-<div>
-    <strong>Username:</strong> {{ user.username }}
-</div>
+    .profile-container h2 {
+        font-size: 2rem;
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
 
-<div>
-    <strong>Profile Picture:</strong> {% if user.profile_picture %}
-    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" width="100"> {% else %}
-    <p>No profile picture</p>
-    {% endif %}
-</div>
+    /* Profile Card */
+    .profile-card {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: box-shadow 0.3s ease;
+    }
 
-<div>
-    <strong>Addresses:</strong> {% if addresses %}
-    <ul>
-        {% for address in addresses %}
-        <li>
-            {{ address.street }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No addresses available.</p>
-    {% endif %}
-</div>
+    .profile-card:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
 
-<!-- Link to go back to the dashboard -->
-<a href="{% url 'dashboard' %}">Back To Dashboard</a>
+    /* Profile Header */
+    .profile-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-<!-- Change Password Link -->
-<p><a href="{% url 'change_password' %}">Change Password</a></p>
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #007bff;
+    }
+
+    .profile-placeholder {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        border: 3px solid #6c757d;
+    }
+
+    .profile-placeholder i {
+        font-size: 50px;
+        color: #6c757d;
+    }
+
+    /* Profile Details */
+    .profile-details {
+        margin-bottom: 20px;
+    }
+
+    .profile-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 1.1rem;
+        color: #444;
+    }
+
+    .profile-item strong {
+        color: #333;
+        font-weight: 600;
+        margin-right: 10px;
+    }
+
+    .address-list {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0 0 20px;
+    }
+
+    .address-list li {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 8px;
+        position: relative;
+    }
+
+    .address-list li:before {
+        content: "📍";
+        position: absolute;
+        left: -20px;
+        color: #007bff;
+    }
+
+    .text-muted {
+        font-size: 1rem;
+        color: #888;
+    }
+
+    /* Profile Actions */
+    .profile-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 15px;
+        }
+
+        .profile-card {
+            padding: 15px;
+        }
+
+        .profile-picture, .profile-placeholder {
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-placeholder i {
+            font-size: 40px;
+        }
+
+        .profile-item {
+            font-size: 1rem;
+        }
+
+        .profile-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .profile-container h2 {
+            font-size: 1.5rem;
+        }
+
+        .profile-picture, .profile-placeholder {
+            width: 80px;
+            height: 80px;
+        }
+
+        .profile-placeholder i {
+            font-size: 30px;
+        }
+
+        .profile-item {
+            font-size: 0.9rem;
+        }
+
+        .address-list li {
+            font-size: 0.9rem;
+        }
+    }
+</style>
 {% endblock %}
