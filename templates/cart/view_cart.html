@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="cart-container">
     <h2>Your Cart</h2>
 
@@ -10,10 +9,8 @@
             <div class="cart-item-content">
                 <!-- Display Product Image or Variant Image -->
                 {% if item.variant and item.variant.image %}
-                <img src="{{ item.variant.image.url }}" alt="{{ item.variant.color }} Variant" class="cart-image">
-                {% else %}
-                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-image">
-                {% endif %}
+                <img src="{{ item.variant.image.url }}" alt="{{ item.variant.color }} Variant" class="cart-image"> {% else %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-image"> {% endif %}
 
                 <div class="cart-details">
                     <!-- Product Name -->
@@ -26,13 +23,10 @@
 
                     <!-- Price -->
                     <p class="mb-0">
-                        <strong>Price:</strong>
-                        {% if item.product.discount > 0 %}
+                        <strong>Price:</strong> {% if item.product.discount > 0 %}
                         <span class="text-danger fw-bold">${{ item.total_price }}</span>
-                        <span class="text-muted text-decoration-line-through small">${{ item.product.price }}</span>
-                        {% else %}
-                        <span class="text-success fw-bold">${{ item.total_price }}</span>
-                        {% endif %}
+                        <span class="text-muted text-decoration-line-through small">${{ item.product.price }}</span> {% else %}
+                        <span class="text-success fw-bold">${{ item.total_price }}</span> {% endif %}
                     </p>
 
                     <!-- Quantity Controls -->
@@ -68,21 +62,20 @@
     <div class="empty-cart">
         <i class="fas fa-shopping-cart"></i>
         <p>Your cart is empty.</p>
-        <a href="{% url 'home' %}" class="btn btn-primary">Start Shopping</a>
+        <a href="{% url 'Products:product_list' %}" class="btn btn-primary">Start Shopping</a>
     </div>
     {% endif %}
 </div>
-{% endblock %}
-
-{% block extra_css %}
+{% endblock %} {% block extra_css %}
 <style>
     /* General Container */
+    
     .cart-container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
     }
-
+    
     .cart-container h2 {
         font-size: 2rem;
         color: #333;
@@ -90,8 +83,8 @@
         margin-bottom: 30px;
         font-weight: 600;
     }
-
     /* Cart Items */
+    
     .cart-items {
         list-style: none;
         padding: 0;
@@ -99,7 +92,7 @@
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
     }
-
+    
     .cart-item {
         background: #fff;
         border-radius: 10px;
@@ -107,47 +100,47 @@
         padding: 15px;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
+    
     .cart-item:hover {
         transform: translateY(-5px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
-
+    
     .cart-item-content {
         display: flex;
         align-items: center;
         gap: 15px;
     }
-
+    
     .cart-image {
         width: 60px;
         height: 60px;
         object-fit: cover;
         border-radius: 8px;
     }
-
+    
     .cart-details {
         flex: 1;
     }
-
+    
     .cart-name {
         font-size: 1.2rem;
         color: #444;
         font-weight: 500;
     }
-
+    
     .quantity-form {
         display: flex;
         align-items: center;
         gap: 10px;
         margin-top: 10px;
     }
-
+    
     .quantity {
         font-size: 1rem;
         color: #555;
     }
-
+    
     .btn {
         padding: 8px 15px;
         font-size: 0.9rem;
@@ -155,43 +148,43 @@
         text-decoration: none;
         transition: background-color 0.3s ease;
     }
-
+    
     .btn-secondary {
         background-color: #6c757d;
         color: #fff;
         padding: 5px 10px;
     }
-
+    
     .btn-secondary:hover {
         background-color: #5a6268;
     }
-
+    
     .btn-danger {
         background-color: #dc3545;
         color: #fff;
     }
-
+    
     .btn-danger:hover {
         background-color: #c82333;
     }
-
     /* Checkout Section */
+    
     .checkout-section {
         text-align: center;
         margin-top: 30px;
     }
-
+    
     .btn-primary {
         background-color: #007bff;
         color: #fff;
         padding: 10px 20px;
     }
-
+    
     .btn-primary:hover {
         background-color: #0056b3;
     }
-
     /* Empty Cart */
+    
     .empty-cart {
         display: flex;
         flex-direction: column;
@@ -203,74 +196,71 @@
         border-radius: 15px;
         padding: 20px;
     }
-
+    
     .empty-cart i {
         font-size: 80px;
         color: #007bff;
         margin-bottom: 20px;
         animation: pulse 1.5s infinite;
     }
-
+    
     .empty-cart p {
         font-size: 1.5rem;
         color: #555;
         margin-bottom: 20px;
         font-weight: 500;
     }
-
     /* Animation for Icon */
+    
     @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
     }
-
     /* Responsive Design */
+    
     @media (max-width: 768px) {
         .cart-items {
             grid-template-columns: 1fr;
         }
-
         .cart-item-content {
             flex-direction: column;
             text-align: center;
         }
-
         .quantity-form {
             justify-content: center;
         }
-
         .btn-danger {
             margin-top: 10px;
         }
-
         .cart-name {
             font-size: 1.1rem;
         }
-
         .empty-cart i {
             font-size: 60px;
         }
-
         .empty-cart p {
             font-size: 1.3rem;
         }
     }
-
+    
     @media (max-width: 480px) {
         .cart-container {
             padding: 10px;
         }
-
         .cart-container h2 {
             font-size: 1.5rem;
         }
-
         .cart-image {
             width: 50px;
             height: 50px;
         }
-
         .btn {
             padding: 6px 12px;
             font-size: 0.8rem;
