@@ -1,0 +1,102 @@
+{% extends "base.html" %} {% block content %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Vendor Sales Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sales Report for {{ report.year }}</h1>
+    <p><strong>Total Revenue:</strong> ₹{{ report.total_revenue }}</p>
+    <p><strong>Total Orders:</strong> {{ report.total_orders }}</p>
+
+    <h2>Monthly Sales</h2>
+    <table>
+        <tr>
+            <th>Month</th>
+            <th>Revenue (₹)</th>
+            <th>Orders</th>
+        </tr>
+        {% for sale in report.monthly_sales %}
+        <tr>
+            <td>{{ sale.month_name }}</td>
+            <td>{{ sale.revenue }}</td>
+            <td>{{ sale.order_count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Top Products</h2>
+    <ul>
+        {% for product in report.top_products %}
+        <li>{{ product.product__name }} - Sold: {{ product.total_sold }} (₹{{ product.revenue }})</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Sales Trend</h2>
+    <canvas id="salesChart" width="400" height="200"></canvas>
+
+    <form method="GET">
+        <label for="year">Select Year:</label>
+        <input type="number" name="year" id="year" value="{{ report.year }}" min="2000" max="2100">
+        <button type="submit">Filter</button>
+    </form>
+
+    <script>
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [{ %
+                        for sale in report.monthly_sales %
+                    }
+                    '{{ sale.month_name }}', { % endfor %
+                    }
+                ],
+                datasets: [{
+                    label: 'Revenue (₹)',
+                    data: [{ %
+                        for sale in report.monthly_sales %
+                    } {
+                        {
+                            sale.revenue
+                        }
+                    }, { % endfor %
+                    }],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    {% endblock %}
+</body>
+
+</html>

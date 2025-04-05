@@ -1,36 +1,44 @@
-{% extends "base.html" %} {% block title %}Orders - My Store{% endblock %} {% block content %} {% for order_data in orders %}
-<h2>Order ID: {{ order_data.order.id }} - {{ order_data.order.status }}</h2>
-<p>Total Order Price: ₹{{ order_data.subtotal }}</p>
-<table>
-    <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Subtotal</th>
-    </tr>
-    {% for item in order_data.items %}
-    <tr>
-        <td>{{ item.product.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>₹{{ item.price }}</td>
-        <td>₹{{ item.subtotal }}</td>
-    </tr>
-    {% endfor %}
-</table>
+{% extends "base.html" %}
+
+{% block title %}Orders - My Store{% endblock %}
+
+{% block content %}
 {% for order_data in orders %}
-<div class="order">
+    <h2>Order ID: {{ order_data.order.id }} - {{ order_data.order.status }}</h2>
+    <p>Total Order Price: ₹{{ order_data.subtotal }}</p>
 
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+        </tr>
+        {% for item in order_data.items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₹{{ item.price }}</td>
+            <td>₹{{ item.subtotal }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-    {% if order_data.shipping_address %}
-    <p><strong>Shipping Address:</strong> {{ order_data.shipping_address.street }}, {{ order_data.shipping_address.city }}, {{ order_data.shipping_address.state }}, {{ order_data.shipping_address.zip_code }}
-    </p>
-    {% else %}
-    <p><strong>Shipping Address:</strong> Not provided</p>
-    {% endif %}
+    <div class="order">
+        {% if order_data.shipping_address %}
+        <p><strong>Shipping Address:</strong>
+            {{ order_data.shipping_address.street }},
+            {{ order_data.shipping_address.city }},
+            {{ order_data.shipping_address.state }},
+            {{ order_data.shipping_address.zip_code }}
+        </p>
+        {% else %}
+        <p><strong>Shipping Address:</strong> Not provided</p>
+        {% endif %}
+    </div>
 
-</div>
+    <hr>
+{% empty %}
+    <p>No orders found.</p>
 {% endfor %}
-
-<hr> {% empty %}
-<p>No orders found.</p>
-{% endfor %} {% endblock %}
+{% endblock %}
