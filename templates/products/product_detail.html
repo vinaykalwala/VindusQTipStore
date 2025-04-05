@@ -63,11 +63,11 @@
             <div class="price-section mb-3">
                 {% if product.discount > 0 %}
                 <div class="original-price text-muted">
-                    <span style="font-size: 1.2rem; color: #000;">Original Price:</span>
-                    <del style="font-size: 1.2rem; color: #000;">₹{{ product.price }}</del>
+                    <span>Original Price:</span>
+                    <del>₹{{ product.price }}</del>
                 </div>
                 <div class="discounted-price">
-                    <span style="font-size: 1.5rem; color: #dc3545;">Discounted Price:</span>
+                    <span>Discounted Price:</span>
                     <span class="text-danger fw-bold">₹<span id="product-price"  style="color: #dc3545;">{{ discounted_price }}</span></span>
                     <span class="badge bg-success ms-2">{{ product.discount }}% OFF</span>
                 </div>
@@ -91,7 +91,29 @@
             <!-- Description -->
             <div class="description mb-4">
                 <h5>Description</h5>
-                <p>{{ product.description }}</p>
+                <label for="description-dropdown" class="form-label"><strong>More Details:</strong></label>
+                <select id="description-dropdown" class="form-select mb-3">
+                    <option value="overview">Overview</option>
+                    <option value="features">Features</option>
+                    <option value="specifications">Specifications</option>
+                </select>
+                <div id="description-content">
+                    <p>{{ product.description }}</p>
+                </div>
+                <script>
+                    document.getElementById("description-dropdown").addEventListener("change", function() {
+                        const descriptionContent = document.getElementById("description-content");
+                        const selectedValue = this.value;
+
+                        if (selectedValue === "overview") {
+                            descriptionContent.innerHTML = "<p>{{ product.description }}</p>";
+                        } else if (selectedValue === "features") {
+                            descriptionContent.innerHTML = "<p>{{ product.features }}</p>";
+                        } else if (selectedValue === "specifications") {
+                            descriptionContent.innerHTML = "<p>{{ product.specifications }}</p>";
+                        }
+                    });
+                </script>
             </div>
 
             <!-- Category -->

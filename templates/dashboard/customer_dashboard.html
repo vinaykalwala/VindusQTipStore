@@ -25,7 +25,7 @@
             <h3 class="section-title">✨ Recommended For You ✨</h3>
             <div class="product-grid">
                 {% for product in recommended_products %}
-                <a href="{% url 'Products:product_detail' product.slug %}" class="product-card" aria-label="{{ product.name }} - ${{ product.price }}" tabindex="0">
+                <a href="{% url 'Products:product_detail' product.slug %}" class="product-card" data-product-id="{{ product.id }}" aria-label="{{ product.name }} - ₹{{ product.price }}" tabindex="0">
                     <div class="product-image-container">
                         <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy" width="200" height="200">
                         {% if product.discount > 0 %}
@@ -36,15 +36,13 @@
                         <div class="product-title">{{ product.name|truncatechars:30 }}</div>
                         <div class="product-price">
                             {% if product.discount > 0 %}
-                                <span class="original-price">${{ product.price }}</span>
-                                <span class="discounted-price">${{ product.final_price }}</span>
+                                <span class="original-price">₹{{ product.price }}</span>
+                                <span class="discounted-price">₹{{ product.discounted_price }}</span>
                             {% else %}
-                            <span>${{ product.price }}</span>
+                            <span>₹{{ product.price }}</span>
                             {% endif %}
                         </div>
-                        <div class="product-rating">
-                            ★★★★☆ <span class="rating-count">(24)</span>
-                        </div>
+                        <!-- add rating -->
                     </div>
                 </a>
                 {% endfor %}
@@ -100,17 +98,15 @@
             <h3 class="section-title">Recently Viewed</h3>
             <div class="product-grid">
                 {% for product in recently_viewed_products %}
-                <a href="{% url 'Products:product_detail' product.slug %}" class="product-card" aria-label="{{ product.name }} - ${{ product.discounted_price }}" tabindex="0">
+                <a href="{% url 'Products:product_detail' product.slug %}" class="product-card" data-product-id="{{ product.id }}" aria-label="{{ product.name }} - ₹{{ product.discounted_price }}" tabindex="0">
                     <div class="product-image-container">
                         <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy" width="200" height="200">
                         <div class="recently-viewed-badge">Viewed</div>
                     </div>
                     <div class="product-info">
                         <div class="product-title">{{ product.name|truncatechars:30 }}</div>
-                        <div class="product-price">${{ product.discounted_price }}</div>
-                        <div class="product-rating">
-                            ★★★★☆ <span class="rating-count">(18)</span>
-                        </div>
+                        <div class="product-price">₹{{ product.discounted_price }}</div>
+                        <!-- add rating -->
                     </div>
                 </a>
                 {% endfor %}
@@ -124,7 +120,7 @@
             <h3 class="section-title">🔥 Hot Deals 🔥</h3>
             <div class="product-grid">
                 {% for product in top_discount_deals %}
-                <a href="{% url 'Products:product_detail' product.slug %}" class="product-card" aria-label="{{ product.name }} - ${{ product.final_price }}" tabindex="0">
+                <a href="{% url 'Products:product_detail' product.slug %}" class="product-card" data-product-id="{{ product.id }}" aria-label="{{ product.name }} - ₹{{ product.discounted_price }}" tabindex="0">
                     <div class="product-image-container">
                         <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy" width="200" height="200">
                         <div class="discount-badge">-{{ product.discount }}%</div>
@@ -133,10 +129,11 @@
                     <div class="product-info">
                         <div class="product-title">{{ product.name|truncatechars:30 }}</div>
                         <div class="product-price">
-                            <span class="original-price">${{ product.price }}</span>
-                            <span class="discounted-price">${{ product.final_price }}</span>
+                            <div class="original-price">₹{{ product.price }}</div>
+                            <div class="discounted-price">₹{{ product.discounted_price }}</div>
                         </div>
-                        <div class="time-left">Ends in 2d 5h</div>
+                        <!-- add rating -->
+                        <div class="time-left" data-end-time="{{ product.auction_end_time|date:'Y-m-d H:i:s' }}">Ends in <span class="countdown">calculating...</span></div>
                     </div>
                 </a>
                 {% endfor %}
@@ -147,6 +144,7 @@
 </div>
 
 <style>
+    /* Same CSS as in your original document */
     :root {
         --primary-color: #4A90E2;
         --secondary-color: #FF6B35;
@@ -256,6 +254,7 @@
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: var(--card-shadow);
+        height: 100%;
     }
 
     .product-card:hover {
@@ -264,6 +263,7 @@
         border-color: var(--primary-color);
     }
 
+    /* Image Container */
     .product-image-container {
         width: 100%;
         position: relative;
@@ -271,6 +271,9 @@
         border-radius: var(--image-border-radius) var(--image-border-radius) 0 0;
         aspect-ratio: 1/1;
         background: var(--light-gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .product-image {
@@ -281,12 +284,15 @@
         padding: 16px;
         background: white;
         transition: transform 0.3s ease;
+        max-width: 100%;
+        max-height: 100%;
     }
 
     .product-card:hover .product-image {
         transform: scale(1.05);
     }
 
+    /* Product Info Section */
     .product-info {
         width: 100%;
         display: flex;
@@ -294,29 +300,28 @@
         padding: 16px;
         background: white;
         border-top: 1px solid var(--medium-gray);
+        flex-grow: 1;
     }
 
     .product-title {
         font-size: 0.95rem;
         font-weight: 600;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         text-align: center;
         color: var(--text-color);
+        line-height: 1.3;
     }
 
+    /* Price Section */
     .product-price {
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--text-color);
-        text-align: center;
-        margin: 6px 0;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
+        margin: 8px 0;
     }
 
     .original-price {
@@ -329,25 +334,70 @@
     .discounted-price {
         color: var(--secondary-color);
         font-weight: 700;
+        font-size: 1.1rem;
     }
 
+    /* Rating Section */
     .product-rating {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
         font-size: 0.8rem;
         color: var(--accent-color);
-        text-align: center;
-        margin-top: 4px;
+        margin-top: 6px;
+        transition: opacity 0.3s ease; /* Added for smooth updates */
+    }
+
+    .stars {
+        unicode-bidi: bidi-override;
+        direction: rtl;
+        white-space: nowrap;
+    }
+
+    .star {
+        display: inline-block;
+        font-size: 1rem;
+        cursor: default;
+    }
+
+    .star.full::before {
+        content: '\2605'; /* Full star */
+    }
+
+    .star.half::before {
+        content: '\2605'; /* Half star */
+        width: 50%;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    .star.empty::before {
+        content: '\2606'; /* Empty star */
     }
 
     .rating-count {
         color: var(--dark-gray);
+        font-weight: 400;
     }
 
+    /* Time Left Section */
     .time-left {
         font-size: 0.75rem;
         color: var(--secondary-color);
         text-align: center;
-        margin-top: 6px;
+        margin-top: 10px;
         font-weight: 600;
+        background-color: rgba(229, 57, 53, 0.1);
+        padding: 4px 8px;
+        border-radius: 12px;
+        display: inline-block;
+        align-self: center;
+    }
+
+    .time-left.ended {
+        background-color: rgba(0, 0, 0, 0.1);
+        color: var(--dark-gray);
     }
 
     /* Badges */
@@ -473,11 +523,9 @@
         font-size: 0.9rem;
         border-radius: 20px;
         transition: all 0.3s ease;
-    /* Center the label both horizontally and vertically */
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-    /* Make the background only cover the text */
         white-space: nowrap;
         backdrop-filter: blur(2px);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -569,188 +617,324 @@
             height: 350px;
         }
     }
+
+    @media (max-width: 768px) {
+        .product-title {
+            font-size: 0.9rem;
+        }
+        
+        .discounted-price {
+            font-size: 1rem;
+        }
+        
+        .original-price {
+            font-size: 0.8rem;
+        }
+    }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    // Banner Carousel
-    class BannerCarousel {
-        constructor() {
-            this.wrapper = document.querySelector('.banner-wrapper');
-            this.track = document.querySelector('.banner-track');
-            this.init();
-        }
-
-        init() {
-            if (!this.track || !this.wrapper) return;
-
-            this.items = this.track.querySelectorAll('.banner-item');
-            this.totalItems = this.items.length;
-            this.currentIndex = 0;
-            this.isDragging = false;
-            this.startPos = 0;
-            this.currentTranslate = 0;
-            this.prevTranslate = 0;
-            this.animationID = null;
-            this.isAnimating = false;
-
-            this.setupEventListeners();
-            this.startAutoSlide();
-            this.resizeHandler();
-        }
-
-        setupEventListeners() {
-            // Touch events
-            this.track.addEventListener('touchstart', this.touchStart.bind(this), { passive: false });
-            this.track.addEventListener('touchmove', this.touchMove.bind(this), { passive: false });
-            this.track.addEventListener('touchend', this.touchEnd.bind(this));
-
-            // Mouse events
-            this.track.addEventListener('mousedown', this.touchStart.bind(this));
-            this.track.addEventListener('mousemove', this.touchMove.bind(this));
-            this.track.addEventListener('mouseup', this.touchEnd.bind(this));
-            this.track.addEventListener('mouseleave', this.touchEnd.bind(this));
-
-            // Navigation buttons
-            const prevBtn = this.wrapper.querySelector('.prev-btn');
-            const nextBtn = this.wrapper.querySelector('.next-btn');
-            
-            prevBtn?.addEventListener('click', () => this.prevSlide());
-            
-            nextBtn?.addEventListener('click', () => this.nextSlide());
-
-            // Hover events
-            this.wrapper.addEventListener('mouseenter', () => this.pauseAutoSlide());
-            this.wrapper.addEventListener('mouseleave', () => this.startAutoSlide());
-
-            // Window resize
-            window.addEventListener('resize', this.resizeHandler.bind(this));
-        }
-
-        getPositionX(event) {
-            return event.type.includes('touch') ? event.touches[0].clientX : event.clientX;
-        }
-
-        touchStart(event) {
-            if (this.isAnimating) return;
-            this.startPos = this.getPositionX(event);
-            this.isDragging = true;
-            this.animationID = requestAnimationFrame(this.animate.bind(this));
-            this.track.style.transition = 'none';
-            if (!event.type.includes('touch')) {
-                event.preventDefault();
+        // Banner Carousel
+        class BannerCarousel {
+            constructor() {
+                this.wrapper = document.querySelector('.banner-wrapper');
+                this.track = document.querySelector('.banner-track');
+                this.init();
             }
-        }
 
-        touchMove(event) {
-            if (!this.isDragging) return;
-            const currentPosition = this.getPositionX(event);
-            this.currentTranslate = this.prevTranslate + (currentPosition - this.startPos);
-        }
+            init() {
+                if (!this.track || !this.wrapper) return;
 
-        touchEnd() {
-            if (!this.isDragging) return;
-            cancelAnimationFrame(this.animationID);
-            this.isDragging = false;
-            const movedBy = this.currentTranslate - this.prevTranslate;
+                this.items = this.track.querySelectorAll('.banner-item');
+                this.totalItems = this.items.length;
+                this.currentIndex = 0;
+                this.isDragging = false;
+                this.startPos = 0;
+                this.currentTranslate = 0;
+                this.prevTranslate = 0;
+                this.animationID = null;
+                this.isAnimating = false;
 
-            if (movedBy < -50 && this.currentIndex < this.totalItems - 1) {
-                this.nextSlide();
-            } else if (movedBy > 50 && this.currentIndex > 0) {
-                this.prevSlide();
-            } else {
+                this.setupEventListeners();
+                this.startAutoSlide();
+                this.resizeHandler();
+            }
+
+            setupEventListeners() {
+                this.track.addEventListener('touchstart', this.touchStart.bind(this), { passive: false });
+                this.track.addEventListener('touchmove', this.touchMove.bind(this), { passive: false });
+                this.track.addEventListener('touchend', this.touchEnd.bind(this));
+                this.track.addEventListener('mousedown', this.touchStart.bind(this));
+                this.track.addEventListener('mousemove', this.touchMove.bind(this));
+                this.track.addEventListener('mouseup', this.touchEnd.bind(this));
+                this.track.addEventListener('mouseleave', this.touchEnd.bind(this));
+
+                const prevBtn = this.wrapper.querySelector('.prev-btn');
+                const nextBtn = this.wrapper.querySelector('.next-btn');
+                
+                prevBtn?.addEventListener('click', () => this.prevSlide());
+                nextBtn?.addEventListener('click', () => this.nextSlide());
+
+                this.wrapper.addEventListener('mouseenter', () => this.pauseAutoSlide());
+                this.wrapper.addEventListener('mouseleave', () => this.startAutoSlide());
+                window.addEventListener('resize', this.resizeHandler.bind(this));
+            }
+
+            getPositionX(event) {
+                return event.type.includes('touch') ? event.touches[0].clientX : event.clientX;
+            }
+
+            touchStart(event) {
+                if (this.isAnimating) return;
+                this.startPos = this.getPositionX(event);
+                this.isDragging = true;
+                this.animationID = requestAnimationFrame(this.animate.bind(this));
+                this.track.style.transition = 'none';
+                if (!event.type.includes('touch')) {
+                    event.preventDefault();
+                }
+            }
+
+            touchMove(event) {
+                if (!this.isDragging) return;
+                const currentPosition = this.getPositionX(event);
+                this.currentTranslate = this.prevTranslate + (currentPosition - this.startPos);
+            }
+
+            touchEnd() {
+                if (!this.isDragging) return;
+                cancelAnimationFrame(this.animationID);
+                this.isDragging = false;
+                const movedBy = this.currentTranslate - this.prevTranslate;
+
+                if (movedBy < -50 && this.currentIndex < this.totalItems - 1) {
+                    this.nextSlide();
+                } else if (movedBy > 50 && this.currentIndex > 0) {
+                    this.prevSlide();
+                } else {
+                    this.setPosition();
+                }
+            }
+
+            animate() {
+                if (!this.isDragging) return;
+                this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+                this.animationID = requestAnimationFrame(this.animate.bind(this));
+            }
+
+            setPosition() {
+                this.isAnimating = true;
+                this.currentTranslate = this.currentIndex * -window.innerWidth;
+                this.prevTranslate = this.currentTranslate;
+                this.track.style.transition = 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
+                this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+
+                this.track.addEventListener('transitionend', () => {
+                    this.isAnimating = false;
+                }, { once: true });
+            }
+
+            nextSlide() {
+                this.currentIndex = (this.currentIndex + 1) % this.totalItems;
+                this.setPosition();
+                this.resetAutoSlide();
+            }
+
+            prevSlide() {
+                this.currentIndex = (this.currentIndex - 1 + this.totalItems) % this.totalItems;
+                this.setPosition();
+                this.resetAutoSlide();
+            }
+
+            startAutoSlide() {
+                this.autoSlideInterval = setInterval(() => this.nextSlide(), 5000);
+            }
+
+            pauseAutoSlide() {
+                clearInterval(this.autoSlideInterval);
+            }
+
+            resetAutoSlide() {
+                this.pauseAutoSlide();
+                this.startAutoSlide();
+            }
+
+            resizeHandler() {
                 this.setPosition();
             }
         }
 
-        animate() {
-            if (!this.isDragging) return;
-            this.track.style.transform = `translateX(${this.currentTranslate}px)`;
-            this.animationID = requestAnimationFrame(this.animate.bind(this));
-        }
+        // Marquee Handler
+        class MarqueeHandler {
+            constructor() {
+                this.marquees = document.querySelectorAll('.marquee-track');
+                this.setupEventListeners();
+            }
 
-        setPosition() {
-            this.isAnimating = true;
-            this.currentTranslate = this.currentIndex * -window.innerWidth;
-            this.prevTranslate = this.currentTranslate;
-            this.track.style.transition = 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
-            this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+            setupEventListeners() {
+                this.marquees.forEach(marquee => {
+                    marquee.addEventListener('mouseenter', () => {
+                        marquee.style.animationPlayState = 'paused';
+                    });
 
-            this.track.addEventListener('transitionend', () => {
-                this.isAnimating = false;
-            }, { once: true });
-        }
+                    marquee.addEventListener('mouseleave', () => {
+                        marquee.style.animationPlayState = 'running';
+                    });
 
-        nextSlide() {
-            this.currentIndex = (this.currentIndex + 1) % this.totalItems;
-            this.setPosition();
-            this.resetAutoSlide();
-        }
+                    marquee.addEventListener('touchstart', () => {
+                        marquee.style.animationPlayState = 'paused';
+                    }, { passive: true });
 
-        prevSlide() {
-            this.currentIndex = (this.currentIndex - 1 + this.totalItems) % this.totalItems;
-            this.setPosition();
-            this.resetAutoSlide();
-        }
-
-        startAutoSlide() {
-            this.autoSlideInterval = setInterval(() => this.nextSlide(), 5000);
-        }
-
-        pauseAutoSlide() {
-            clearInterval(this.autoSlideInterval);
-        }
-
-        resetAutoSlide() {
-            this.pauseAutoSlide();
-            this.startAutoSlide();
-        }
-
-        resizeHandler() {
-            this.setPosition();
-        }
-    }
-
-    // Marquee Handler
-    class MarqueeHandler {
-        constructor() {
-            this.marquees = document.querySelectorAll('.marquee-track');
-            this.setupEventListeners();
-        }
-
-        setupEventListeners() {
-            this.marquees.forEach(marquee => {
-                marquee.addEventListener('mouseenter', () => {
-                    marquee.style.animationPlayState = 'paused';
+                    marquee.addEventListener('touchend', () => {
+                        marquee.style.animationPlayState = 'running';
+                    });
                 });
+            }
+        }
 
-                marquee.addEventListener('mouseleave', () => {
-                    marquee.style.animationPlayState = 'running';
+        // Countdown Timer
+        class CountdownTimer {
+            constructor() {
+                this.timeElements = document.querySelectorAll('.time-left');
+                this.init();
+            }
+
+            init() {
+                if (this.timeElements.length === 0) return;
+                this.updateAllCountdowns();
+                setInterval(() => this.updateAllCountdowns(), 60000);
+            }
+
+            updateAllCountdowns() {
+                this.timeElements.forEach(element => {
+                    const endTimeStr = element.getAttribute('data-end-time');
+                    if (!endTimeStr) return;
+                    
+                    const endTime = new Date(endTimeStr).getTime();
+                    const now = new Date().getTime();
+                    const distance = endTime - now;
+                    
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    const countdownElement = element.querySelector('.countdown');
+                    if (!countdownElement) return;
+                    
+                    if (distance < 0) {
+                        countdownElement.textContent = "Auction ended";
+                        element.classList.add('ended');
+                    } else {
+                        countdownElement.textContent = `${days}d ${hours}h ${minutes}m`;
+                        element.classList.remove('ended');
+                    }
                 });
+            }
+        }
 
-                marquee.addEventListener('touchstart', () => {
-                    marquee.style.animationPlayState = 'paused';
-                }, { passive: true });
+        // Rating Handler with Dynamic Updates
+        class RatingHandler {
+            constructor() {
+                this.ratingContainers = document.querySelectorAll('.product-rating');
+                this.init();
+            }
 
-                marquee.addEventListener('touchend', () => {
-                    marquee.style.animationPlayState = 'running';
+            init() {
+                this.ratingContainers.forEach(container => {
+                    this.updateRating(container);
                 });
+                this.startRatingUpdates();
+            }
+
+            updateRating(container) {
+                const rating = parseFloat(container.getAttribute('data-rating')) || 0;
+                const starsContainer = container.querySelector('.stars');
+                if (!starsContainer) return;
+
+                starsContainer.innerHTML = '';
+                
+                const fullStars = Math.floor(rating);
+                const hasHalfStar = rating % 1 >= 0.3;
+                const emptyStars = 5 - Math.ceil(rating);
+
+                for (let i = 0; i < fullStars; i++) {
+                    const star = document.createElement('span');
+                    star.className = 'star full';
+                    starsContainer.appendChild(star);
+                }
+
+                if (hasHalfStar) {
+                    const star = document.createElement('span');
+                    star.className = 'star half';
+                    starsContainer.appendChild(star);
+                }
+
+                for (let i = 0; i < emptyStars; i++) {
+                    const star = document.createElement('span');
+                    star.className = 'star empty';
+                    starsContainer.appendChild(star);
+                }
+            }
+
+            async fetchUpdatedRatings() {
+                try {
+                    const response = await fetch('/api/product-ratings/', {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const ratings = await response.json();
+                    
+                    this.ratingContainers.forEach(container => {
+                        const productCard = container.closest('.product-card');
+                        if (!productCard) return;
+                        
+                        const productId = productCard.dataset.productId;
+                        if (ratings[productId]) {
+                            const newRating = ratings[productId].average_rating;
+                            const newCount = ratings[productId].rating_count;
+                            
+                            // Smooth transition for rating update
+                            container.style.opacity = '0';
+                            setTimeout(() => {
+                                container.setAttribute('data-rating', newRating);
+                                container.setAttribute('data-count', newCount);
+                                container.querySelector('.rating-count').textContent = `(${newCount})`;
+                                this.updateRating(container);
+                                container.style.opacity = '1';
+                            }, 300);
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error fetching ratings:', error);
+                }
+            }
+
+            startRatingUpdates() {
+                this.fetchUpdatedRatings();
+                setInterval(() => this.fetchUpdatedRatings(), 30000); // Update every 30 seconds
+            }
+        }
+
+        // Initialize components
+        try {
+            const banner = new BannerCarousel();
+            const marquee = new MarqueeHandler();
+            const countdown = new CountdownTimer();
+            const ratings = new RatingHandler();
+
+            window.addEventListener('unload', () => {
+                banner.pauseAutoSlide();
             });
+        } catch (error) {
+            console.error('Error initializing components:', error);
         }
-    }
-
-    // Initialize components
-    try {
-        const banner = new BannerCarousel();
-        const marquee = new MarqueeHandler();
-
-        // Cleanup on page unload
-        window.addEventListener('unload', () => {
-            banner.pauseAutoSlide();
-        });
-    } catch (error) {
-        console.error('Error initializing components:', error);
-    }
-});
+    });
 </script>
 {% endblock %}
