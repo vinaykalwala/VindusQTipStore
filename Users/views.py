@@ -175,18 +175,24 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from Products.models import Product, Category, SubCategory, Slider
 from Ai.models import Recommendation
-from django.db.models import Prefetch
+from Reviews.models import Review
+from django.contrib.auth import get_user_model
+from django.db.models import Prefetch, Avg
+import random
+from datetime import timedelta, datetime
 
-User = get_user_model() 
+
+User = get_user_model()
+
 @login_required
 def dashboard_view(request):
     user = request.user
     sliders = None
     subcategories = None
     categories = None
-    top_featured_products = None
+    top_featured_products = []
     recently_viewed_products = []
-    recommended_products = set()  # Use a set to avoid duplicates
+    recommended_products = set()
     top_discount_deals = []
     final_products = []
     vendor_products = None
@@ -195,8 +201,6 @@ def dashboard_view(request):
     if user.is_superuser:
         template = 'dashboard/admin_dashboard.html'
         vendors = User.objects.filter(role='vendor')
-
-        # Prefetch products for each vendor to optimize queries
         vendors_with_products = vendors.prefetch_related(
             Prefetch('products', queryset=Product.objects.all().order_by('-created_at'))
         )
@@ -211,56 +215,64 @@ def dashboard_view(request):
         sliders = Slider.objects.order_by('-uploaded_at')[:4]
         subcategories = SubCategory.objects.all()
         categories = Category.objects.all()
-        top_featured_products = Product.objects.filter(is_top_featured=True)
-        top_discount_deals = Product.objects.filter(discount__gt=0).order_by('-discount')[:6] 
+        top_featured_products = list(Product.objects.filter(is_top_featured=True))
+        top_discount_deals = list(Product.objects.filter(discount__gt=0).order_by('-discount')[:6])
 
-        # Calculate discounted price for each product
         for product in top_featured_products:
             product.final_price = product.discounted_price()
+            reviews = Review.objects.filter(product=product)
+            product.avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+            product.total_reviews = reviews.count()
 
         for product in top_discount_deals:
             product.final_price = product.price - (product.price * product.discount / 100)
-        
-        # Fetch recently viewed products
-        recently_viewed_ids = request.session.get('recently_viewed', [])
-        recently_viewed_products = Product.objects.filter(id__in=recently_viewed_ids)
+            reviews = Review.objects.filter(product=product)
+            product.avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+            product.total_reviews = reviews.count()
+            product.auction_end_time = datetime.now() + timedelta(hours=random.randint(1, 6), minutes=random.randint(0, 59))
 
-        # ✅ Fetch recommended products (Order by latest recommendation timestamp)
+        recently_viewed_ids = request.session.get('recently_viewed', [])
+        recently_viewed_products = list(Product.objects.filter(id__in=recently_viewed_ids))
+        for product in recently_viewed_products:
+            reviews = Review.objects.filter(product=product)
+            product.avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+            product.total_reviews = reviews.count()
+
         recommended_queryset = Recommendation.objects.filter(user=user).select_related('product').order_by('-created_at')[:5]
         for rec in recommended_queryset:
-            recommended_products.add(rec.product)  # Store in set to prevent duplicates
+            recommended_products.add(rec.product)
 
-        # ✅ Fetch additional products from each subcategory
         seen_subcategories = set()
         additional_products = set()
 
-        for product in list(recommended_products):  # Convert set to list for iteration
+        for product in list(recommended_products):
             if product.subcategory_id not in seen_subcategories:
                 seen_subcategories.add(product.subcategory_id)
-                
-                # One extra product from the same subcategory (Latest First)
+
                 one_extra_product = Product.objects.filter(subcategory_id=product.subcategory_id) \
                     .exclude(id__in=[p.id for p in recommended_products]) \
                     .order_by('-created_at') \
                     .first()
-                
-                # Three more products from the same subcategory (Latest First)
+
                 three_more_products = list(
                     Product.objects.filter(subcategory_id=product.subcategory_id)
-                    .exclude(id__in=[p.id for p in recommended_products.union(additional_products)])  # Avoid duplicates
+                    .exclude(id__in=[p.id for p in recommended_products.union(additional_products)])
                     .order_by('-created_at')[:3]
                 )
-                
+
                 if one_extra_product:
-                    additional_products.add(one_extra_product)  # Store in set to prevent duplicates
-                
-                additional_products.update(three_more_products)  # Add multiple products at once
+                    additional_products.add(one_extra_product)
 
-        # ✅ Combine recommendations & subcategory-based suggestions without duplicates
-        final_products = list(recommended_products.union(additional_products))  # Merge sets and convert to list
+                additional_products.update(three_more_products)
 
-        # ✅ Sort by latest timestamp (Newest First) & Show Only 10 Products
+        final_products = list(recommended_products.union(additional_products))
         final_products = sorted(final_products, key=lambda p: p.created_at, reverse=True)[:10]
+
+        # Add avg_rating and total_reviews to each final recommended product
+        for product in final_products:
+            reviews = Review.objects.filter(product=product)
+            product.avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+            product.total_reviews = reviews.count()
 
     elif user.role == 'delivery':
         template = 'dashboard/delivery_dashboard.html'
@@ -276,11 +288,10 @@ def dashboard_view(request):
         'top_featured_products': top_featured_products,
         'top_discount_deals': top_discount_deals,
         'recently_viewed_products': recently_viewed_products,
-        'recommended_products': final_products ,
-        'vendor_products': vendor_products,  
+        'recommended_products': final_products,
+        'vendor_products': vendor_products,
         'vendors_with_products': vendors_with_products,
     })
-
 
 
 def select_address(request):

@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="container-fluid px-0">
     <!-- Full Width Banner with Carousel -->
     {% if sliders %}
@@ -27,8 +26,7 @@
                 {% for product in recommended_products %}
                 <a href="{% url 'Products:product_detail' product.slug %}" class="product-card" data-product-id="{{ product.id }}" aria-label="{{ product.name }} - ₹{{ product.price }}" tabindex="0">
                     <div class="product-image-container">
-                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy" width="200" height="200">
-                        {% if product.discount > 0 %}
+                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy" width="200" height="200"> {% if product.discount > 0 %}
                         <div class="discount-badge">-{{ product.discount }}%</div>
                         {% endif %}
                     </div>
@@ -36,13 +34,12 @@
                         <div class="product-title">{{ product.name|truncatechars:30 }}</div>
                         <div class="product-price">
                             {% if product.discount > 0 %}
-                                <span class="original-price">₹{{ product.price }}</span>
-                                <span class="discounted-price">₹{{ product.discounted_price }}</span>
-                            {% else %}
-                            <span>₹{{ product.price }}</span>
-                            {% endif %}
+                            <span class="original-price">₹{{ product.price }}</span>
+                            <span class="discounted-price">₹{{ product.discounted_price }}</span> {% else %}
+                            <span>₹{{ product.price }}</span> {% endif %}
                         </div>
-                        <!-- add rating -->
+                        {% if product.avg_rating %} ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews) {% else %} No ratings yet {% endif %}
+
                     </div>
                 </a>
                 {% endfor %}
@@ -106,13 +103,38 @@
                     <div class="product-info">
                         <div class="product-title">{{ product.name|truncatechars:30 }}</div>
                         <div class="product-price">₹{{ product.discounted_price }}</div>
-                        <!-- add rating -->
+                        {% if product.avg_rating %} ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews) {% else %} No ratings yet {% endif %}
+
                     </div>
                 </a>
                 {% endfor %}
             </div>
         </section>
         {% endif %}
+
+        <!-- Top Featured Products -->
+        {% if top_featured_products %}
+        <section class="top-featured-products mb-5">
+            <h3 class="section-title">Top Featured Products</h3>
+            <div class="product-grid">
+                {% for product in top_featured_products %}
+                <a href="{% url 'Products:product_detail' product.slug %}" class="product-card" data-product-id="{{ product.id }}" aria-label="{{ product.name }} - ₹{{ product.discounted_price }}" tabindex="0">
+                    <div class="product-image-container">
+                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy" width="200" height="200">
+                        <div class="featured-badge">Featured</div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">{{ product.name|truncatechars:30 }}</div>
+                        <div class="product-price">₹{{ product.discounted_price }}</div>
+                        {% if product.avg_rating %} ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews) {% else %} No ratings yet {% endif %}
+
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
 
         <!-- Hot Deals -->
         {% if top_discount_deals %}
@@ -132,8 +154,9 @@
                             <div class="original-price">₹{{ product.price }}</div>
                             <div class="discounted-price">₹{{ product.discounted_price }}</div>
                         </div>
-                        <!-- add rating -->
-                        <div class="time-left" data-end-time="{{ product.auction_end_time|date:'Y-m-d H:i:s' }}">Ends in <span class="countdown">calculating...</span></div>
+                        {% if product.avg_rating %} ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews) {% else %} No ratings yet {% endif %}
+
+
                     </div>
                 </a>
                 {% endfor %}
@@ -145,7 +168,8 @@
 
 <style>
     /* Same CSS as in your original document */
-    :root {
+    
+     :root {
         --primary-color: #4A90E2;
         --secondary-color: #FF6B35;
         --accent-color: #f59e0b;
@@ -159,8 +183,8 @@
         --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
-
     /* Banner Styles */
+    
     .banner-wrapper {
         width: 100vw;
         position: relative;
@@ -173,26 +197,26 @@
         margin-bottom: 2rem;
         box-shadow: var(--card-shadow);
     }
-
+    
     .banner-track {
         display: flex;
         transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
+    
     .banner-item {
         flex: 0 0 100vw;
         min-width: 100vw;
         position: relative;
     }
-
+    
     .banner-image {
         width: 100%;
         height: 180px;
         object-fit: cover;
         object-position: center;
     }
-
     /* Section Styles */
+    
     .section-title {
         font-size: 1.8rem;
         font-weight: 700;
@@ -203,7 +227,7 @@
         padding-bottom: 15px;
         display: inline-block;
     }
-
+    
     .section-title::after {
         content: '';
         position: absolute;
@@ -214,34 +238,34 @@
         background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
         border-radius: 3px;
     }
-
     /* Product Grid */
+    
     .product-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
-
+    
     @media (min-width: 576px) {
         .product-grid {
             grid-template-columns: repeat(3, 1fr);
         }
     }
-
+    
     @media (min-width: 768px) {
         .product-grid {
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
         }
     }
-
+    
     @media (min-width: 992px) {
         .product-grid {
             grid-template-columns: repeat(5, 1fr);
         }
     }
-
     /* Product Card */
+    
     .product-card {
         display: flex;
         flex-direction: column;
@@ -256,14 +280,14 @@
         box-shadow: var(--card-shadow);
         height: 100%;
     }
-
+    
     .product-card:hover {
         transform: translateY(-5px);
         box-shadow: var(--card-hover-shadow);
         border-color: var(--primary-color);
     }
-
     /* Image Container */
+    
     .product-image-container {
         width: 100%;
         position: relative;
@@ -275,7 +299,7 @@
         align-items: center;
         justify-content: center;
     }
-
+    
     .product-image {
         width: 100%;
         height: 100%;
@@ -287,12 +311,12 @@
         max-width: 100%;
         max-height: 100%;
     }
-
+    
     .product-card:hover .product-image {
         transform: scale(1.05);
     }
-
     /* Product Info Section */
+    
     .product-info {
         width: 100%;
         display: flex;
@@ -302,7 +326,7 @@
         border-top: 1px solid var(--medium-gray);
         flex-grow: 1;
     }
-
+    
     .product-title {
         font-size: 0.95rem;
         font-weight: 600;
@@ -314,8 +338,8 @@
         color: var(--text-color);
         line-height: 1.3;
     }
-
     /* Price Section */
+    
     .product-price {
         display: flex;
         flex-direction: column;
@@ -323,21 +347,21 @@
         gap: 4px;
         margin: 8px 0;
     }
-
+    
     .original-price {
         text-decoration: line-through;
         color: var(--dark-gray);
         font-size: 0.85rem;
         font-weight: 500;
     }
-
+    
     .discounted-price {
         color: var(--secondary-color);
         font-weight: 700;
         font-size: 1.1rem;
     }
-
     /* Rating Section */
+    
     .product-rating {
         display: flex;
         justify-content: center;
@@ -346,42 +370,46 @@
         font-size: 0.8rem;
         color: var(--accent-color);
         margin-top: 6px;
-        transition: opacity 0.3s ease; /* Added for smooth updates */
+        transition: opacity 0.3s ease;
+        /* Added for smooth updates */
     }
-
+    
     .stars {
         unicode-bidi: bidi-override;
         direction: rtl;
         white-space: nowrap;
     }
-
+    
     .star {
         display: inline-block;
         font-size: 1rem;
         cursor: default;
     }
-
+    
     .star.full::before {
-        content: '\2605'; /* Full star */
+        content: '\2605';
+        /* Full star */
     }
-
+    
     .star.half::before {
-        content: '\2605'; /* Half star */
+        content: '\2605';
+        /* Half star */
         width: 50%;
         overflow: hidden;
         display: inline-block;
     }
-
+    
     .star.empty::before {
-        content: '\2606'; /* Empty star */
+        content: '\2606';
+        /* Empty star */
     }
-
+    
     .rating-count {
         color: var(--dark-gray);
         font-weight: 400;
     }
-
     /* Time Left Section */
+    
     .time-left {
         font-size: 0.75rem;
         color: var(--secondary-color);
@@ -394,13 +422,13 @@
         display: inline-block;
         align-self: center;
     }
-
+    
     .time-left.ended {
         background-color: rgba(0, 0, 0, 0.1);
         color: var(--dark-gray);
     }
-
     /* Badges */
+    
     .discount-badge {
         position: absolute;
         top: 10px;
@@ -412,9 +440,9 @@
         font-weight: 700;
         z-index: 2;
         font-size: 0.85rem;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
-
+    
     .hot-deal-badge {
         position: absolute;
         top: 10px;
@@ -426,9 +454,9 @@
         font-weight: 700;
         z-index: 2;
         font-size: 0.85rem;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
-
+    
     .recently-viewed-badge {
         position: absolute;
         bottom: 10px;
@@ -440,10 +468,10 @@
         font-weight: 700;
         z-index: 2;
         font-size: 0.85rem;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
-
     /* Marquee Styles */
+    
     .marquee-container {
         width: 100%;
         overflow: hidden;
@@ -454,7 +482,7 @@
         border: 1px solid var(--medium-gray);
         box-shadow: var(--card-shadow);
     }
-
+    
     .marquee-track {
         display: flex;
         width: max-content;
@@ -464,17 +492,21 @@
         will-change: transform;
         transform: translateZ(0);
     }
-
+    
     @keyframes scroll {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
     }
-
+    
     .marquee-item {
         flex: 0 0 auto;
     }
-
     /* Category Card */
+    
     .category-card {
         display: flex;
         flex-direction: column;
@@ -483,11 +515,11 @@
         width: 140px;
         transition: transform 0.3s ease;
     }
-
+    
     .category-card:hover {
         transform: translateY(-3px);
     }
-
+    
     .category-image-container {
         width: 100%;
         position: relative;
@@ -501,18 +533,18 @@
         justify-content: center;
         align-items: center;
     }
-
+    
     .category-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
     }
-
+    
     .category-card:hover .category-image {
         transform: scale(1.05);
     }
-
+    
     .category-label {
         position: absolute;
         color: white;
@@ -530,18 +562,18 @@
         backdrop-filter: blur(2px);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
-
+    
     .category-card:hover .category-label {
         padding: 10px 18px;
         background: rgba(37, 99, 235, 0.95);
     }
-
     /* Navigation Buttons */
+    
     .banner-nav {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        background: rgba(255,255,255,0.95);
+        background: rgba(255, 255, 255, 0.95);
         color: var(--primary-color);
         border: none;
         width: 40px;
@@ -555,78 +587,70 @@
         z-index: 2;
         opacity: 0.9;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
-
+    
     .banner-nav:hover {
         background: var(--primary-color);
         color: white;
         opacity: 1;
         transform: translateY(-50%) scale(1.1);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
     }
-
+    
     .prev-btn {
         left: 20px;
     }
-
+    
     .next-btn {
         right: 20px;
     }
-
     /* Responsive Adjustments */
+    
     @media (min-width: 576px) {
         .banner-image {
             height: 220px;
         }
-        
         .category-card {
             width: 160px;
         }
     }
-
+    
     @media (min-width: 768px) {
         .section-title {
             font-size: 2rem;
             margin-bottom: 2rem;
         }
-        
         .product-title {
             font-size: 1rem;
         }
-        
         .category-card {
             width: 180px;
         }
-        
         .banner-image {
             height: 280px;
         }
     }
-
+    
     @media (min-width: 992px) {
         .marquee-container {
             padding: 16px 0;
         }
-        
         .category-card {
             width: 200px;
         }
-        
         .banner-image {
             height: 350px;
         }
     }
-
+    
     @media (max-width: 768px) {
         .product-title {
             font-size: 0.9rem;
         }
-        
         .discounted-price {
             font-size: 1rem;
         }
-        
         .original-price {
             font-size: 0.8rem;
         }
@@ -662,8 +686,12 @@
             }
 
             setupEventListeners() {
-                this.track.addEventListener('touchstart', this.touchStart.bind(this), { passive: false });
-                this.track.addEventListener('touchmove', this.touchMove.bind(this), { passive: false });
+                this.track.addEventListener('touchstart', this.touchStart.bind(this), {
+                    passive: false
+                });
+                this.track.addEventListener('touchmove', this.touchMove.bind(this), {
+                    passive: false
+                });
                 this.track.addEventListener('touchend', this.touchEnd.bind(this));
                 this.track.addEventListener('mousedown', this.touchStart.bind(this));
                 this.track.addEventListener('mousemove', this.touchMove.bind(this));
@@ -672,9 +700,9 @@
 
                 const prevBtn = this.wrapper.querySelector('.prev-btn');
                 const nextBtn = this.wrapper.querySelector('.next-btn');
-                
-                prevBtn?.addEventListener('click', () => this.prevSlide());
-                nextBtn?.addEventListener('click', () => this.nextSlide());
+
+                prevBtn ? .addEventListener('click', () => this.prevSlide());
+                nextBtn ? .addEventListener('click', () => this.nextSlide());
 
                 this.wrapper.addEventListener('mouseenter', () => this.pauseAutoSlide());
                 this.wrapper.addEventListener('mouseleave', () => this.startAutoSlide());
@@ -732,7 +760,9 @@
 
                 this.track.addEventListener('transitionend', () => {
                     this.isAnimating = false;
-                }, { once: true });
+                }, {
+                    once: true
+                });
             }
 
             nextSlide() {
@@ -784,7 +814,9 @@
 
                     marquee.addEventListener('touchstart', () => {
                         marquee.style.animationPlayState = 'paused';
-                    }, { passive: true });
+                    }, {
+                        passive: true
+                    });
 
                     marquee.addEventListener('touchend', () => {
                         marquee.style.animationPlayState = 'running';
@@ -793,141 +825,12 @@
             }
         }
 
-        // Countdown Timer
-        class CountdownTimer {
-            constructor() {
-                this.timeElements = document.querySelectorAll('.time-left');
-                this.init();
-            }
-
-            init() {
-                if (this.timeElements.length === 0) return;
-                this.updateAllCountdowns();
-                setInterval(() => this.updateAllCountdowns(), 60000);
-            }
-
-            updateAllCountdowns() {
-                this.timeElements.forEach(element => {
-                    const endTimeStr = element.getAttribute('data-end-time');
-                    if (!endTimeStr) return;
-                    
-                    const endTime = new Date(endTimeStr).getTime();
-                    const now = new Date().getTime();
-                    const distance = endTime - now;
-                    
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    
-                    const countdownElement = element.querySelector('.countdown');
-                    if (!countdownElement) return;
-                    
-                    if (distance < 0) {
-                        countdownElement.textContent = "Auction ended";
-                        element.classList.add('ended');
-                    } else {
-                        countdownElement.textContent = `${days}d ${hours}h ${minutes}m`;
-                        element.classList.remove('ended');
-                    }
-                });
-            }
-        }
-
-        // Rating Handler with Dynamic Updates
-        class RatingHandler {
-            constructor() {
-                this.ratingContainers = document.querySelectorAll('.product-rating');
-                this.init();
-            }
-
-            init() {
-                this.ratingContainers.forEach(container => {
-                    this.updateRating(container);
-                });
-                this.startRatingUpdates();
-            }
-
-            updateRating(container) {
-                const rating = parseFloat(container.getAttribute('data-rating')) || 0;
-                const starsContainer = container.querySelector('.stars');
-                if (!starsContainer) return;
-
-                starsContainer.innerHTML = '';
-                
-                const fullStars = Math.floor(rating);
-                const hasHalfStar = rating % 1 >= 0.3;
-                const emptyStars = 5 - Math.ceil(rating);
-
-                for (let i = 0; i < fullStars; i++) {
-                    const star = document.createElement('span');
-                    star.className = 'star full';
-                    starsContainer.appendChild(star);
-                }
-
-                if (hasHalfStar) {
-                    const star = document.createElement('span');
-                    star.className = 'star half';
-                    starsContainer.appendChild(star);
-                }
-
-                for (let i = 0; i < emptyStars; i++) {
-                    const star = document.createElement('span');
-                    star.className = 'star empty';
-                    starsContainer.appendChild(star);
-                }
-            }
-
-            async fetchUpdatedRatings() {
-                try {
-                    const response = await fetch('/api/product-ratings/', {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const ratings = await response.json();
-                    
-                    this.ratingContainers.forEach(container => {
-                        const productCard = container.closest('.product-card');
-                        if (!productCard) return;
-                        
-                        const productId = productCard.dataset.productId;
-                        if (ratings[productId]) {
-                            const newRating = ratings[productId].average_rating;
-                            const newCount = ratings[productId].rating_count;
-                            
-                            // Smooth transition for rating update
-                            container.style.opacity = '0';
-                            setTimeout(() => {
-                                container.setAttribute('data-rating', newRating);
-                                container.setAttribute('data-count', newCount);
-                                container.querySelector('.rating-count').textContent = `(${newCount})`;
-                                this.updateRating(container);
-                                container.style.opacity = '1';
-                            }, 300);
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error fetching ratings:', error);
-                }
-            }
-
-            startRatingUpdates() {
-                this.fetchUpdatedRatings();
-                setInterval(() => this.fetchUpdatedRatings(), 30000); // Update every 30 seconds
-            }
-        }
 
         // Initialize components
         try {
             const banner = new BannerCarousel();
             const marquee = new MarqueeHandler();
-            const countdown = new CountdownTimer();
-            const ratings = new RatingHandler();
+
 
             window.addEventListener('unload', () => {
                 banner.pauseAutoSlide();
