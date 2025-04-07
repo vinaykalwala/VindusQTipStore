@@ -6,13 +6,13 @@
 
     <!-- Search Bar Centered at Top -->
     <div class="search-container">
-        <div class="search-group">
+        <form method="GET" action="{% url 'Products:product_list' %}" class="search-group">
             <div class="search-input">
                 <i class="fas fa-search"></i>
                 <input type="text" name="search" value="{{ query }}" placeholder="Search products...">
                 <button type="submit" class="search-button">Search</button>
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- Main Content -->

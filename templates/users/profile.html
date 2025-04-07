@@ -1,46 +1,56 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="profile-container">
-    <h2>Welcome, {{ user.username }}</h2>
+<div class="profile-page">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="active"><i class="fas fa-user"></i> My Profile</li>
+            <li><i class="fas fa-box"></i> Orders</li>
+            <li><i class="fas fa-heart"></i> Wishlist</li>
+            <li><i class="fas fa-sign-out-alt"></i> Logout</li>
+        </ul>
+    </div>
 
-    <div class="profile-card">
-        <div class="profile-header">
-            {% if user.profile_picture %}
-            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
-            {% else %}
-            <div class="profile-placeholder">
-                <i class="fas fa-user"></i>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="profile-container">
+            <h2>Personal Information</h2>
+            <div class="profile-card">
+                <div class="profile-details">
+                    <div class="profile-item">
+                        <strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
+                        <a href="#" class="edit-link">Edit</a>
+                    </div>
+                    <div class="profile-item">
+                        <strong>Email:</strong> {{ user.email }}
+                        <a href="#" class="edit-link">Edit</a>
+                    </div>
+                    <div class="profile-item">
+                        <strong>Username:</strong> {{ user.username }}
+                    </div>
+                </div>
             </div>
-            {% endif %}
-        </div>
 
-        <div class="profile-details">
-            <div class="profile-item">
-                <strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
+            <h2>Addresses</h2>
+            <div class="profile-card">
+                <div class="profile-details">
+                    <div class="profile-item">
+                        {% if addresses %}
+                        <ul class="address-list">
+                            {% for address in addresses %}
+                            <li>{{ address.street }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-muted">No addresses available. <a href="#" class="edit-link">Add Address</a></p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <div class="profile-item">
-                <strong>Email:</strong> {{ user.email }}
-            </div>
-            <div class="profile-item">
-                <strong>Username:</strong> {{ user.username }}
-            </div>
-            <div class="profile-item">
-                <strong>Addresses:</strong>
-                {% if addresses %}
-                <ul class="address-list">
-                    {% for address in addresses %}
-                    <li>{{ address.street }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}</li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <p class="text-muted">No addresses available.</p>
-                {% endif %}
-            </div>
-        </div>
 
-        <div class="profile-actions">
-            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
-            <a href="{% url 'change_password' %}" class="btn btn-primary">Change Password</a>
+            <div class="profile-actions">
+                <a href="{% url 'change_password' %}" class="btn btn-primary">Change Password</a>
+            </div>
         </div>
     </div>
 </div>
@@ -48,196 +58,186 @@
 
 {% block extra_css %}
 <style>
-    /* General Container */
-    .profile-container {
-        max-width: 800px;
-        margin: 0 auto;
+    body {
+        background-color: #f1f5f4;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .profile-page {
+        display: flex;
+        max-width: 1200px;
+        margin: 20px auto;
+        min-height: 80vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 250px;
+        background: #fff;
         padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar-menu li {
+        padding: 15px 10px;
+        font-size: 1.1rem;
+        color: #212121;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .sidebar-menu li i {
+        margin-right: 10px;
+        color: #2874f0;
+    }
+
+    .sidebar-menu li:hover,
+    .sidebar-menu li.active {
+        background: #f1f5f4;
+        color: #2874f0;
+        font-weight: 600;
+    }
+
+    /* Main Content */
+    .main-content {
+        flex: 1;
+        padding: 0 20px;
+    }
+
+    .profile-container {
+        background: none;
     }
 
     .profile-container h2 {
-        font-size: 2rem;
-        color: #333;
-        text-align: center;
-        margin-bottom: 30px;
-        font-weight: 600;
+        font-size: 1.5rem;
+        color: #212121;
+        margin: 20px 0 10px;
+        font-weight: 500;
     }
 
-    /* Profile Card */
     .profile-card {
         background: #fff;
-        border-radius: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         padding: 20px;
-        transition: box-shadow 0.3s ease;
-    }
-
-    .profile-card:hover {
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Profile Header */
-    .profile-header {
-        text-align: center;
         margin-bottom: 20px;
     }
 
-    .profile-picture {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid #007bff;
-    }
-
-    .profile-placeholder {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: #e9ecef;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto;
-        border: 3px solid #6c757d;
-    }
-
-    .profile-placeholder i {
-        font-size: 50px;
-        color: #6c757d;
-    }
-
-    /* Profile Details */
     .profile-details {
-        margin-bottom: 20px;
+        margin: 0;
     }
 
     .profile-item {
-        padding: 10px 0;
-        border-bottom: 1px solid #e9ecef;
-        font-size: 1.1rem;
-        color: #444;
+        padding: 15px 0;
+        border-bottom: 1px solid #eaeaec;
+        font-size: 1rem;
+        color: #212121;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .profile-item strong {
-        color: #333;
-        font-weight: 600;
+        color: #878787;
+        font-weight: 500;
         margin-right: 10px;
+    }
+
+    .edit-link {
+        color: #2874f0;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .edit-link:hover {
+        text-decoration: underline;
     }
 
     .address-list {
         list-style: none;
         padding: 0;
-        margin: 10px 0 0 20px;
+        margin: 10px 0 0 0;
     }
 
     .address-list li {
-        font-size: 1rem;
-        color: #555;
-        margin-bottom: 8px;
-        position: relative;
-    }
-
-    .address-list li:before {
-        content: "📍";
-        position: absolute;
-        left: -20px;
-        color: #007bff;
+        font-size: 0.95rem;
+        color: #212121;
+        margin-bottom: 10px;
     }
 
     .text-muted {
-        font-size: 1rem;
-        color: #888;
+        font-size: 0.95rem;
+        color: #878787;
     }
 
-    /* Profile Actions */
     .profile-actions {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
+        text-align: center;
         margin-top: 20px;
     }
 
     .btn {
         padding: 10px 20px;
         font-size: 1rem;
-        border-radius: 5px;
+        border-radius: 4px;
         text-decoration: none;
+        background-color: #2874f0;
+        color: #fff;
+        border: none;
         transition: background-color 0.3s ease;
     }
 
-    .btn-secondary {
-        background-color: #6c757d;
-        color: #fff;
-    }
-
-    .btn-secondary:hover {
-        background-color: #5a6268;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        color: #fff;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
+    .btn:hover {
+        background-color: #1b5ac2;
     }
 
     /* Responsive Design */
     @media (max-width: 768px) {
-        .profile-container {
-            padding: 15px;
+        .profile-page {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .main-content {
+            padding: 0;
         }
 
         .profile-card {
             padding: 15px;
         }
 
-        .profile-picture, .profile-placeholder {
-            width: 100px;
-            height: 100px;
-        }
-
-        .profile-placeholder i {
-            font-size: 40px;
-        }
-
         .profile-item {
-            font-size: 1rem;
-        }
-
-        .profile-actions {
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn {
-            width: 100%;
-            text-align: center;
+            font-size: 0.95rem;
         }
     }
 
     @media (max-width: 480px) {
         .profile-container h2 {
-            font-size: 1.5rem;
-        }
-
-        .profile-picture, .profile-placeholder {
-            width: 80px;
-            height: 80px;
-        }
-
-        .profile-placeholder i {
-            font-size: 30px;
+            font-size: 1.2rem;
         }
 
         .profile-item {
             font-size: 0.9rem;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        .address-list li {
-            font-size: 0.9rem;
+        .edit-link {
+            margin-top: 5px;
+        }
+
+        .btn {
+            width: 100%;
         }
     }
 </style>
