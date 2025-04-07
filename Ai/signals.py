@@ -16,13 +16,18 @@ def create_order_activity(sender, instance, created, **kwargs):
         # Fetch all products related to the order
         order_items = OrderItem.objects.filter(order=instance)
         for item in order_items:
-            UserActivity.objects.create(
+            _, created_activity = UserActivity.objects.get_or_create(
                 user=instance.user,
                 product=item.product,
-                category=item.product.category,
-                subcategory=item.product.subcategory,
-                activity_type="ordered"
+                activity_type="ordered",
+                defaults={
+                    "category": item.product.category,
+                    "subcategory": item.product.subcategory,
+                }
             )
+            if not created_activity:
+                print(f"⚠️ UserActivity already exists — skipping ordered for {item.product}")
+
 
         # Trigger AI model training
         train_recommendation_model(instance.user)
@@ -34,13 +39,18 @@ def create_wishlist_activity(sender, instance, created, **kwargs):
     """Log when a user adds a product to the wishlist."""
     if created:
         print(f"💙 Wishlist updated: {instance.user} added {instance.product}")  # Debugging
-        UserActivity.objects.create(
+
+        _, created_activity = UserActivity.objects.get_or_create(
             user=instance.user,
             product=instance.product,
-            category=instance.product.category,
-            subcategory=instance.product.subcategory,
-            activity_type="wishlist"
+            activity_type="wishlist",
+            defaults={
+                "category": instance.product.category,
+                "subcategory": instance.product.subcategory,
+            }
         )
+        if not created_activity:
+            print(f"⚠️ UserActivity already exists — skipping wishlist for {instance.product}")
 
 
 ### 3️⃣ Log user activity when a product is added to the cart ###
@@ -48,21 +58,27 @@ def create_wishlist_activity(sender, instance, created, **kwargs):
 def create_cart_activity(sender, instance, created, **kwargs):
     """Log when a user adds a product to the cart."""
     if created:
-        print(f"🛍️ Cart updated: {instance.user} added {instance.product}")  # Debugging
-        UserActivity.objects.create(
+        print(f"🛍️ Cart updated: {instance.user} added {instance.product}")
+
+        _, created_activity = UserActivity.objects.get_or_create(
             user=instance.user,
             product=instance.product,
-            category=instance.product.category,
-            subcategory=instance.product.subcategory,
-            activity_type="cart"
+            activity_type="cart",
+            defaults={
+                "category": instance.product.category,
+                "subcategory": instance.product.subcategory,
+            }
         )
+        if not created_activity:
+            print("⚠️ UserActivity already exists — skipping cart activity.")
 
 
+### 4️⃣ Log user activity when a product is viewed ###
 def track_product_view(user, product):
     """Logs when a user views a product (ensuring uniqueness)."""
     print(f"👀 {user} viewed {product.name}")  # Debugging
 
-    UserActivity.objects.get_or_create(
+    _, created_activity = UserActivity.objects.get_or_create(
         user=user,
         product=product,
         activity_type="view",
@@ -71,6 +87,8 @@ def track_product_view(user, product):
             "subcategory": product.subcategory,
         }
     )
+    if not created_activity:
+        print(f"⚠️ UserActivity already exists — skipping view for {product.name}")
 
 
 ### 5️⃣ Generate recommendations when user activity is logged ###
