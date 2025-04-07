@@ -19,11 +19,9 @@
                 <div class="profile-details">
                     <div class="profile-item">
                         <strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
-                        <a href="#" class="edit-link">Edit</a>
                     </div>
                     <div class="profile-item">
                         <strong>Email:</strong> {{ user.email }}
-                        <a href="#" class="edit-link">Edit</a>
                     </div>
                     <div class="profile-item">
                         <strong>Username:</strong> {{ user.username }}
@@ -38,7 +36,7 @@
                         {% if addresses %}
                         <ul class="address-list">
                             {% for address in addresses %}
-                            <li>{{ address.street }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}</li>
+                            <li>{{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}</li>
                             {% endfor %}
                         </ul>
                         {% else %}
@@ -47,7 +45,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="profile-actions">
                 <a href="{% url 'change_password' %}" class="btn btn-primary">Change Password</a>
             </div>
