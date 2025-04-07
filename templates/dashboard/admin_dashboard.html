@@ -1,25 +1,162 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container">
-    <h2>Admin Dashboard</h2>
-    <p>Welcome, {{ user.username }}! Here you can manage vendors and their products.</p>
+<!DOCTYPE html>
+<html lang="en">
 
-    <h3>All Vendors & Their Products</h3>
-    {% if vendors_with_products %} {% for vendor in vendors_with_products %}
-    <h4>Vendor: {{ vendor.username }} ({{ vendor.email }})</h4>
-    <ul>
-        {% for product in vendor.products.all %}
-        <li>
-            <strong>{{ product.name }}</strong> - ${{ product.price }}
-            <p>{{ product.description }}</p>
-            {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="100"> {% endif %}
-        </li>
-        {% empty %}
-        <p>No products added yet.</p>
-        {% endfor %}
-    </ul>
-    {% endfor %} {% else %}
-    <p>No vendors found.</p>
-    {% endif %}
-</div>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+        
+        h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        h3 {
+            font-size: 24px;
+            margin: 40px 0 20px;
+            color: #222;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        .vendor-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .vendor-header {
+            margin-bottom: 20px;
+        }
+        
+        .vendor-header h4 {
+            margin: 0;
+            font-size: 20px;
+            color: #2c3e50;
+        }
+        
+        .vendor-header p {
+            margin: 4px 0 0;
+            color: #555;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        
+        .product-card {
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card img {
+            max-width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .product-card h5 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .product-card .price {
+            color: #27ae60;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .product-card p {
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .no-data {
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Admin Dashboard</h2>
+        <p>Welcome, {{ user.username }}! Here you can manage vendors and their products.</p>
+
+        <h3>All Vendors & Their Products</h3>
+
+        {% if vendors_with_products %} {% for vendor in vendors_with_products %}
+        <div class="vendor-card">
+            <div class="vendor-header">
+                <h4>Vendor: {{ vendor.username }}</h4>
+                <p>Email: {{ vendor.email }}</p>
+            </div>
+
+            {% if vendor.products.all %}
+            <div class="products-grid">
+                {% for product in vendor.products.all %}
+                <div class="product-card">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}"> {% endif %}
+                    <h5>{{ product.name }}</h5>
+                    <div class="price">${{ product.price }}</div>
+                    <p>{{ product.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="no-data">No products added yet.</p>
+            {% endif %}
+        </div>
+        {% endfor %} {% endif %} {% if unassociated_products %}
+        <h3>Products Without Associated Vendor</h3>
+        <div class="vendor-card">
+            <div class="products-grid">
+                {% for product in unassociated_products %}
+                <div class="product-card">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}"> {% endif %}
+                    <h5>{{ product.name }}</h5>
+                    <div class="price">${{ product.price }}</div>
+                    <p>{{ product.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %} {% if not vendors_with_products and not unassociated_products %}
+        <div class="vendor-card">
+            <p class="no-data">No vendors associated. No products available.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>
 {% endblock %}

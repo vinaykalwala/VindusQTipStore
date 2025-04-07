@@ -197,6 +197,7 @@ def dashboard_view(request):
     final_products = []
     vendor_products = None
     vendors_with_products = None 
+    unassociated_products=[]
 
     if user.is_superuser:
         template = 'dashboard/admin_dashboard.html'
@@ -204,6 +205,7 @@ def dashboard_view(request):
         vendors_with_products = vendors.prefetch_related(
             Prefetch('products', queryset=Product.objects.all().order_by('-created_at'))
         )
+        unassociated_products = Product.objects.filter(vendor__isnull=True)
 
     elif user.role == 'vendor':
         template = 'dashboard/vendor_dashboard.html'
@@ -291,6 +293,7 @@ def dashboard_view(request):
         'recommended_products': final_products,
         'vendor_products': vendor_products,
         'vendors_with_products': vendors_with_products,
+        'unassociated_products': unassociated_products,
     })
 
 
