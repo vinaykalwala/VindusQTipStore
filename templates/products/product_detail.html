@@ -41,124 +41,118 @@
             </div>
         </div>
 
-        <!-- Details Column -->
-        <div class="col-lg-6">
-            <!-- Product Name -->
-            <h1 class="product-name mb-3">{{ product.name }}</h1>
-            
-            <!-- Rating -->
-            <div class="rating mb-3">
-                <span class="stars">
-                    {% for i in "12345" %}
-                        {% if i|add:"-1" < avg_rating %} ⭐
-                        {% elif i|add:"-0.5" < avg_rating %} ⭐½
-                        {% else %} ☆
-                        {% endif %}
-                    {% endfor %}
-                </span>
-                <span class="ms-2 text-muted">({{ avg_rating|floatformat:1 }} from {{ total_reviews }} reviews)</span>
-            </div>
-
-            <!-- Price Section -->
-            <div class="price-section mb-3">
-                {% if product.discount > 0 %}
-                <div class="original-price text-muted">
-                    <span>Original Price:</span>
-                    <del>₹{{ product.price }}</del>
-                </div>
-                <div class="discounted-price">
-                    <span>Discounted Price:</span>
-                    <span class="text-danger fw-bold">₹<span id="product-price"  style="color: #dc3545;">{{ discounted_price }}</span></span>
-                    <span class="badge bg-success ms-2">{{ product.discount }}% OFF</span>
-                </div>
-                {% else %}
-                <div class="current-price">
-                    <span class="fw-bold">₹<span id="product-price">{{ product.price }}</span></span>
-                </div>
+       <!-- Details Column -->
+<div class="col-lg-6">
+    <!-- Product Name -->
+    <h1 class="product-name mb-3">{{ product.name }}</h1>
+    
+    <!-- Rating -->
+    <div class="rating mb-3">
+        <span class="stars">
+            {% for i in "12345" %}
+                {% if i|add:"-1" < avg_rating %} ⭐
+                {% elif i|add:"-0.5" < avg_rating %} ⭐½
+                {% else %} ☆
                 {% endif %}
-            </div>
+            {% endfor %}
+        </span>
+        <span class="ms-2 text-muted">({{ avg_rating|floatformat:1 }} from {{ total_reviews }} reviews)</span>
+    </div>
 
-            <!-- Stock Availability -->
-            <div class="stock mb-3">
-                <strong>Availability:</strong> 
-                {% if product.stock > 0 %}
-                <span class="text-success">In Stock ({{ product.stock }} available)</span>
-                {% else %}
-                <span class="text-danger">Out of Stock</span>
-                {% endif %}
-            </div>
+    <!-- Price Section -->
+    <div class="price-section mb-3">
+        {% if product.discount > 0 %}
+        <div class="original-price text-muted">
+            <span>Original Price:</span>
+            <del>₹{{ product.price }}</del>
+        </div>
+        <div class="discounted-price">
+            <span>Discounted Price:</span>
+            <span class="text-danger fw-bold">₹<span id="product-price">{{ discounted_price }}</span></span>
+            <span class="badge bg-success ms-2">{{ product.discount }}% OFF</span>
+        </div>
+        {% else %}
+        <div class="current-price">
+            <span class="fw-bold">₹<span id="product-price">{{ product.price }}</span></span>
+        </div>
+        {% endif %}
+    </div>
 
-            <!-- Description -->
-            <div class="description mb-4">
-                <h5>Description</h5>
-                <label for="description-dropdown" class="form-label"><strong>More Details:</strong></label>
-                <select id="description-dropdown" class="form-select mb-3">
-                    <option value="overview">Overview</option>
-                    <option value="features">Features</option>
-                    <option value="specifications">Specifications</option>
-                </select>
-                <div id="description-content">
-                    <p>{{ product.description }}</p>
-                </div>
-                <script>
-                    document.getElementById("description-dropdown").addEventListener("change", function() {
-                        const descriptionContent = document.getElementById("description-content");
-                        const selectedValue = this.value;
+    <!-- Stock Availability -->
+    <div class="stock mb-3">
+        <strong>Availability:</strong> 
+        {% if product.stock > 0 %}
+        <span class="text-success">In Stock ({{ product.stock }} available)</span>
+        {% else %}
+        <span class="text-danger">Out of Stock</span>
+        {% endif %}
+    </div>
 
-                        if (selectedValue === "overview") {
-                            descriptionContent.innerHTML = "<p>{{ product.description }}</p>";
-                        } else if (selectedValue === "features") {
-                            descriptionContent.innerHTML = "<p>{{ product.features }}</p>";
-                        } else if (selectedValue === "specifications") {
-                            descriptionContent.innerHTML = "<p>{{ product.specifications }}</p>";
-                        }
-                    });
-                </script>
-            </div>
-
-            <!-- Category -->
-            <div class="category mb-4">
-                <strong>Category:</strong> {{ product.category.name }}
-            </div>
-
-            <!-- Variant Selection -->
-            {% if variants %}
-            <div class="variant-selection mb-4">
-                <label for="variant-select" class="form-label"><strong>Choose a Variant:</strong></label>
-                <select id="variant-select" name="variant_id" class="form-select">
-                    <option value="" data-price="{{ discounted_price }}" data-image="{{ product.image.url }}">Default - ₹{{ discounted_price }}</option>
-                    {% for variant in variant_data %}
-                    <option value="{{ variant.id }}" 
-                            data-price="{{ variant.final_price }}" 
-                            data-image="{{ variant.image }}">
-                        {{ variant.color }} / {{ variant.size }} (+₹{{ variant.additional_price }})
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-            {% endif %}
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                {% if product.stock > 0 %}
-                <form action="{% url 'add-to-cart' product.id %}" method="POST" class="mb-3">
-                    {% csrf_token %}
-                    <input type="hidden" name="variant_id" id="selected-variant">
-                    <button type="submit" class="btn btn-primary btn-lg w-100">
-                        <i class="fas fa-shopping-cart me-2"></i> Add to Cart
-                    </button>
-                </form>
-
-                <form action="{% url 'add-to-wishlist' product.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger btn-lg w-100">
-                        <i class="fas fa-heart me-2"></i> Add to Wishlist
-                    </button>
-                </form>
-                {% endif %}
-            </div>
+    <!-- Description -->
+    <div class="description mb-4">
+        <h5 class="mb-3">Description</h5>
+        <select id="description-dropdown" class="form-select mb-3">
+            <option selected disabled>Click to view description</option>
+        </select>
+        <div id="description-content" class="border rounded p-3 bg-light" style="display: none; max-height: 200px; overflow-y: auto;">
+            <p>{{ product.description }}</p>
         </div>
     </div>
+
+    <script>
+        const dropdown = document.getElementById("description-dropdown");
+        const content = document.getElementById("description-content");
+
+        dropdown.addEventListener("click", function () {
+            content.style.display = "block";
+        });
+    </script>
+
+    <!-- Category -->
+    <div class="category mb-4">
+        <strong>Category:</strong> {{ product.category.name }}
+    </div>
+
+    <!-- Variant Selection -->
+    {% if variants %}
+    <div class="variant-selection mb-4">
+        <label for="variant-select" class="form-label"><strong>Choose a Variant:</strong></label>
+        <select id="variant-select" name="variant_id" class="form-select">
+            <option value="" data-price="{{ discounted_price }}" data-image="{{ product.image.url }}">Default - ₹{{ discounted_price }}</option>
+            {% for variant in variant_data %}
+            <option value="{{ variant.id }}" 
+                    data-price="{{ variant.final_price }}" 
+                    data-image="{{ variant.image }}">
+                {{ variant.color }} / {{ variant.size }} (+₹{{ variant.additional_price }})
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    {% if product.stock > 0 %}
+    <div class="action-buttons row g-2">
+        <div class="col-md-6">
+            <form action="{% url 'add-to-cart' product.id %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="variant_id" id="selected-variant">
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                </button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form action="{% url 'add-to-wishlist' product.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-lg w-100">
+                    <i class="fas fa-heart me-2"></i> Wishlist
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
 
     <!-- Similar Products -->
     <section class="similar-products mt-5">
