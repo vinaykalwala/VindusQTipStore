@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container py-5">
+<div class="container py-4">
     <!-- Product Section -->
     <div class="row g-4">
         <!-- Image Gallery Column -->
@@ -41,439 +41,305 @@
             </div>
         </div>
 
-        <!-- Product Details Column -->
+        <!-- Details Column -->
         <div class="col-lg-6">
-            <div class="product-details-container">
-                <!-- Product Header with Floating Animation -->
-                <div class="animate-float">
-                    <h1 class="product-title display-5 fw-bold mb-3">{{ product.name }}</h1>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rating-stars me-2">
-                            {% for i in "12345" %}
-                                <span class="star{% if i|add:0 <= avg_rating|add:0 %} filled{% endif %}">★</span>
-                            {% endfor %}
-                        </div>
-                        <span class="text-muted">{{ avg_rating|floatformat:1 }} ({{ total_reviews }} reviews)</span>
-                    </div>
-                </div>
-
-                <!-- Price Section with Pulse Animation -->
-                <div class="price-container animate-pulse">
-                    {% if product.discount > 0 %}
-                    <div class="d-flex align-items-baseline">
-                        <span class="current-price h2 fw-bold text-danger me-3">₹{{ discounted_price }}</span>
-                        <span class="original-price text-muted text-decoration-line-through me-2">₹{{ product.price }}</span>
-                        <span class="discount-badge badge bg-success rounded-pill">{{ product.discount }}% OFF</span>
-                    </div>
-                    {% else %}
-                    <span class="current-price h2 fw-bold">₹{{ product.price }}</span>
-                    {% endif %}
-                </div>
-
-                <!-- Availability Badge -->
-                <div class="availability-badge mb-4">
-                    <span class="badge {% if product.stock > 0 %}bg-success{% else %}bg-danger{% endif %} rounded-pill py-2 px-3">
-                        {% if product.stock > 0 %}
-                        <i class="fas fa-check-circle me-2"></i>In Stock ({{ product.stock }} available)
-                        {% else %}
-                        <i class="fas fa-times-circle me-2"></i>Out of Stock
+            <!-- Product Name -->
+            <h1 class="product-name mb-3">{{ product.name }}</h1>
+            
+            <!-- Rating -->
+            <div class="rating mb-3">
+                <span class="stars">
+                    {% for i in "12345" %}
+                        {% if i|add:"-1" < avg_rating %} ⭐
+                        {% elif i|add:"-0.5" < avg_rating %} ⭐½
+                        {% else %} ☆
                         {% endif %}
-                    </span>
-                </div>
+                    {% endfor %}
+                </span>
+                <span class="ms-2 text-muted">({{ avg_rating|floatformat:1 }} from {{ total_reviews }} reviews)</span>
+            </div>
 
-                <!-- Variant Selection -->
-                {% if variants %}
-                <div class="variant-selector mb-4 animate-slide-up">
-                    <label class="form-label fw-bold">Select Variant</label>
-                    <select class="form-select shadow-sm" id="variant-select">
-                        <option value="" data-price="{{ discounted_price }}" data-image="{{ product.image.url }}">Default</option>
-                        {% for variant in variant_data %}
-                        <option value="{{ variant.id }}" 
-                                data-price="{{ variant.final_price }}" 
-                                data-image="{{ variant.image }}">
-                            {{ variant.color }} / {{ variant.size }} (+₹{{ variant.additional_price }})
-                        </option>
-                        {% endfor %}
-                    </select>
+            <!-- Price Section -->
+            <div class="price-section mb-3">
+                {% if product.discount > 0 %}
+                <div class="original-price text-muted">
+                    <span>Original Price:</span>
+                    <del>₹{{ product.price }}</del>
+                </div>
+                <div class="discounted-price">
+                    <span>Discounted Price:</span>
+                    <span class="text-danger fw-bold">₹<span id="product-price"  style="color: #dc3545;">{{ discounted_price }}</span></span>
+                    <span class="badge bg-success ms-2">{{ product.discount }}% OFF</span>
+                </div>
+                {% else %}
+                <div class="current-price">
+                    <span class="fw-bold">₹<span id="product-price">{{ product.price }}</span></span>
                 </div>
                 {% endif %}
+            </div>
 
-                <!-- Action Buttons -->
-                <div class="action-buttons d-flex flex-wrap gap-3 mb-4">
-                    {% if product.stock > 0 %}
-                    <form action="{% url 'add-to-cart' product.id %}" method="POST" class="flex-grow-1">
-                        {% csrf_token %}
-                        <input type="hidden" name="variant_id" id="selected-variant">
-                        <button type="submit" class="btn btn-primary btn-lg w-100 shadow animate-bounce">
-                            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                        </button>
-                    </form>
-                    <form action="{% url 'add-to-wishlist' product.id %}" method="POST" class="flex-grow-1">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-danger btn-lg w-100 shadow animate-float">
-                            <i class="fas fa-heart me-2"></i>Wishlist
-                        </button>
-                    </form>
-                    {% endif %}
-                </div>
+            <!-- Stock Availability -->
+            <div class="stock mb-3">
+                <strong>Availability:</strong> 
+                {% if product.stock > 0 %}
+                <span class="text-success">In Stock ({{ product.stock }} available)</span>
+                {% else %}
+                <span class="text-danger">Out of Stock</span>
+                {% endif %}
+            </div>
 
-                <!-- Product Description with Accordion -->
-                <div class="accordion mb-4" id="productAccordion">
-                    <div class="accordion-item border-0 shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#descriptionCollapse">
-                                <i class="fas fa-info-circle me-2 text-primary"></i> Product Details
-                            </button>
-                        </h2>
-                        <div id="descriptionCollapse" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
-                            <div class="accordion-body">
-                                {{ product.description }}
-                            </div>
-                        </div>
-                    </div>
+            <!-- Description -->
+            <div class="description mb-4">
+                <h5>Description</h5>
+                <label for="description-dropdown" class="form-label"><strong>More Details:</strong></label>
+                <select id="description-dropdown" class="form-select mb-3">
+                    <option value="overview">Overview</option>
+                    <option value="features">Features</option>
+                    <option value="specifications">Specifications</option>
+                </select>
+                <div id="description-content">
+                    <p>{{ product.description }}</p>
                 </div>
+                <script>
+                    document.getElementById("description-dropdown").addEventListener("change", function() {
+                        const descriptionContent = document.getElementById("description-content");
+                        const selectedValue = this.value;
 
-                <!-- Share Buttons -->
-                <div class="share-buttons mb-4 animate-fade-in">
-                    <span class="me-2 fw-bold">Share:</span>
-                    <a href="#" class="btn btn-sm btn-outline-primary rounded-circle me-2"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="btn btn-sm btn-outline-info rounded-circle me-2"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="btn btn-sm btn-outline-danger rounded-circle me-2"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="btn btn-sm btn-outline-success rounded-circle"><i class="fab fa-whatsapp"></i></a>
-                </div>
+                        if (selectedValue === "overview") {
+                            descriptionContent.innerHTML = "<p>{{ product.description }}</p>";
+                        } else if (selectedValue === "features") {
+                            descriptionContent.innerHTML = "<p>{{ product.features }}</p>";
+                        } else if (selectedValue === "specifications") {
+                            descriptionContent.innerHTML = "<p>{{ product.specifications }}</p>";
+                        }
+                    });
+                </script>
+            </div>
+
+            <!-- Category -->
+            <div class="category mb-4">
+                <strong>Category:</strong> {{ product.category.name }}
+            </div>
+
+            <!-- Variant Selection -->
+            {% if variants %}
+            <div class="variant-selection mb-4">
+                <label for="variant-select" class="form-label"><strong>Choose a Variant:</strong></label>
+                <select id="variant-select" name="variant_id" class="form-select">
+                    <option value="" data-price="{{ discounted_price }}" data-image="{{ product.image.url }}">Default - ₹{{ discounted_price }}</option>
+                    {% for variant in variant_data %}
+                    <option value="{{ variant.id }}" 
+                            data-price="{{ variant.final_price }}" 
+                            data-image="{{ variant.image }}">
+                        {{ variant.color }} / {{ variant.size }} (+₹{{ variant.additional_price }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                {% if product.stock > 0 %}
+                <form action="{% url 'add-to-cart' product.id %}" method="POST" class="mb-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="variant_id" id="selected-variant">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                    </button>
+                </form>
+
+                <form action="{% url 'add-to-wishlist' product.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-lg w-100">
+                        <i class="fas fa-heart me-2"></i> Add to Wishlist
+                    </button>
+                </form>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- Similar Products Section -->
-    {% if similar_products %}
-    <section class="similar-products mt-5 pt-4">
-        <h3 class="section-title mb-4 pb-2 border-bottom position-relative">
-            <span class="section-title-text bg-white pe-3">You May Also Like</span>
-        </h3>
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+    <!-- Similar Products -->
+    <section class="similar-products mt-5">
+        <h3 class="section-title mb-4">Similar Products</h3>
+        <div class="row">
             {% for similar_product in similar_products %}
-            <div class="col">
-                <div class="card product-card h-100 border-0 shadow-sm rounded-4 overflow-hidden animate-slide-up" >
-                    <div class="badge-container">
-                        {% if similar_product.discount > 0 %}
-                        <span class="discount-badge">-{{ similar_product.discount }}%</span>
-                        {% endif %}
-                    </div>
-                    <a href="{% url 'Products:product_detail' similar_product.slug %}" class="product-image-link">
-                        <img src="{{ similar_product.image.url }}" class="card-img-top" alt="{{ similar_product.name }}">
-                        <div class="quick-view">Quick View</div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <a href="{% url 'Products:product_detail' similar_product.slug %}">
+                        <img src="{{ similar_product.image.url }}" class="card-img-top" alt="{{ similar_product.name }}" style="height: 200px; object-fit: contain;">
                     </a>
                     <div class="card-body">
                         <h6 class="card-title">
                             <a href="{% url 'Products:product_detail' similar_product.slug %}" class="text-decoration-none text-dark">
-                                {{ similar_product.name|truncatechars:40 }}
+                                {{ similar_product.name }}
                             </a>
                         </h6>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-danger fw-bold">₹{{ similar_product.discounted_price }}</span>
+                        <div class="price">
                             {% if similar_product.discount > 0 %}
+                            <span class="text-danger fw-bold">₹{{ similar_product.discounted_price }}</span>
                             <small class="text-muted"><del>₹{{ similar_product.price }}</del></small>
+                            {% else %}
+                            <span class="fw-bold">₹{{ similar_product.price }}</span>
                             {% endif %}
                         </div>
                     </div>
-                    <div class="card-footer bg-transparent border-0">
-                        <button class="btn btn-sm btn-outline-primary w-100 add-to-cart-btn">
-                            <i class="fas fa-plus me-2"></i>Add to Cart
-                        </button>
-                    </div>
                 </div>
             </div>
+            {% empty %}
+            <p class="text-muted">No similar products found.</p>
             {% endfor %}
         </div>
     </section>
-    {% endif %}
+
+    <!-- Recently Viewed -->
+    <section class="recently-viewed mt-5">
+        <h3 class="section-title mb-4">Recently Viewed</h3>
+        <div class="row">
+            {% for viewed_product in recently_viewed_products %}
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <a href="{% url 'Products:product_detail' viewed_product.slug %}">
+                        <img src="{{ viewed_product.image.url }}" class="card-img-top" alt="{{ viewed_product.name }}" style="height: 200px; object-fit: contain;">
+                    </a>
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <a href="{% url 'Products:product_detail' viewed_product.slug %}" class="text-decoration-none text-dark">
+                                {{ viewed_product.name }}
+                            </a>
+                        </h6>
+                        <div class="price">
+                            {% if viewed_product.discount > 0 %}
+                            <span class="text-danger fw-bold">₹{{ viewed_product.discounted_price }}</span>
+                            <small class="text-muted"><del>₹{{ viewed_product.price }}</del></small>
+                            {% else %}
+                            <span class="fw-bold">₹{{ viewed_product.price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">You haven't viewed any other products yet.</p>
+            {% endfor %}
+        </div>
+    </section>
 
     <!-- Reviews Section -->
-    <section class="reviews-section mt-5 pt-4">
-        <h3 class="section-title mb-4 pb-2 border-bottom position-relative">
-            <span class="section-title-text bg-white pe-3">Customer Reviews</span>
-        </h3>
-        
+    <section class="reviews mt-5">
         <div class="row">
             <!-- Review Form -->
-            <div class="col-lg-4 mb-4">
-                <div class="card review-form-card shadow-sm border-0 rounded-4 animate-slide-up">
+            <div class="col-md-4">
+                <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Write a Review</h5>
+                        <h3 class="card-title">Add Review</h3>
                         {% if user.is_authenticated %}
                         <form action="{% url 'add-review' product.id %}" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
-                            
                             <div class="mb-3">
-                                <label class="form-label">Your Rating</label>
-                                <div class="rating-input">
-                                    {% for i in "54321" %}
-                                    <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
-                                    <label for="star{{ i }}" class="star-label">★</label>
-                                    {% endfor %}
-                                </div>
+                                <label class="form-label">Rating</label>
+                                <select name="rating" class="form-select">
+                                    <option value="5">5 ⭐</option>
+                                    <option value="4">4 ⭐</option>
+                                    <option value="3">3 ⭐</option>
+                                    <option value="2">2 ⭐</option>
+                                    <option value="1">1 ⭐</option>
+                                </select>
                             </div>
-                            
                             <div class="mb-3">
-                                <label for="reviewComment" class="form-label">Your Review</label>
+                                <label class="form-label">Review</label>
                                 <textarea name="comment" class="form-control" rows="3" required></textarea>
                             </div>
-                            
                             <div class="mb-3">
-                                <label for="reviewImage" class="form-label">Upload Image</label>
-                                <input type="file" name="image" class="form-control" accept="image/*">
+                                <label class="form-label">Image (optional)</label>
+                                <input type="file" name="image" class="form-control">
                             </div>
-                            
-                            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
                         </form>
                         {% else %}
-                        <div class="alert alert-warning">
-                            Please <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link">log in</a> to leave a review.
-                        </div>
+                        <p><a href="{% url 'login' %}">Log in</a> to leave a review.</p>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            
+
             <!-- Reviews List -->
-            <div class="col-lg-8">
-                {% if reviews %}
-                <div class="reviews-list">
+            <div class="col-md-8">
+                <h3 class="mb-4">Customer Reviews</h3>
+                <div class="reviews-container" style="max-height: 500px; overflow-y: auto;">
                     {% for review in reviews %}
-                    <div class="card review-card mb-3 border-0 shadow-sm rounded-4 animate-fade-in">
-                        <div class="d-flex justify-content-between mb-3">
-                                <div>
-                                    <h6 class="mb-1">{{ review.user.username }}</h6>
-                                    <div class="rating-stars small">
-                                        {% for i in "12345" %}
-                                            <span class="star{% if i|add:0 <= review.rating|add:0 %} filled{% endif %}">★</span>
-                                        {% endfor %}
-                                    </div>
-                                </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h5>{{ review.user.username }}</h5>
                                 <small class="text-muted">{{ review.created_at|date:"F d, Y" }}</small>
                             </div>
-                            <p class="card-text">{{ review.comment }}</p>
+                            <div class="rating mb-2">
+                                {% for i in "12345" %}
+                                    {% if i|add:"-1" < review.rating %} ⭐
+                                    {% elif i|add:"-0.5" < review.rating %} ⭐½
+                                    {% else %} ☆
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p>{{ review.comment }}</p>
                             {% if review.image %}
-                            <img src="{{ review.image.url }}" alt="Review Image" class="img-thumbnail mt-2 review-image" data-bs-toggle="modal" data-bs-target="#reviewImageModal{{ review.id }}">
+                            <img src="{{ review.image.url }}" alt="Review image" class="img-thumbnail mt-2" style="max-height: 150px;">
                             {% endif %}
                         </div>
                     </div>
-                    
-                    <!-- Review Image Modal -->
-                    {% if review.image %}
-                    <div class="modal fade" id="reviewImageModal{{ review.id }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-body p-0">
-                                    <img src="{{ review.image.url }}" class="img-fluid w-100" alt="Review Image">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
+                    {% empty %}
+                    <div class="alert alert-info">No reviews yet. Be the first to review this product!</div>
                     {% endfor %}
                 </div>
-                {% else %}
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body text-center py-5">
-                        <i class="far fa-comment-dots display-4 text-muted mb-3"></i>
-                        <h5 class="text-muted">No reviews yet</h5>
-                        <p class="text-muted">Be the first to review this product!</p>
-                    </div>
-                </div>
-                {% endif %}
             </div>
         </div>
     </section>
 </div>
 
-<!-- JavaScript -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Main image zoom effect
-    const mainImage = document.getElementById('main-product-image');
-    const mainImageContainer = document.getElementById('main-image-container');
-    
-    if (mainImage) {
-        mainImage.addEventListener('click', function() {
-            if (this.style.transform === 'scale(2)') {
-                this.style.transform = 'scale(1)';
-                this.style.cursor = 'zoom-in';
-                mainImageContainer.style.overflow = 'hidden';
-            } else {
-                this.style.transform = 'scale(2)';
-                this.style.cursor = 'zoom-out';
-                mainImageContainer.style.overflow = 'scroll';
-            }
-        });
-        
-        // Parallax effect on mouse move
-        mainImageContainer.addEventListener('mousemove', function(e) {
-            const x = e.clientX - this.getBoundingClientRect().left;
-            const y = e.clientY - this.getBoundingClientRect().top;
-            
-            const centerX = this.offsetWidth / 2;
-            const centerY = this.offsetHeight / 2;
-            
-            const moveX = (x - centerX) / 20;
-            const moveY = (y - centerY) / 20;
-            
-            mainImage.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        });
-        
-        mainImageContainer.addEventListener('mouseleave', function() {
-            if (mainImage.style.transform !== 'scale(2)') {
-                mainImage.style.transform = 'translate(0, 0)';
-            }
-        });
-    }
-    
-    // Thumbnail carousel navigation
-    const thumbnailsWrapper = document.querySelector('.thumbnails-wrapper');
-    const thumbNext = document.querySelector('.thumb-next');
-    const thumbPrev = document.querySelector('.thumb-prev');
-    
-    if (thumbnailsWrapper && thumbNext && thumbPrev) {
-        thumbNext.addEventListener('click', () => {
-            thumbnailsWrapper.scrollBy({ left: 100, behavior: 'smooth' });
-        });
-        
-        thumbPrev.addEventListener('click', () => {
-            thumbnailsWrapper.scrollBy({ left: -100, behavior: 'smooth' });
-        });
-    }
-    
-    // Thumbnail click handler
-    document.querySelectorAll('.thumbnail-item').forEach(thumb => {
-        thumb.addEventListener('click', function() {
-            // Remove active class from all thumbnails
-            document.querySelectorAll('.thumbnail-item').forEach(t => {
-                t.classList.remove('active');
-                t.querySelector('.thumbnail-overlay').style.opacity = '0';
-            });
-            
-            // Add active class to clicked thumbnail
-            this.classList.add('active');
-            this.querySelector('.thumbnail-overlay').style.opacity = '0.2';
-            
-            // Update main image
-            const newImageSrc = this.dataset.image;
-            mainImage.src = newImageSrc;
-            mainImage.dataset.zoomSrc = newImageSrc;
-            
-            // Add fade transition
-            mainImage.style.opacity = '0';
-            setTimeout(() => {
-                mainImage.style.opacity = '1';
-            }, 150);
-            
-            // Update price if available
-            if (this.dataset.price) {
-                document.getElementById('product-price').textContent = this.dataset.price;
-            }
-            
-            // Update variant selection
-            const variantSelect = document.getElementById('variant-select');
-            const hiddenVariantInput = document.getElementById('selected-variant');
-            
-            if (variantSelect) {
-                variantSelect.value = this.dataset.variantId || '';
-            }
-            if (hiddenVariantInput) {
-                hiddenVariantInput.value = this.dataset.variantId || '';
-            }
-        });
-    });
-    
-    // Variant select change handler
-    const variantSelect = document.getElementById('variant-select');
-    if (variantSelect) {
-        variantSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            if (selectedOption.value) {
-                // Update main image
-                mainImage.src = selectedOption.dataset.image;
-                mainImage.dataset.zoomSrc = selectedOption.dataset.image;
-                
-                // Add fade transition
-                mainImage.style.opacity = '0';
-                setTimeout(() => {
-                    mainImage.style.opacity = '1';
-                }, 150);
-                
-                // Update price
-                document.getElementById('product-price').textContent = selectedOption.dataset.price;
-                
-                // Update active thumbnail
-                document.querySelectorAll('.thumbnail-item').forEach(thumb => {
-                    thumb.classList.remove('active');
-                    thumb.querySelector('.thumbnail-overlay').style.opacity = '0';
-                    
-                    if (thumb.dataset.variantId === selectedOption.value) {
-                        thumb.classList.add('active');
-                        thumb.querySelector('.thumbnail-overlay').style.opacity = '0.2';
-                    }
-                });
-            }
-        });
-    }
-    
-    // Initialize first thumbnail as active
-    const firstThumb = document.querySelector('.thumbnail-item');
-    if (firstThumb) {
-        firstThumb.classList.add('active');
-        firstThumb.querySelector('.thumbnail-overlay').style.opacity = '0.2';
-    }
-    
-    // Rating stars interaction
-    document.querySelectorAll('.rating-input .star-label').forEach(star => {
-        star.addEventListener('click', function() {
-            const radio = document.getElementById(this.htmlFor);
-            if (radio) {
-                radio.checked = true;
-                
-                // Update visual rating
-                const ratingInput = this.closest('.rating-input');
-                if (ratingInput) {
-                    const labels = ratingInput.querySelectorAll('.star-label');
-                    labels.forEach((label, index) => {
-                        if (index < 5 - radio.value + 1) {
-                            label.classList.add('selected');
-                        } else {
-                            label.classList.remove('selected');
-                        }
-                    });
-                }
-            }
-        });
-    });
-});
-</script>
-
 <style>
-/* Base Styles */
-.product-title {
-    background: linear-gradient(90deg, #333, #555);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    position: relative;
-    display: inline-block;
-}
+    /* Base Styles */
+    * {
+        font-family:  poopins, sans-serif;
+    }
+    .product-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 1rem;
+    }
 
-.product-title::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #0d6efd, transparent);
-}
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+        margin-bottom: 1.5rem;
+    }
 
-/* Image Gallery Styles */
-.main-image-container {
+    /* Price Styles */
+    .price-section {
+        padding: 1rem;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .original-price {
+        font-size: 1.1rem;
+    }
+
+    .discounted-price {
+        font-size: 1.5rem;
+    }
+
+    .current-price {
+        font-size: 1.5rem;
+    }
+
+    /* Image Styles */
+    .main-image-container {
     position: relative;
     height: 400px;
     background: #f8f9fa;
@@ -581,197 +447,114 @@ document.addEventListener('DOMContentLoaded', function() {
 .thumb-next {
     right: 0;
 }
-
-/* Rating Stars */
-.rating-stars {
-    display: inline-flex;
-    gap: 2px;
-}
-
-.rating-stars .star {
-    color: #ddd;
-    font-size: 1.2rem;
-    transition: color 0.2s;
-}
-
-.rating-stars .star.filled {
-    color: #ffc107;
-}
-
-.rating-input {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-    gap: 5px;
-}
-
-.rating-input input {
-    display: none;
-}
-
-.rating-input .star-label {
-    color: #ddd;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.rating-input .star-label:hover,
-.rating-input .star-label:hover ~ .star-label,
-.rating-input input:checked ~ .star-label {
-    color: #ffc107;
-}
-
-.rating-input .star-label.selected {
-    color: #ffc107;
-}
-
-/* Animations */
-/* .animate-float {
-    animation: float 3s ease-in-out infinite;
-} */
-
-/* .animate-pulse {
-    animation: pulse 2s infinite;
-} */
-
-/* .animate-bounce {
-    animation: bounce 1s infinite;
-} */
-
-.animate-slide-up {
-    animation: slideUp 0.5s ease-out forwards;
-    opacity: 0;
-}
-
-.animate-fade-in {
-    animation: fadeIn 1s ease-out forwards;
-    opacity: 0;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Product Card Styles */
-.product-card {
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-}
-
-.product-card .badge-container {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 1;
-}
-
-.product-card .discount-badge {
-    background: #dc3545;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.product-card .product-image-link {
-    display: block;
-    position: relative;
-    overflow: hidden;
-    height: 200px;
-}
-
-.product-card .product-image-link img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    transition: transform 0.5s ease;
-}
-
-.product-card .product-image-link:hover img {
-    transform: scale(1.05);
-}
-
-.product-card .quick-view {
-    position: absolute;
-    bottom: -40px;
-    left: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    text-align: center;
-    padding: 5px;
-    transition: bottom 0.3s ease;
-}
-
-.product-card:hover .quick-view {
-    bottom: 0;
-}
-
-/* Review Card Styles */
-.review-card {
-    transition: all 0.3s ease;
-}
-
-.review-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
-}
-
-.review-image {
-    max-width: 200px;
-    max-height: 200px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.review-image:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .main-image-container {
-        height: 300px;
+    /* Rating Styles */
+    .rating {
+        color: #ffc107;
+        font-size: 1.2rem;
     }
-    
-    .product-title {
-        font-size: 1.8rem;
-    }
-    
+
+    /* Action Buttons */
     .action-buttons .btn {
-        font-size: 1rem;
-        padding: 0.5rem;
+        padding: 0.75rem;
+        font-size: 1.1rem;
     }
-}
+
+    /* Reviews Section */
+    .reviews-container {
+        scrollbar-width: thin;
+        scrollbar-color: #ddd #f9f9f9;
+        padding-right: 10px;
+    }
+
+    .reviews-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .reviews-container::-webkit-scrollbar-track {
+        background: #f9f9f9;
+    }
+
+    .reviews-container::-webkit-scrollbar-thumb {
+        background-color: #ddd;
+        border-radius: 6px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .product-name {
+            font-size: 1.5rem;
+        }
+        
+        .price-section {
+            padding: 0.75rem;
+        }
+        
+        .discounted-price, 
+        .current-price {
+            font-size: 1.3rem;
+        }
+    }
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Variant selection functionality
+    const mainImage = document.getElementById("main-product-image");
+    const priceElement = document.getElementById("product-price");
+    const variantSelect = document.getElementById("variant-select");
+    const hiddenVariantInput = document.getElementById("selected-variant");
+    const variantThumbnails = document.querySelectorAll(".variant-thumbnail");
+
+    if (variantSelect) {
+        variantSelect.addEventListener("change", function() {
+            const selectedOption = this.options[this.selectedIndex];
+            priceElement.textContent = selectedOption.getAttribute("data-price");
+            mainImage.src = selectedOption.getAttribute("data-image");
+            hiddenVariantInput.value = selectedOption.value;
+
+            // Update active thumbnail
+            variantThumbnails.forEach(thumb => {
+                thumb.classList.remove("active");
+                if (thumb.getAttribute("data-variant-id") === selectedOption.value) {
+                    thumb.classList.add("active");
+                }
+            });
+        });
+    }
+
+    // Thumbnail click functionality
+    variantThumbnails.forEach(thumb => {
+        thumb.addEventListener("click", function() {
+            const imageSrc = this.getAttribute("data-image");
+            const price = this.getAttribute("data-price");
+            const variantId = this.getAttribute("data-variant-id");
+
+            // Update main image and price
+            mainImage.src = imageSrc;
+            priceElement.textContent = price;
+            hiddenVariantInput.value = variantId;
+
+            // Update variant select dropdown
+            if (variantSelect) {
+                variantSelect.value = variantId || "";
+            }
+
+            // Update active thumbnail
+            variantThumbnails.forEach(t => t.classList.remove("active"));
+            this.classList.add("active");
+        });
+    });
+
+    // Image zoom effect
+    mainImage.addEventListener("click", function() {
+        if (this.style.transform === "scale(1.5)") {
+            this.style.transform = "scale(1)";
+            this.style.cursor = "zoom-in";
+        } else {
+            this.style.transform = "scale(1.5)";
+            this.style.cursor = "zoom-out";
+        }
+    });
+});
+</script>
 {% endblock %}

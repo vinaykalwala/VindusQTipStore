@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-4">
-    <h2 class="page-title">All Products</h2>
+    <div class="heading-container">
+        <h2 class="page-title">All Products</h2>
+    </div>
 
     <!-- Enhanced Filter Section -->
-    <div class="filter-section mb-4">
-        <form method="GET" class="filter-form">
+    <div class="filter-section">
+        <form method="GET" class="filter-form" id="filter-form">
             <!-- First Line - Search and Price Range -->
             <div class="filter-line first-line">
                 <!-- Search Input -->
@@ -30,7 +32,7 @@
             <div class="filter-line second-line">
                 <!-- Category Dropdown -->
                 <div class="filter-group">
-                    <select name="category" class="styled-select">
+                    <select name="category" class="styled-select" id="category-select">
                         <option value="">All Categories</option>
                         {% for category in categories %}
                             <option value="{{ category.id }}" {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>
@@ -42,10 +44,12 @@
 
                 <!-- Subcategory Dropdown -->
                 <div class="filter-group">
-                    <select name="subcategory" class="styled-select">
+                    <select name="subcategory" class="styled-select" id="subcategory-select">
                         <option value="">All Subcategories</option>
                         {% for subcategory in subcategories %}
-                            <option value="{{ subcategory.id }}" {% if subcategory.id|stringformat:"s" == selected_subcategory %}selected{% endif %}>
+                            <option value="{{ subcategory.id }}" 
+                                    data-category="{{ subcategory.category.id }}"
+                                    {% if subcategory.id|stringformat:"s" == selected_subcategory %}selected{% endif %}>
                                 {{ subcategory.name }}
                             </option>
                         {% endfor %}
@@ -137,80 +141,49 @@
         margin: 0 auto;
     }
 
-    /* Section Headings with Complete Underlines */
-.section-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--text-color);
-    margin-bottom: 2rem;
-    text-align: center;
-    position: relative;
-    padding-bottom: 15px;
-    display: inline-block;
-}
+    .heading-container {
+        text-align: center;
+        width: 100%;
+    }
 
-.section-title::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    border-radius: 3px;
-}
+    /* Page Title */
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--text-color);
+        position: relative;
+        padding-bottom: 15px;
+        display: inline-block;
+        margin: 1rem 0 2rem;
+    }
 
-/* For the page title (if you want it to match) */
-.page-title {
-    font-size: 2.2rem;
-    font-weight: 700;
-    text-align: center;
-    margin: 2rem 0;
-    color: var(--text-color);
-    position: relative;
-    padding-bottom: 15px;
-    display: inline-block;
-}
-
-.page-title::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 4px;
-    background: var(--primary-color);
-    border-radius: 2px;
-}
-
-/* Container for centered headings */
-.heading-container {
-    text-align: center;
-    margin-bottom: 2rem;
-    width: 100%;
-}
+    .page-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--primary-color);
+        border-radius: 2px;
+    }
 
     /* Filter Section */
     .filter-section {
-    background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-    padding: 20px;
-    border-radius: 12px;
-    color: #ffffff; /* Adjust text color for contrast */
+        background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+        padding: 20px;
+        border-radius: 12px;
+        color: #ffffff;
+        margin-bottom: 2rem;
     }
+    
     .filter-section input,
     .filter-section select,
     .filter-section button {
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333; /* Adjust input/select/button text color */
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #333;
     }
 
-    /* .filter-section {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    } */
-     
     .filter-line {
         display: flex;
         flex-wrap: wrap;
@@ -290,8 +263,8 @@
     }
 
     .range-separator {
-        color: var(--light-text);
-        font-size: 0.9rem;
+        color: white;
+        font-size: 1.2rem;
     }
 
     /* Select Dropdowns */
@@ -537,4 +510,53 @@
         }
     }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('category-select');
+    const subcategorySelect = document.getElementById('subcategory-select');
+    const subcategoryOptions = subcategorySelect.querySelectorAll('option');
+
+    // Function to filter subcategories based on selected category
+    function filterSubcategories() {
+        const selectedCategory = categorySelect.value;
+        
+        // First, hide all subcategory options except "All Subcategories"
+        subcategoryOptions.forEach(option => {
+            if (option.value === "") {
+                option.style.display = '';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+
+        // Then show only subcategories that belong to the selected category
+        if (selectedCategory) {
+            subcategoryOptions.forEach(option => {
+                if (option.dataset.category === selectedCategory) {
+                    option.style.display = '';
+                }
+            });
+        } else {
+            // If no category selected, show all subcategories
+            subcategoryOptions.forEach(option => {
+                option.style.display = '';
+            });
+        }
+
+        // Reset subcategory selection if it's no longer valid
+        const selectedSubcategory = subcategorySelect.value;
+        const selectedOption = subcategorySelect.querySelector(`option[value="${selectedSubcategory}"]`);
+        if (selectedOption && selectedOption.style.display === 'none') {
+            subcategorySelect.value = '';
+        }
+    }
+
+    // Initial filter on page load
+    filterSubcategories();
+
+    // Add event listener for category changes
+    categorySelect.addEventListener('change', filterSubcategories);
+});
+</script>
 {% endblock %}
