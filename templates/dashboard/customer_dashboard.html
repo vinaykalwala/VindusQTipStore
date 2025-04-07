@@ -38,8 +38,14 @@
                             <span class="discounted-price">₹{{ product.discounted_price }}</span> {% else %}
                             <span>₹{{ product.price }}</span> {% endif %}
                         </div>
-                        {% if product.avg_rating %} ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews) {% else %} No ratings yet {% endif %}
-
+                        <div style="text-align: center;">
+                            {% if product.avg_rating %}
+                              ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews)
+                            {% else %}
+                              No ratings yet
+                            {% endif %}
+                          </div>
+                          
                     </div>
                 </a>
                 {% endfor %}
@@ -103,8 +109,14 @@
                     <div class="product-info">
                         <div class="product-title">{{ product.name|truncatechars:30 }}</div>
                         <div class="product-price">₹{{ product.discounted_price }}</div>
-                        {% if product.avg_rating %} ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews) {% else %} No ratings yet {% endif %}
-
+                        <div style="text-align: center;">
+                            {% if product.avg_rating %}
+                              ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews)
+                            {% else %}
+                              No ratings yet
+                            {% endif %}
+                          </div>
+                          
                     </div>
                 </a>
                 {% endfor %}
@@ -121,13 +133,18 @@
                 <a href="{% url 'Products:product_detail' product.slug %}" class="product-card" data-product-id="{{ product.id }}" aria-label="{{ product.name }} - ₹{{ product.discounted_price }}" tabindex="0">
                     <div class="product-image-container">
                         <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy" width="200" height="200">
-                        <div class="featured-badge">Featured</div>
+                        <!-- <div class="featured-badge">Featured</div> -->
                     </div>
                     <div class="product-info">
                         <div class="product-title">{{ product.name|truncatechars:30 }}</div>
                         <div class="product-price">₹{{ product.discounted_price }}</div>
-                        {% if product.avg_rating %} ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews) {% else %} No ratings yet {% endif %}
-
+                        <div style="text-align: center;">
+                            {% if product.avg_rating %}
+                              ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews)
+                            {% else %}
+                              No ratings yet
+                            {% endif %}
+                          </div>                          
                     </div>
                 </a>
                 {% endfor %}
@@ -154,8 +171,14 @@
                             <div class="original-price">₹{{ product.price }}</div>
                             <div class="discounted-price">₹{{ product.discounted_price }}</div>
                         </div>
-                        {% if product.avg_rating %} ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews) {% else %} No ratings yet {% endif %}
-
+                        <div style="text-align: center;">
+                            {% if product.avg_rating %}
+                              ⭐ {{ product.avg_rating|floatformat:1 }}/5 ({{ product.total_reviews }} reviews)
+                            {% else %}
+                              No ratings yet
+                            {% endif %}
+                          </div>
+                          
 
                     </div>
                 </a>
@@ -701,8 +724,8 @@
                 const prevBtn = this.wrapper.querySelector('.prev-btn');
                 const nextBtn = this.wrapper.querySelector('.next-btn');
 
-                prevBtn ? .addEventListener('click', () => this.prevSlide());
-                nextBtn ? .addEventListener('click', () => this.nextSlide());
+                prevBtn?.addEventListener('click', () => this.prevSlide());
+                nextBtn?.addEventListener('click', () => this.nextSlide());
 
                 this.wrapper.addEventListener('mouseenter', () => this.pauseAutoSlide());
                 this.wrapper.addEventListener('mouseleave', () => this.startAutoSlide());

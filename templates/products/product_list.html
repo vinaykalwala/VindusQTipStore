@@ -86,14 +86,14 @@
                 {% endif %}
             </div>
             <div class="product-details">
-                <h3 class="product-title">{{ product.name }}</h3>
+                <h3 class="product-title" style="text-align: center;">{{ product.name }}</h3>
                 
                 <div class="price-section">
                     {% if product.discount > 0 %}
-                    <div class="discounted-price">₹{{ product.discounted_price }}</div>
-                    <div class="original-price">₹{{ product.price }}</div>
+                    <div class="discounted-price" style="text-align: center;">₹{{ product.discounted_price }}</div>
+                    <div class="original-price" style="text-align: center;">₹{{ product.price }}</div>
                     {% else %}
-                    <div class="current-price">₹{{ product.price }}</div>
+                    <div class="current-price" style="text-align: center;">₹{{ product.price }}</div>
                     {% endif %}
                 </div>
                 

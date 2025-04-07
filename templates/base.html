@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-         :root {
+        :root {
             --primary-color: #4A90E2;
             --secondary-color: #FF6B35;
             --background-color: #F4F7FA;
@@ -17,8 +17,8 @@
             --light-gray: #E8EFF5;
             --white: #FFFFFF;
         }
+    
         /* Base Styles */
-        
         body {
             background-color: var(--background-color);
             color: var(--text-color);
@@ -28,43 +28,40 @@
             display: flex;
             flex-direction: column;
         }
-        
+    
         a {
             text-decoration: none;
             transition: all 0.3s ease;
         }
+    
         /* Navigation Bar */
-        
         .navbar {
             background-color: var(--primary-color);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             padding: 0.8rem 0;
+            padding-bottom: 1rem;
             width: 100% !important;
         }
-        
+    
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
+    
         .navbar-logo {
             height: 40px;
             width: auto;
             border-radius: 6px;
         }
-        
+    
         .navbar-brand span {
             color: var(--white);
             font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
-        
-        .navbar-brand span:hover {
-            color: gold;
-        }
-        
+    
         .navbar-nav .nav-link {
             color: var(--white);
             font-weight: 500;
@@ -75,38 +72,38 @@
             align-items: center;
             gap: 6px;
         }
-        
+    
         .navbar-nav .nav-link:hover,
         .navbar-nav .nav-link:focus {
             background-color: var(--secondary-color);
             color: var(--white);
         }
-        
+    
         .navbar-nav .nav-link i {
             font-size: 1rem;
         }
-        
+    
         .navbar-toggler {
             border: none;
             color: var(--white);
             padding: 0.5rem;
         }
-        
+    
         .navbar-toggler:focus {
             box-shadow: none;
         }
+    
         /* Main Content */
-        
         .main-container {
             flex: 1;
             padding: 2rem 0;
         }
-        
+    
         .container {
             width: 100%;
         }
+    
         /* Cards */
-        
         .card {
             border: none;
             border-radius: 10px;
@@ -114,94 +111,95 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             margin-bottom: 1.5rem;
         }
-        
+    
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
-        
+    
         .card-header {
             background-color: var(--primary-color);
             color: var(--white);
             border-radius: 10px 10px 0 0 !important;
             padding: 1rem;
         }
+    
         /* Buttons */
-        
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        
+    
         .btn-primary:hover {
             background-color: #3a7bc8;
             border-color: #3a7bc8;
         }
-        
+    
         .btn-secondary {
             background-color: var(--secondary-color);
             border-color: var(--secondary-color);
         }
-        
+    
         .btn-secondary:hover {
             background-color: #e05a2a;
             border-color: #e05a2a;
         }
+    
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+    
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+    
         /* Alerts */
-        
         .alert {
             border-radius: 8px;
         }
+    
         /* Forms */
-        
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
         }
+    
         /* Footer */
-        
         footer {
             background-color: var(--primary-color);
             color: var(--white);
             padding: 2rem 0;
             margin-top: auto;
-            width: 100%;
         }
-        
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        
+    
         .footer-links {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
             gap: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
-        
+    
         .footer-links a {
             color: var(--white);
             font-weight: 500;
         }
-        
+    
         .footer-links a:hover {
             color: var(--secondary-color);
         }
-        
+    
         .social-icons {
             display: flex;
             justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
+    
         .social-icons a {
             color: var(--white);
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -211,77 +209,18 @@
             background-color: rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
         }
-        
+    
         .social-icons a:hover {
             background-color: var(--secondary-color);
             transform: translateY(-3px);
         }
-        
+    
         .copyright {
             font-size: 0.9rem;
             opacity: 0.8;
-            margin-top: 1rem;
         }
-        /* Dropdown Menu */
-        
-        .dropdown-menu {
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            padding: 0.5rem;
-            min-width: 200px;
-            display: none;
-            /* Hidden by default */
-        }
-        
-        .dropdown-item {
-            color: var(--white);
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .dropdown-item:hover,
-        .dropdown-item:focus {
-            background-color: var(--secondary-color);
-            color: var(--white);
-        }
-        /* Shop Dropdown and Submenu */
-        
-        .nav-item.dropdown {
-            position: relative;
-        }
-        
-        .dropdown-submenu {
-            position: relative;
-        }
-        
-        .dropdown-submenu .dropdown-menu {
-            top: 0;
-            left: 100%;
-            margin-top: -6px;
-            display: none;
-            /* Hidden by default */
-        }
-        /* Desktop Hover Behavior */
-        
-        @media (min-width: 992px) {
-            .nav-item.dropdown:hover .dropdown-menu {
-                display: block;
-                margin-top: 0;
-            }
-            .dropdown-submenu:hover .dropdown-menu {
-                display: block;
-            }
-            .nav-link.dropdown-toggle::after {
-                display: none;
-                /* Hide Bootstrap arrow on desktop */
-            }
-        }
-        /* Mobile Click Behavior */
-        
+    
+        /* Responsive Adjustments */
         @media (max-width: 991.98px) {
             .navbar-collapse {
                 background-color: var(--primary-color);
@@ -289,47 +228,87 @@
                 border-radius: 0 0 10px 10px;
                 margin-top: 0.5rem;
             }
+    
             .navbar-nav {
                 gap: 0.5rem;
             }
+    
             .navbar-nav .nav-link {
                 padding: 0.75rem;
-                justify-content: flex-start;
+                justify-content: center;
             }
-            .dropdown-menu {
-                background-color: rgba(255, 255, 255, 0.1);
-                margin-left: 1rem;
-                display: none;
-                /* Controlled by JS on mobile */
-            }
+    
             .dropdown-submenu .dropdown-menu {
-                left: 0;
-                top: 100%;
-                margin-top: 0;
-                margin-left: 1rem;
+                position: static;
+                margin-left: 0;
+                box-shadow: none;
             }
-            .dropdown-item.dropdown-toggle::after {
-                display: inline-block;
-                /* Show arrow on mobile */
-                margin-left: 0.5rem;
-            }
-            .footer-links {
-                flex-direction: column;
-                gap: 0.5rem;
+    
+            .dropdown-submenu:hover .dropdown-menu {
+                display: block;
             }
         }
+    
         /* Utility Classes */
-        
         .text-primary {
             color: var(--primary-color) !important;
         }
-        
+    
         .text-secondary {
             color: var(--secondary-color) !important;
         }
-        
+    
         .bg-light {
             background-color: var(--light-gray) !important;
+        }
+    
+        /* Shop Dropdown Menu Styling */
+        .nav-item.dropdown .dropdown-menu {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            padding: 0.5rem 0;
+            min-width: 220px;
+            z-index: 1000;
+        }
+    
+        .dropdown-menu .dropdown-item {
+            padding: 0.5rem 1rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+    
+        .dropdown-menu .dropdown-item:hover,
+        .dropdown-menu .dropdown-item:focus {
+            background-color: var(--light-gray);
+            color: var(--primary-color);
+        }
+    
+        .dropdown-submenu {
+            position: relative;
+        }
+    
+        .dropdown-submenu > .dropdown-toggle::after {
+            content: "▶";
+            float: right;
+            margin-left: 5px;
+            font-size: 0.6rem;
+            transform: rotate(90deg);
+        }
+    
+        .dropdown-submenu .dropdown-menu {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            margin-left: 0.2rem;
+            top: 0;
+            left: 100%;
+            display: none;
+            position: absolute;
+        }
+    
+        .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -392,11 +371,6 @@
                             <i class="fas fa-clipboard-list"></i> Orders
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'vendor_sales_report'%}">
-                            <i class="fas fa-clipboard-list"></i> Sales Report
-                        </a>
-                    </li>
                     {% elif user.role == "customer" %}
                     <!-- Customer Navigation -->
                     <li class="nav-item">
@@ -404,22 +378,26 @@
                             <i class="fas fa-home"></i> Home
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{% url 'Products:product_list' %}" id="shopDropdown" aria-expanded="false">
+
+                    <li class="nav-item dropdown" id="shopMenu">
+                        <a class="nav-link" href="{% url 'Products:product_list' %}" id="shopDropdown">
                             <i class="fas fa-shopping-bag"></i> Shop
                         </a>
+                        <button class="btn dropdown-toggle dropdown-toggle-split d-inline-block d-lg-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropdown</span>
+                        </button>
                         <ul class="dropdown-menu" aria-labelledby="shopDropdown">
                             {% for category in nav_categories %}
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="{% url 'Products:category_products' category.slug %}">
-                                        {{ category.name }}
-                                    </a> {% if category.subcategories.all %}
+                                    {{ category.name }}
+                                </a> {% if category.subcategories.all %}
                                 <ul class="dropdown-menu">
                                     {% for sub in category.subcategories.all %}
                                     <li>
                                         <a class="dropdown-item" href="{% url 'Products:subcategory_products' sub.slug %}">
-                                                {{ sub.name }}
-                                            </a>
+                                            {{ sub.name }}
+                                        </a>
                                     </li>
                                     {% endfor %}
                                 </ul>
@@ -428,6 +406,7 @@
                             {% endfor %}
                         </ul>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'order-summary' %}">
                             <i class="fas fa-receipt"></i> Orders
@@ -438,11 +417,13 @@
                             <i class="fas fa-user-circle"></i> Profile
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'view-wishlist' %}">
                             <i class="fas fa-heart"></i> Wishlist
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'view-cart' %}">
                             <i class="fas fa-shopping-cart"></i> Cart
@@ -511,25 +492,27 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="{% url 'home' %}">Home</a>
-                    <a href="{% url 'Products:product_list' %}">Shop</a>
-                    <a href="#">About Us</a>
-                    <a href="#">Contact</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                </div>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="footer-links">
+                        <a href="{% url 'home' %}">Home</a>
+                        <a href="{% url 'Products:product_list' %}">Shop</a>
+                        <a href="#">About Us</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
 
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                </div>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
 
-                <p class="copyright">© 2025 QTipStore. All Rights Reserved.</p>
+                    <p class="copyright">© 2025 QTipStore. All Rights Reserved.</p>
+                </div>
             </div>
         </div>
     </footer>
@@ -539,48 +522,42 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Mobile dropdown toggle behavior
-            const dropdowns = document.querySelectorAll('.nav-item.dropdown');
-            dropdowns.forEach(dropdown => {
-                const toggle = dropdown.querySelector('.dropdown-toggle');
-                const menu = dropdown.querySelector('.dropdown-menu');
+            const shopMenu = document.getElementById("shopMenu");
+            const dropdownMenu = shopMenu.querySelector(".dropdown-menu");
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-                // Handle mobile click
-                if (window.innerWidth < 992) {
-                    toggle.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-                    });
-                }
+            if (!isTouchDevice) {
+                // Desktop: Hover functionality
+                shopMenu.addEventListener("mouseenter", () => {
+                    shopMenu.classList.add("show");
+                    dropdownMenu.classList.add("show");
+                });
 
-                // Submenu toggle for mobile
-                const submenus = dropdown.querySelectorAll('.dropdown-submenu');
-                submenus.forEach(submenu => {
-                    const subToggle = submenu.querySelector('.dropdown-item.dropdown-toggle');
-                    const subMenu = submenu.querySelector('.dropdown-menu');
+                shopMenu.addEventListener("mouseleave", () => {
+                    shopMenu.classList.remove("show");
+                    dropdownMenu.classList.remove("show");
+                });
+            } else {
+                // Mobile: Toggle dropdown on first tap, go to link on second tap
+                let tappedOnce = false;
+                const shopLink = shopMenu.querySelector("a.nav-link");
 
-                    if (window.innerWidth < 992) {
-                        subToggle.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            subMenu.style.display = subMenu.style.display === 'block' ? 'none' : 'block';
-                        });
+                shopLink.addEventListener("click", function(e) {
+                    if (!tappedOnce) {
+                        e.preventDefault(); // prevent navigation
+                        dropdownMenu.classList.toggle("show");
+                        tappedOnce = true;
+
+                        // Reset tap after short delay
+                        setTimeout(() => {
+                            tappedOnce = false;
+                        }, 1000);
                     }
                 });
-            });
-
-            // Close dropdowns when clicking outside on mobile
-            document.addEventListener('click', function(e) {
-                if (window.innerWidth < 992) {
-                    if (!e.target.closest('.nav-item.dropdown')) {
-                        document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                            menu.style.display = 'none';
-                        });
-                    }
-                }
-            });
+            }
         });
     </script>
+
 
     {% block extra_js %}{% endblock %}
 </body>
