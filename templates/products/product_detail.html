@@ -88,7 +88,6 @@
         {% endif %}
     </div>
 
-    <!-- Product Description with Accordion -->
     <div class="accordion mb-4" id="productAccordion">
         <div class="accordion-item border-0 shadow-sm">
             <h2 class="accordion-header">
@@ -97,14 +96,13 @@
                 </button>
             </h2>
             <div id="descriptionCollapse" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
-                <div class="accordion-body">
+                <div class="accordion-body" style="max-height: 300px; overflow-y: auto;">
                     {{ product.description }}
                 </div>
             </div>
         </div>
     </div>
-
-
+    
     <script>
         const dropdown = document.getElementById("description-dropdown");
         const content = document.getElementById("description-content");
