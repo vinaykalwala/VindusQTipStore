@@ -425,6 +425,7 @@ def cancel_order(request, order_id):
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F
+from collections import Counter
 from .models import Order, OrderItem
 
 @login_required
@@ -438,30 +439,42 @@ def orders_page(request):
         # Vendors see only their products within orders
         orders = Order.objects.filter(items__product__vendor=user).distinct()
 
-    # Process orders based on vendor-specific view
     vendor_orders = []
+    grand_total = 0
+    status_list = []
+
     for order in orders:
         order_items = order.items.filter(product__vendor=user)
         vendor_subtotal = order_items.aggregate(subtotal=Sum(F('price') * F('quantity')))['subtotal'] or 0
 
         if order.items.filter(product__vendor=user).count() == order.items.count():
-            # If the order contains only this vendor's items, show the full order
             vendor_orders.append({
                 "order": order,
                 "items": order.items.all(),
                 "subtotal": order.total_price,
-                "shipping_address": order.address,  # ✅ Include Address
+                "shipping_address": order.address,
             })
+            grand_total += order.total_price
         else:
-            # Otherwise, show only the vendor's specific items and subtotal
             vendor_orders.append({
                 "order": order,
                 "items": order_items,
                 "subtotal": vendor_subtotal,
-                "shipping_address": order.address,  # ✅ Include Address
+                "shipping_address": order.address,
             })
+            grand_total += vendor_subtotal
+
+        # Collect order statuses for counting
+        status_list.append(order.status)
+
+    total_orders = len(vendor_orders)
+    status_counts = dict(Counter(status_list))
+
 
     context = {
-        "orders": vendor_orders
+        "orders": vendor_orders,
+        "total_orders": total_orders,
+        "grand_total": grand_total,
+        "status_counts": status_counts,
     }
     return render(request, "orders/orders_page.html", context)
