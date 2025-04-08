@@ -1,81 +1,478 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
+<div class="payment-container">
+    <div class="payment-header">
+        <h2 class="payment-title">Select Payment Method</h2>
+        <div class="total-price">
+            <span>Total Amount:</span>
+            <span class="amount">₹{{ total_price }}</span>
+        </div>
+    </div>
 
-<h2>Select Payment Method</h2>
-<p>Total Price: ₹{{ total_price }}</p>
+    <!-- Order Summary -->
+    <div class="order-summary">
+        <h3 class="section-title">Order Summary</h3>
+        <div class="table-responsive">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Variant</th>
+                        <th>Price (₹)</th>
+                        <th>Quantity</th>
+                        <th>Subtotal (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>
+                            {% if item.variant %} 
+                                {{ item.variant.color|default:"N/A" }} / {{ item.variant.size|default:"N/A" }} 
+                            {% else %} 
+                                Default 
+                            {% endif %}
+                        </td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                        <td><strong>₹{{ total_price }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 
-<!-- Order Summary -->
-<h3>Order Summary</h3>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Item Name</th>
-            <th>Variant</th>
-            <th>Price (₹)</th>
-            <th>Quantity</th>
-            <th>Subtotal (₹)</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in cart_items %}
-        <tr>
-            <td>{{ item.product.name }}</td>
-            <td>
-                {% if item.variant %} {{ item.variant.color|default:"N/A" }} / {{ item.variant.size|default:"N/A" }} {% else %} Default {% endif %}
-            </td>
-            <td>{{ item.price }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.subtotal }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <!-- Select Address Section -->
+    <div class="address-section">
+        <h3 class="section-title">Select Shipping Address</h3>
+        
+        {% if addresses %}
+        <form action="{% url 'select-address' %}" method="POST" class="address-form">
+            {% csrf_token %}
+            <div class="address-selector">
+                <select name="selected_address" class="form-select">
+                    {% for address in addresses %}
+                    <option value="{{ address.id }}" {% if address.id|stringformat:"s" == selected_address_id %}selected{% endif %}>
+                        {{ address.full_name }}, {{ address.street_address }}, {{ address.city }} - {{ address.postal_code }}, {{ address.country }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">Use This Address</button>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i> No shipping address found. Please add one before proceeding.
+        </div>
+        {% endif %}
 
-<p><strong>Total Price: ₹{{ total_price }}</strong></p>
+        <!-- Option to Add a New Address -->
+        <div class="new-address">
+            <h4 class="subtitle">Add New Address</h4>
+            <form action="{% url 'add-address' %}" method="POST" class="address-form">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="text" id="phone_number" name="phone_number" placeholder="9876543210" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="street_address">Street Address</label>
+                        <input type="text" id="street_address" name="street_address" placeholder="123 Main Street" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" placeholder="Mumbai" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="state" placeholder="Maharashtra" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" name="country" placeholder="India" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="postal_code">Postal Code</label>
+                        <input type="text" id="postal_code" name="postal_code" placeholder="400001" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Address</button>
+            </form>
+        </div>
+    </div>
 
-<!-- Select Address Section -->
-<h3>Select a Shipping Address</h3>
+    <!-- Payment Options -->
+    <div class="payment-options">
+        <h3 class="section-title">Payment Methods</h3>
+        
+        {% if selected_address_id %}
+        <div class="payment-methods">
+            <form action="{% url 'razorpay-payment' %}" method="POST" class="payment-form">
+                {% csrf_token %}
+                <button type="submit" class="payment-btn razorpay-btn">
+                    <i class="fas fa-credit-card"></i> Pay with Razorpay
+                </button>
+            </form>
 
-{% if addresses %}
-<form action="{% url 'select-address' %}" method="POST">
-    {% csrf_token %}
-    <select name="selected_address">
-        {% for address in addresses %}
-        <option value="{{ address.id }}" {% if address.id|stringformat:"s" == selected_address_id %}selected{% endif %}>
-            {{ address.full_name }}, {{ address.street_address }}, {{ address.city }} - {{ address.postal_code }}, {{ address.country }}
-        </option>
-        {% endfor %}
-    </select>
-    <button type="submit">Use This Address</button>
-</form>
-{% else %}
-<p style="color: red;">⚠ No shipping address found. Please add one before proceeding.</p>
-{% endif %}
+            <form action="{% url 'cod-payment' %}" method="POST" class="payment-form">
+                {% csrf_token %}
+                <button type="submit" class="payment-btn cod-btn">
+                    <i class="fas fa-money-bill-wave"></i> Cash on Delivery
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Please select or add a shipping address before proceeding to payment.
+        </div>
+        {% endif %}
+    </div>
+</div>
 
-<!-- Option to Add a New Address -->
-<h3>Or, Add a New Shipping Address</h3>
-<form action="{% url 'add-address' %}" method="POST">
-    {% csrf_token %}
-    <input type="text" name="full_name" placeholder="Full Name" required><br>
-    <input type="text" name="phone_number" placeholder="Phone Number" required><br>
-    <input type="text" name="street_address" placeholder="Street Address" required><br>
-    <input type="text" name="city" placeholder="City" required><br>
-    <input type="text" name="state" placeholder="State" required><br>
-    <input type="text" name="country" placeholder="Country" required><br>
-    <input type="text" name="postal_code" placeholder="Postal Code" required><br>
-    <button type="submit">Save Address</button>
-</form>
+<style>
+:root {
+    --primary-color: #4a6bff;
+    --secondary-color: #ff6b35;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --border-color: #dee2e6;
+    --text-color: #212529;
+    --text-muted: #6c757d;
+    --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    --border-radius: 0.375rem;
+}
 
-<!-- Payment Options (Disabled if No Address Selected) -->
-{% if selected_address_id %}
-<form action="{% url 'razorpay-payment' %}" method="POST">
-    {% csrf_token %}
-    <button type="submit">Pay with Razorpay</button>
-</form>
+/* Base Styles */
+.payment-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+}
 
-<form action="{% url 'cod-payment' %}" method="POST">
-    {% csrf_token %}
-    <button type="submit">Cash on Delivery</button>
-</form>
-{% else %}
-<p style="color: red;">⚠ Please select an address before proceeding to payment.</p>
-{% endif %} {% endblock %}
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.payment-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin: 0;
+}
+
+.total-price {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.total-price .amount {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.4rem;
+}
+
+.section-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 1.5rem 0 1rem;
+    color: var(--dark-color);
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 1rem 0;
+    color: var(--dark-color);
+}
+
+/* Order Summary */
+.order-summary {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--box-shadow);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.order-table th, .order-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.order-table th {
+    background-color: var(--light-color);
+    font-weight: 600;
+}
+
+.order-table tbody tr:hover {
+    background-color: rgba(74, 107, 255, 0.05);
+}
+
+.order-table tfoot td {
+    font-weight: 600;
+    background-color: var(--light-color);
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* Address Section */
+.address-section {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--box-shadow);
+}
+
+.address-form {
+    margin: 1rem 0;
+}
+
+.address-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.form-select {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(74, 107, 255, 0.25);
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(74, 107, 255, 0.25);
+}
+
+/* Payment Options */
+.payment-options {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.payment-methods {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.payment-form {
+    flex: 1;
+    min-width: 250px;
+}
+
+.payment-btn {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.payment-btn i {
+    font-size: 1.2rem;
+}
+
+.razorpay-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.razorpay-btn:hover {
+    background-color: #3a56e8;
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(74, 107, 255, 0.3);
+}
+
+.cod-btn {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.cod-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(40, 167, 69, 0.3);
+}
+
+/* Alerts */
+.alert {
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.2);
+    border-left: 4px solid var(--warning-color);
+    color: var(--text-color);
+}
+
+.alert-info {
+    background-color: rgba(23, 162, 184, 0.2);
+    border-left: 4px solid #17a2b8;
+    color: var(--text-color);
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #3a56e8;
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(74, 107, 255, 0.3);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .payment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .address-selector {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .payment-methods {
+        flex-direction: column;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .order-table th, .order-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .payment-title {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,16 +1,352 @@
-{% extends 'base.html' %} {% block content %}
-<h2>Payment Summary</h2>
+{% extends 'base.html' %}
+{%load static%}
+{% block content %}
+<div class="payment-container">
+    <div class="payment-header">
+        <h1 class="payment-title">Complete Your Payment</h1>
+        <div class="payment-steps">
+            <span class="step active">1. Review Order</span>
+            <span class="step active">2. Payment</span>
+            <span class="step">3. Confirmation</span>
+        </div>
+    </div>
 
-<p><strong>Total Price:</strong> ₹{{ cart_data.total_price|floatformat:2 }}</p>
-<!-- ✅ Show correct total price -->
+    <div class="payment-summary">
+        <div class="summary-card">
+            <h2 class="summary-title">
+                <i class="fas fa-receipt"></i> Order Summary
+            </h2>
+            <div class="summary-details">
+                <div class="detail-row">
+                    <span>Subtotal:</span>
+                    <span>₹{{ cart_data.subtotal|floatformat:2 }}</span>
+                </div>
+                {% if cart_data.discount > 0 %}
+                <div class="detail-row discount">
+                    <span>Discount:</span>
+                    <span>-₹{{ cart_data.discount|floatformat:2 }}</span>
+                </div>
+                {% endif %}
+                <div class="detail-row">
+                    <span>Shipping:</span>
+                    <span>{% if cart_data.shipping_charge > 0 %}₹{{ cart_data.shipping_charge|floatformat:2 }}{% else %}FREE{% endif %}</span>
+                </div>
+                <div class="detail-row total">
+                    <span><strong>Total Amount:</strong></span>
+                    <span><strong>₹{{ cart_data.total_price|floatformat:2 }}</strong></span>
+                </div>
+            </div>
+        </div>
 
-<hr>
+        <div class="payment-methods">
+            <div class="method-card">
+                <div class="method-header">
+                    <img src="https://cdn.razorpay.com/logo.svg" alt="Razorpay" class="payment-logo">
+                    <h3>Secure Payment Gateway</h3>
+                </div>
+                <div class="method-details">
+                    <p><i class="fas fa-lock"></i> 100% Secure Payments</p>
+                    <p><i class="fas fa-shield-alt"></i> PCI DSS Compliant</p>
+                    <p><i class="fas fa-credit-card"></i> Cards, UPI, NetBanking & Wallets</p>
+                </div>
+                
+                <form action="{% url 'razorpay-callback' %}" method="POST" class="razorpay-form">
+                    {% csrf_token %}
+                    <script src="https://checkout.razorpay.com/v1/checkout.js" 
+                            data-key="{{ razorpay_key }}" 
+                            data-amount="{{ amount }}" 
+                            data-currency="{{ currency }}" 
+                            data-order_id="{{ razorpay_order_id }}" 
+                            data-buttontext="Pay ₹{{ cart_data.total_price|floatformat:2 }} Now" 
+                            data-name="QTip Store" 
+                            data-description="Payment for Order #{{ order_id }}"
+                            data-image="{% static 'QTipsStore_Logo.jpeg' %}"
+                            data-prefill.name="{{ request.user.get_full_name|default:request.user.username }}"
+                            data-prefill.email="{{ request.user.email }}"
+                            data-theme.color="#4A6BFF">
+                    </script>
+                </form>
+                
+                <div class="security-badges">
+                    <img src="{% static 'ssl-secure.jpeg' %}" alt="SSL Secure" width="80">
+                    <img src="{% static 'pci-dss.png' %}" alt="PCI DSS Compliant" width="80">
+                </div>
+            </div>
+        </div>
+    </div>
 
-<h3>Proceed to Payment</h3>
-<form action="{% url 'razorpay-callback' %}" method="POST">
-    {% csrf_token %}
-    <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="{{ razorpay_key }}" data-amount="{{ amount }}" data-currency="{{ currency }}" data-order_id="{{ razorpay_order_id }}" data-buttontext="Pay Now" data-name="QTip Store" data-description="Payment for Order"
-        data-theme.color="#F37254">
-    </script>
-</form>
+    <div class="payment-footer">
+        <p><i class="fas fa-lock"></i> Your payment details are encrypted and secure</p>
+    </div>
+</div>
+
+<style>
+:root {
+    --primary-color: #4A6BFF;
+    --secondary-color: #FF6B35;
+    --success-color: #28a745;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --border-color: #e0e0e0;
+    --text-color: #333;
+    --text-muted: #6c757d;
+    --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    --border-radius: 12px;
+}
+
+/* Base Styles */
+.payment-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+}
+
+.payment-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.payment-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+}
+
+.payment-steps {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.step {
+    position: relative;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.step.active {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.step.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+.payment-summary {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .payment-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Summary Card */
+.summary-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    height: fit-content;
+}
+
+.summary-title {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--dark-color);
+}
+
+.summary-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row.discount span {
+    color: var(--success-color);
+}
+
+.detail-row.total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--border-color);
+    font-size: 1.1rem;
+}
+
+/* Payment Methods */
+.payment-methods {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.method-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.method-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.payment-logo {
+    height: 40px;
+    width: auto;
+}
+
+.method-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--dark-color);
+}
+
+.method-details {
+    background: var(--light-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.method-details p {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+}
+
+/* Razorpay Button Styling */
+.razorpay-form {
+    margin: 1.5rem 0;
+}
+
+.razorpay-form button {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.razorpay-form button:hover {
+    background: #3a56e8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 107, 255, 0.3);
+}
+
+.security-badges {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.security-badges img {
+    height: 40px;
+    width: auto;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.security-badges img:hover {
+    opacity: 1;
+}
+
+/* Payment Footer */
+.payment-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.payment-footer p {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.payment-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.payment-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .payment-title {
+        font-size: 1.6rem;
+    }
+    
+    .payment-steps {
+        gap: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .summary-title, .method-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .detail-row.total {
+        font-size: 1rem;
+    }
+    
+    .razorpay-form button {
+        font-size: 1rem;
+        padding: 0.9rem;
+    }
+}
+</style>
 {% endblock %}
