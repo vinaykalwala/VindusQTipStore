@@ -19,7 +19,7 @@
             <div class="summary-details">
                 <div class="detail-row">
                     <span>Subtotal:</span>
-                    <span>₹{{ cart_data.subtotal|floatformat:2 }}</span>
+                    <span>₹{{ cart_data.total_price|floatformat:2 }}</span>
                 </div>
                 {% if cart_data.discount > 0 %}
                 <div class="detail-row discount">
