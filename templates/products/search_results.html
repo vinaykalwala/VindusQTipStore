@@ -1,32 +1,40 @@
-<form method="get" action="{% url 'Products:search' %}">
-    {{ form }}
-    <button type="submit">Search</button>
-</form>
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-4">
 
-{% if query %}
-<h3>Search results for "{{ query }}"</h3>
+    <form method="get" action="{% url 'Products:search' %}" class="mb-4">
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
 
-{% if results.categories %}
-<h4>Categories</h4>
-<ul>
-    {% for cat in results.categories %}
-    <li>{{ cat.name }}</li>
-    {% endfor %}
-</ul>
-{% endif %} {% if results.subcategories %}
-<h4>Subcategories</h4>
-<ul>
-    {% for sub in results.subcategories %}
-    <li>{{ sub.name }} ({{ sub.category.name }})</li>
-    {% endfor %}
-</ul>
-{% endif %} {% if results.products %}
-<h4>Products</h4>
-<ul>
-    {% for product in results.products %}
-    <li>{{ product.name }} - ${{ product.discounted_price|floatformat:2 }}</li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No results found.</p>
-{% endif %} {% endif %}
+    {% if query %}
+    <h3 class="mb-3">Search results for "<strong>{{ query }}</strong>"</h3>
+
+
+    {% endif %} {% if results.products %}
+    <h4>Products</h4>
+    <div class="row">
+        {% for product in results.products %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-success">
+                        ${{ product.discounted_price|floatformat:2 }}
+                    </p>
+                    <a href="{% url 'Products:product_detail' product_slug=product.slug %}" class="btn btn-sm btn-primary">
+                                    View Details
+                                </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No matching products found.</p>
+    {% endif %}
+
+</div>
+{% endblock %}
