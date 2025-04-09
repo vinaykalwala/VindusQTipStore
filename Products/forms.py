@@ -38,3 +38,10 @@ class ProductVariantForm(forms.ModelForm):
     class Meta:
         model = ProductVariant
         fields = ['product', 'size', 'color', 'additional_price', 'image']
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=255, label='', widget=forms.TextInput(attrs={
+        'placeholder': 'Search products, categories, or subcategories...',
+        'class': 'form-control',
+    }))
