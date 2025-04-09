@@ -17,6 +17,7 @@ urlpatterns = [
     path('manage/', manage_products, name='manage_products'),
     path('delete_product/<int:product_id>/', delete_product, name='delete_product'),
     path('delete_variant/<int:variant_id>/', delete_variant, name='delete_variant'),
+    path('search/', search_view, name='search'),
     path("<slug:product_slug>/", product_detail, name="product_detail"),
 
     

@@ -311,3 +311,51 @@ def delete_variant(request, variant_id):
     variant.delete()
     messages.success(request, "Variant deleted successfully.")
     return redirect('Products:manage_products')
+
+
+from django.shortcuts import render
+from .models import Product, Category, SubCategory
+from .forms import SearchForm
+from django.db.models import Q
+
+def search_view(request):
+    form = SearchForm()
+    results = {
+        'products': [],
+        'categories': [],
+        'subcategories': []
+    }
+
+    query = request.GET.get('query')
+    if query:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            q = form.cleaned_data['query']
+
+            # 1. Search directly in products
+            product_matches = Product.objects.filter(
+                Q(name__icontains=q) | Q(description__icontains=q)
+            )
+
+            # 2. Search matching categories & fetch their products
+            matched_categories = Category.objects.filter(name__icontains=q)
+            category_products = Product.objects.filter(category__in=matched_categories)
+
+            # 3. Search matching subcategories & fetch their products
+            matched_subcategories = SubCategory.objects.filter(name__icontains=q)
+            subcategory_products = Product.objects.filter(subcategory__in=matched_subcategories)
+
+            # Combine all products & eliminate duplicates
+            all_matched_products = (
+                product_matches | category_products | subcategory_products
+            ).distinct()
+
+            results['products'] = all_matched_products
+            results['categories'] = matched_categories
+            results['subcategories'] = matched_subcategories
+
+    return render(request, 'products/search_results.html', {
+        'form': form,
+        'results': results,
+        'query': query
+    })
