@@ -437,39 +437,36 @@ def orders_page(request):
         orders = Order.objects.prefetch_related('items__product__vendor', 'address').all()
     else:
         # Vendors see only their products within orders
-        orders = Order.objects.filter(items__product__vendor=user).distinct()
+        orders = Order.objects.filter(items__product__vendor=user).distinct().prefetch_related('items__product__vendor', 'address')
 
     vendor_orders = []
     grand_total = 0
     status_list = []
 
     for order in orders:
-        order_items = order.items.filter(product__vendor=user)
-        vendor_subtotal = order_items.aggregate(subtotal=Sum(F('price') * F('quantity')))['subtotal'] or 0
-
-        if order.items.filter(product__vendor=user).count() == order.items.count():
-            vendor_orders.append({
-                "order": order,
-                "items": order.items.all(),
-                "subtotal": order.total_price,
-                "shipping_address": order.address,
-            })
-            grand_total += order.total_price
+        if user.is_superuser:
+            # Superuser sees all order items
+            order_items = order.items.all()
+            vendor_subtotal = order.total_price
         else:
-            vendor_orders.append({
-                "order": order,
-                "items": order_items,
-                "subtotal": vendor_subtotal,
-                "shipping_address": order.address,
-            })
-            grand_total += vendor_subtotal
+            # Vendor sees only their items
+            order_items = order.items.filter(product__vendor=user)
+            vendor_subtotal = order_items.aggregate(
+                subtotal=Sum(F('price') * F('quantity'))
+            )['subtotal'] or 0
 
-        # Collect order statuses for counting
+        vendor_orders.append({
+            "order": order,
+            "items": order_items,
+            "subtotal": vendor_subtotal,
+            "shipping_address": order.address,
+        })
+
+        grand_total += vendor_subtotal
         status_list.append(order.status)
 
     total_orders = len(vendor_orders)
     status_counts = dict(Counter(status_list))
-
 
     context = {
         "orders": vendor_orders,
@@ -477,4 +474,5 @@ def orders_page(request):
         "grand_total": grand_total,
         "status_counts": status_counts,
     }
+
     return render(request, "orders/orders_page.html", context)

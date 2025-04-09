@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
+         :root {
             --primary-color: #4A90E2;
             --secondary-color: #FF6B35;
             --background-color: #F4F7FA;
@@ -17,8 +17,8 @@
             --light-gray: #E8EFF5;
             --white: #FFFFFF;
         }
-    
         /* Base Styles */
+        
         body {
             background-color: var(--background-color);
             color: var(--text-color);
@@ -28,13 +28,13 @@
             display: flex;
             flex-direction: column;
         }
-    
+        
         a {
             text-decoration: none;
             transition: all 0.3s ease;
         }
-    
         /* Navigation Bar */
+        
         .navbar {
             background-color: var(--primary-color);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -42,26 +42,26 @@
             padding-bottom: 1rem;
             width: 100% !important;
         }
-    
+        
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-    
+        
         .navbar-logo {
             height: 40px;
             width: auto;
             border-radius: 6px;
         }
-    
+        
         .navbar-brand span {
             color: var(--white);
             font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
-    
+        
         .navbar-nav .nav-link {
             color: var(--white);
             font-weight: 500;
@@ -72,38 +72,38 @@
             align-items: center;
             gap: 6px;
         }
-    
+        
         .navbar-nav .nav-link:hover,
         .navbar-nav .nav-link:focus {
             background-color: var(--secondary-color);
             color: var(--white);
         }
-    
+        
         .navbar-nav .nav-link i {
             font-size: 1rem;
         }
-    
+        
         .navbar-toggler {
             border: none;
             color: var(--white);
             padding: 0.5rem;
         }
-    
+        
         .navbar-toggler:focus {
             box-shadow: none;
         }
-    
         /* Main Content */
+        
         .main-container {
             flex: 1;
             padding: 2rem 0;
         }
-    
+        
         .container {
             width: 100%;
         }
-    
         /* Cards */
+        
         .card {
             border: none;
             border-radius: 10px;
@@ -111,92 +111,92 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             margin-bottom: 1.5rem;
         }
-    
+        
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
-    
+        
         .card-header {
             background-color: var(--primary-color);
             color: var(--white);
             border-radius: 10px 10px 0 0 !important;
             padding: 1rem;
         }
-    
         /* Buttons */
+        
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-    
+        
         .btn-primary:hover {
             background-color: #3a7bc8;
             border-color: #3a7bc8;
         }
-    
+        
         .btn-secondary {
             background-color: var(--secondary-color);
             border-color: var(--secondary-color);
         }
-    
+        
         .btn-secondary:hover {
             background-color: #e05a2a;
             border-color: #e05a2a;
         }
-    
+        
         .btn-outline-primary {
             color: var(--primary-color);
             border-color: var(--primary-color);
         }
-    
+        
         .btn-outline-primary:hover {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-    
         /* Alerts */
+        
         .alert {
             border-radius: 8px;
         }
-    
         /* Forms */
+        
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
         }
-    
         /* Footer */
+        
         footer {
             background-color: var(--primary-color);
             color: var(--white);
             padding: 2rem 0;
             margin-top: auto;
         }
-    
+        
         .footer-links {
             display: flex;
             justify-content: center;
             gap: 1.5rem;
             margin-bottom: 1rem;
         }
-    
+        
         .footer-links a {
             color: var(--white);
             font-weight: 500;
         }
-    
+        
         .footer-links a:hover {
             color: var(--secondary-color);
         }
-    
+        
         .social-icons {
             display: flex;
             justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-    
+        
         .social-icons a {
             color: var(--white);
             font-size: 1.5rem;
@@ -209,18 +209,18 @@
             background-color: rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
         }
-    
+        
         .social-icons a:hover {
             background-color: var(--secondary-color);
             transform: translateY(-3px);
         }
-    
+        
         .copyright {
             font-size: 0.9rem;
             opacity: 0.8;
         }
-    
         /* Responsive Adjustments */
+        
         @media (max-width: 991.98px) {
             .navbar-collapse {
                 background-color: var(--primary-color);
@@ -228,41 +228,37 @@
                 border-radius: 0 0 10px 10px;
                 margin-top: 0.5rem;
             }
-    
             .navbar-nav {
                 gap: 0.5rem;
             }
-    
             .navbar-nav .nav-link {
                 padding: 0.75rem;
                 justify-content: center;
             }
-    
             .dropdown-submenu .dropdown-menu {
                 position: static;
                 margin-left: 0;
                 box-shadow: none;
             }
-    
             .dropdown-submenu:hover .dropdown-menu {
                 display: block;
             }
         }
-    
         /* Utility Classes */
+        
         .text-primary {
             color: var(--primary-color) !important;
         }
-    
+        
         .text-secondary {
             color: var(--secondary-color) !important;
         }
-    
+        
         .bg-light {
             background-color: var(--light-gray) !important;
         }
-    
         /* Shop Dropdown Menu Styling */
+        
         .nav-item.dropdown .dropdown-menu {
             background-color: var(--white);
             border-radius: 8px;
@@ -271,31 +267,31 @@
             min-width: 220px;
             z-index: 1000;
         }
-    
+        
         .dropdown-menu .dropdown-item {
             padding: 0.5rem 1rem;
             color: var(--text-color);
             font-weight: 500;
         }
-    
+        
         .dropdown-menu .dropdown-item:hover,
         .dropdown-menu .dropdown-item:focus {
             background-color: var(--light-gray);
             color: var(--primary-color);
         }
-    
+        
         .dropdown-submenu {
             position: relative;
         }
-    
-        .dropdown-submenu > .dropdown-toggle::after {
+        
+        .dropdown-submenu>.dropdown-toggle::after {
             content: "▲";
             float: right;
             margin-left: 5px;
             font-size: 0.6rem;
             transform: rotate(90deg);
         }
-    
+        
         .dropdown-submenu .dropdown-menu {
             background-color: var(--white);
             border-radius: 8px;
@@ -306,8 +302,8 @@
             display: none;
             position: absolute;
         }
-    
-        .dropdown-submenu:hover > .dropdown-menu {
+        
+        .dropdown-submenu:hover>.dropdown-menu {
             display: block;
         }
     </style>
@@ -330,23 +326,33 @@
                     {% if user.is_authenticated %} {% if user.is_superuser %}
                     <!-- Admin Navigation -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-tachometer-alt"></i> Admin Panel
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-users-cog"></i> Manage Users
+                        <a class="nav-link" href="{% url 'Products:add_product' %}">
+                            <i class="fas fa-plus-circle"></i> Add Product
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-tags"></i> Categories
+                        <a class="nav-link" href="{% url 'Products:manage_products' %}">
+                            <i class="fas fa-edit"></i> Manage Products
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-boxes"></i> Products
+                        <a class="nav-link" href="{% url 'orders_page'%}">
+                            <i class="fas fa-clipboard-list"></i> Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'superuser_sales_report' %}">
+                            <i class="fas fa-file"></i>Sales Report
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Products:low_stock_products' %}">
+                            <i class="fas fa-box-open"></i>Low Stock
                         </a>
                     </li>
                     {% elif user.role == "vendor" %}
@@ -374,6 +380,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'orders_page'%}">
                             <i class="fas fa-clipboard-list"></i> Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Products:low_stock_products' %}">
+                            <i class="fas fa-box-open"></i>Low Stock
                         </a>
                     </li>
                     {% elif user.role == "customer" %}

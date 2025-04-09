@@ -18,6 +18,7 @@ urlpatterns = [
     path('delete_product/<int:product_id>/', delete_product, name='delete_product'),
     path('delete_variant/<int:variant_id>/', delete_variant, name='delete_variant'),
     path('search/', search_view, name='search'),
+    path('low-stock/', low_stock_products, name='low_stock_products'),
     path("<slug:product_slug>/", product_detail, name="product_detail"),
 
     

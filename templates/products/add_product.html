@@ -2,38 +2,12 @@
 
 <h2>Manage Product</h2>
 
-<!-- Buttons to toggle forms -->
+<!-- Form Toggle Buttons -->
 <button type="button" onclick="toggleForm('product-form')">➕ Add Product</button>
 <button type="button" onclick="toggleForm('category-form')">➕ Add Category</button>
 <button type="button" onclick="toggleForm('subcategory-form')">➕ Add Subcategory</button>
-<button type="button" onclick="toggleForm('variant-form')">➕ Add Variant</button>
-
-<!-- Category Form (Hidden by default) -->
-<div id="category-form" style="display: none; margin-top: 10px;">
-    <h3>Add Category</h3>
-    <form method="POST">
-        {% csrf_token %} {{ category_form.as_p }}
-        <button type="submit" name="category_submit">Save Category</button>
-    </form>
-</div>
-
-<!-- Subcategory Form (Hidden by default) -->
-<div id="subcategory-form" style="display: none; margin-top: 10px;">
-    <h3>Add Subcategory</h3>
-    <form method="POST">
-        {% csrf_token %} {{ subcategory_form.as_p }}
-        <button type="submit" name="subcategory_submit">Save Subcategory</button>
-    </form>
-</div>
-
-<!-- Variant Form (Hidden by default) -->
-<div id="variant-form" style="display: none; margin-top: 10px;">
-    <h3>Add Variant</h3>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %} {{ variant_form.as_p }}
-        <button type="submit" name="variant_submit">Save Variant</button>
-    </form>
-</div>
+<button type="button" onclick="toggleForm('variant-form')">➕ Add Variant</button> {% if request.user.is_superuser %}
+<button type="button" onclick="toggleForm('slider-form')">➕ Add Slider</button> {% endif %}
 
 <!-- Product Form (Visible by default) -->
 <div id="product-form" style="margin-top: 20px;">
@@ -44,15 +18,61 @@
     </form>
 </div>
 
-<!-- JavaScript to Show Only One Form at a Time -->
-<script>
-    function toggleForm(formId) {
-        var forms = ['product-form', 'category-form', 'subcategory-form', 'variant-form'];
+<!-- Category Form -->
+<div id="category-form" style="display: none; margin-top: 10px;">
+    <h3>Add Category</h3>
+    <form method="POST">
+        {% csrf_token %} {{ category_form.as_p }}
+        <button type="submit" name="category_submit">Save Category</button>
+    </form>
+</div>
 
-        forms.forEach(function(id) {
-            document.getElementById(id).style.display = (id === formId) ? "block" : "none";
+<!-- Subcategory Form -->
+<div id="subcategory-form" style="display: none; margin-top: 10px;">
+    <h3>Add Subcategory</h3>
+    <form method="POST">
+        {% csrf_token %} {{ subcategory_form.as_p }}
+        <button type="submit" name="subcategory_submit">Save Subcategory</button>
+    </form>
+</div>
+
+<!-- Variant Form -->
+<div id="variant-form" style="display: none; margin-top: 10px;">
+    <h3>Add Variant</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %} {{ variant_form.as_p }}
+        <button type="submit" name="variant_submit">Save Variant</button>
+    </form>
+</div>
+
+<!-- Slider Form (only if superuser) -->
+{% if slider_form %}
+<div id="slider-form" style="display: none; margin-top: 10px;">
+    <h3>Add Slider</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %} {{ slider_form.as_p }}
+        <button type="submit" name="slider_submit">Save Slider</button>
+    </form>
+</div>
+{% endif %}
+
+<!-- JavaScript for toggling forms -->
+<script>
+    const allForms = ['product-form', 'category-form', 'subcategory-form', 'variant-form', 'slider-form'];
+
+    function toggleForm(formId) {
+        allForms.forEach(function(id) {
+            const formElement = document.getElementById(id);
+            if (formElement) {
+                formElement.style.display = (id === formId) ? 'block' : 'none';
+            }
         });
     }
+
+    // Default to showing the Product form on page load
+    window.onload = function() {
+        toggleForm('product-form');
+    };
 </script>
 
 {% endblock %}

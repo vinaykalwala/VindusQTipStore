@@ -87,9 +87,12 @@ def get_vendor_sales_report(vendor, year):
         'top_products': top_products,
     }
 
+from collections import defaultdict
+from django.db.models import Count
+import calendar
 
 def get_superuser_sales_report(year):
-    order_items = OrderItem.objects.select_related('order', 'product').filter(
+    order_items = OrderItem.objects.select_related('order', 'product', 'product__vendor').filter(
         order__created_at__year=year
     ).annotate(order_item_count=Count('order__items'))
 
@@ -139,10 +142,50 @@ def get_superuser_sales_report(year):
         for name, data in top_products_map.items()
     ], key=lambda x: x['total_sold'], reverse=True)[:5]
 
+    # Vendor total revenue
+    vendor_revenue_map = defaultdict(lambda: {'revenue': 0, 'order_ids': set(), 'username': ''})
+    for item in filtered_items:
+        vendor = item.product.vendor
+        vendor_id = vendor.id
+        vendor_revenue_map[vendor_id]['revenue'] += (item.price or 0) * (item.quantity or 1)
+        vendor_revenue_map[vendor_id]['order_ids'].add(item.order.id)
+        vendor_revenue_map[vendor_id]['username'] = vendor.username
+
+    vendor_revenue_list = [
+        {'product__vendor__username': v['username'], 'revenue': v['revenue'], 'order_count': len(v['order_ids'])}
+        for v in vendor_revenue_map.values()
+    ]
+
+    # Vendor monthly breakdown
+    vendor_monthly_map = defaultdict(lambda: defaultdict(lambda: {'vendor_name': '', 'revenue': 0, 'order_ids': set()}))
+    for item in filtered_items:
+        vendor = item.product.vendor
+        vendor_id = vendor.id
+        month = item.order.created_at.month
+        vendor_monthly_map[month][vendor_id]['vendor_name'] = vendor.username
+        vendor_monthly_map[month][vendor_id]['revenue'] += (item.price or 0) * (item.quantity or 1)
+        vendor_monthly_map[month][vendor_id]['order_ids'].add(item.order.id)
+
+    vendor_monthly_performance = []
+    for month in range(1, 13):
+        vendors = []
+        for vendor_id, data in vendor_monthly_map[month].items():
+            vendors.append({
+                'vendor_name': data['vendor_name'],
+                'revenue': data['revenue'],
+                'order_count': len(data['order_ids'])
+            })
+        vendor_monthly_performance.append({
+            'month_name': calendar.month_name[month],
+            'vendors': vendors
+        })
+
     return {
         'year': year,
         'total_revenue': total_revenue,
         'total_orders': total_orders,
         'monthly_sales': monthly_sales,
         'top_products': top_products,
+        'vendor_performance': vendor_revenue_list,
+        'vendor_monthly_performance': vendor_monthly_performance,
     }

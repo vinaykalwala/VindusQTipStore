@@ -45,3 +45,16 @@ class SearchForm(forms.Form):
         'placeholder': 'Search products, categories, or subcategories...',
         'class': 'form-control',
     }))
+
+
+from .models import Slider
+
+class SliderForm(forms.ModelForm):
+    class Meta:
+        model = Slider
+        fields = ['image', 'title', 'description']
+
+class UpdateStockForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['stock']

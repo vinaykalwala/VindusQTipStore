@@ -1,13 +1,14 @@
+{% extends "base.html" %} {% block content %}
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>Platform Sales Report</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         table {
             border-collapse: collapse;
             width: 100%;
+            margin-bottom: 20px;
         }
         
         th,
@@ -20,46 +21,51 @@
         th {
             background-color: #f2f2f2;
         }
+        
+        h2,
+        h3 {
+            margin-top: 40px;
+        }
+        
+        .bar {
+            display: inline-block;
+            height: 20px;
+            background-color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .button-group {
+            margin-bottom: 20px;
+        }
+        
+        .button-group button {
+            margin-right: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
     </style>
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        window.onload = function() {
+            showSection('monthly_sales');
+        }
+    </script>
 </head>
 
 <body>
+
     <h1>Platform Sales Report for {{ report.year }}</h1>
     <p><strong>Total Revenue:</strong> ₹{{ report.total_revenue }}</p>
     <p><strong>Total Orders:</strong> {{ report.total_orders }}</p>
-
-    <h2>Monthly Sales</h2>
-    <table>
-        <tr>
-            <th>Month</th>
-            <th>Revenue (₹)</th>
-            <th>Orders</th>
-        </tr>
-        {% for sale in report.monthly_sales %}
-        <tr>
-            <td>{{ sale.month_name }}</td>
-            <td>{{ sale.revenue }}</td>
-            <td>{{ sale.order_count }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    <h2>Vendor Performance</h2>
-    <ul>
-        {% for vendor in report.vendor_performance %}
-        <li>{{ vendor.product__vendor__username }} - ₹{{ vendor.revenue }} ({{ vendor.order_count }} orders)</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Top Products</h2>
-    <ul>
-        {% for product in report.top_products %}
-        <li>{{ product.product__name }} - Sold: {{ product.total_sold }} (₹{{ product.revenue }})</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Sales Trend</h2>
-    <canvas id="salesChart" width="400" height="200"></canvas>
 
     <form method="GET">
         <label for="year">Select Year:</label>
@@ -67,41 +73,105 @@
         <button type="submit">Filter</button>
     </form>
 
-    <script>
-        var ctx = document.getElementById('salesChart').getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: [{ %
-                        for sale in report.monthly_sales %
-                    }
-                    '{{ sale.month_name }}', { % endfor %
-                    }
-                ],
-                datasets: [{
-                    label: 'Revenue (₹)',
-                    data: [{ %
-                        for sale in report.monthly_sales %
-                    } {
-                        {
-                            sale.revenue
-                        }
-                    }, { % endfor %
-                    }],
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
+    <!-- Buttons to toggle sections -->
+    <div class="button-group">
+        <button onclick="showSection('monthly_sales')">Monthly Sales</button>
+        <button onclick="showSection('vendor_performance')">Vendor Performance</button>
+        <button onclick="showSection('top_products')">Top Products</button>
+        <button onclick="showSection('vendor_monthly')">Vendor Monthly Performance</button>
+    </div>
+
+    <!-- Monthly Sales Section -->
+    <div class="section" id="monthly_sales">
+        <h2>Monthly Sales</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Revenue (₹)</th>
+                    <th>Orders</th>
+                    <th>Bar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in report.monthly_sales %}
+                <tr>
+                    <td>{{ sale.month_name }}</td>
+                    <td>{{ sale.revenue }}</td>
+                    <td>{{ sale.order_count }}</td>
+                    <td>
+                        <div class="bar" style="width:{{ sale.bar_height }}px"></div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Vendor Performance Section -->
+    <div class="section" id="vendor_performance">
+        <h2>Vendor Performance (Overall)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Vendor</th>
+                    <th>Revenue (₹)</th>
+                    <th>Orders</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vendor in report.vendor_performance %}
+                <tr>
+                    <td>{{ vendor.product__vendor__username }}</td>
+                    <td>{{ vendor.revenue }}</td>
+                    <td>{{ vendor.order_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Top Products Section -->
+    <div class="section" id="top_products">
+        <h2>Top Products</h2>
+        <ul>
+            {% for product in report.top_products %}
+            <li>{{ product.product__name }} - Sold: {{ product.total_sold }} (₹{{ product.revenue }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Monthly Vendor Performance Section -->
+    <div class="section" id="vendor_monthly">
+        <h2>Monthly Vendor Performance</h2>
+        {% for month_data in report.vendor_monthly_performance %}
+        <h3>{{ month_data.month_name }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Vendor</th>
+                    <th>Revenue (₹)</th>
+                    <th>Orders</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vendor in month_data.vendors %}
+                <tr>
+                    <td>{{ vendor.vendor_name }}</td>
+                    <td>{{ vendor.revenue }}</td>
+                    <td>{{ vendor.order_count }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No data</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endfor %}
+    </div>
+
 </body>
 
 </html>
+{% endblock %}

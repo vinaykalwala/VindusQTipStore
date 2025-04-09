@@ -1,0 +1,60 @@
+{% extends 'base.html' %} {% block content %}
+
+<h2>📦 Low Stock Products (Below 5)</h2>
+
+{% if messages %} {% for message in messages %}
+<p style="color:{% if message.tags == 'success' %}green{% elif message.tags == 'error' %}red{% else %}black{% endif %};">
+    {{ message }}
+</p>
+{% endfor %} {% endif %} {% if products %}
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Stock</th>
+            <th>Vendor</th>
+            <th>Update Stock</th>
+            {% if request.user.is_superuser %}
+            <th>Send Alert Email</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.stock }}</td>
+            <td>
+                {% if product.vendor %} {{ product.vendor.username }} {% else %}
+                <em>No Vendor</em> {% endif %}
+            </td>
+            <td>
+                <form method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}"> {% if request.user.is_superuser and product.vendor %}
+                    <input type="number" name="stock" value="{{ product.stock }}" disabled>
+                    <button type="submit" name="update_stock" disabled>Update</button>
+                    <br><small><em>Vendor managed</em></small> {% else %}
+                    <input type="number" name="stock" min="0" value="{{ product.stock }}" required>
+                    <button type="submit" name="update_stock">Update</button> {% endif %}
+                </form>
+            </td>
+            {% if request.user.is_superuser %}
+            <td>
+                {% if product.vendor %}
+                <form method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <button type="submit" name="send_alert">📧 Send Alert</button>
+                </form>
+                {% else %}
+                <em>N/A</em> {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No products with low stock.</p>
+{% endif %} {% endblock %}

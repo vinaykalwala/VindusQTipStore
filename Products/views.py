@@ -129,24 +129,31 @@ def product_detail(request, product_slug):
         'recently_viewed_products': recently_viewed_products,
         'similar_products': similar_products 
     })
+from .forms import ProductForm, CategoryForm, SubCategoryForm, ProductVariantForm, SliderForm  # import SliderForm
+from django.contrib.auth.decorators import login_required
 
-from django.shortcuts import render, redirect
-from .forms import ProductForm, CategoryForm, SubCategoryForm, ProductVariantForm
-
+@login_required
 def add_product(request):
+    # Forms initialized in both POST and GET to avoid missing references
+    product_form = ProductForm()
+    category_form = CategoryForm()
+    subcategory_form = SubCategoryForm()
+    variant_form = ProductVariantForm()
+    slider_form = SliderForm() if request.user.is_superuser else None
+
     if request.method == "POST":
         if "category_submit" in request.POST:
             category_form = CategoryForm(request.POST)
             if category_form.is_valid():
                 category_form.save()
-                return redirect('Products:add_product')  # Reload page to update choices
-        
+                return redirect('Products:add_product')
+
         elif "subcategory_submit" in request.POST:
             subcategory_form = SubCategoryForm(request.POST)
             if subcategory_form.is_valid():
                 subcategory_form.save()
-                return redirect('Products:add_product')  
-        
+                return redirect('Products:add_product')
+
         elif "variant_submit" in request.POST:
             variant_form = ProductVariantForm(request.POST, request.FILES)
             if variant_form.is_valid():
@@ -159,17 +166,18 @@ def add_product(request):
                 product_form.save(user=request.user)
                 return redirect('dashboard')
 
-    else:
-        product_form = ProductForm()
-        category_form = CategoryForm()
-        subcategory_form = SubCategoryForm()
-        variant_form = ProductVariantForm()
+        elif "slider_submit" in request.POST and request.user.is_superuser:
+            slider_form = SliderForm(request.POST, request.FILES)
+            if slider_form.is_valid():
+                slider_form.save()
+                return redirect('Products:add_product')
 
     return render(request, "products/add_product.html", {
         "product_form": product_form,
         "category_form": category_form,
         "subcategory_form": subcategory_form,
-        "variant_form": variant_form
+        "variant_form": variant_form,
+        "slider_form": slider_form  # Pass it to template
     })
 
 
@@ -358,4 +366,66 @@ def search_view(request):
         'form': form,
         'results': results,
         'query': query
+    })
+
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import Product
+from .forms import UpdateStockForm
+
+@login_required
+def low_stock_products(request):
+    if request.user.is_superuser:
+        products = Product.objects.filter(stock__lt=5)
+    else:
+        products = Product.objects.filter(stock__lt=5, vendor=request.user)
+
+    if request.method == 'POST':
+        if 'update_stock' in request.POST:
+            product_id = request.POST.get('product_id')
+            product = get_object_or_404(Product, id=product_id)
+
+            # Superuser can only update if no vendor is assigned
+            if request.user.is_superuser and product.vendor:
+                messages.error(request, f"Superuser cannot update stock for vendor-managed product '{product.name}'.")
+            else:
+                form = UpdateStockForm(request.POST, instance=product)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, f"Stock for '{product.name}' updated successfully.")
+                    return redirect('Products:low_stock_products')
+
+        elif 'send_alert' in request.POST:
+            product_id = request.POST.get('product_id')
+            product = get_object_or_404(Product, id=product_id)
+
+            if product.vendor and product.vendor.email:
+                vendor_email = product.vendor.email
+                vendor_name = product.vendor.get_full_name() or product.vendor.username
+
+                subject = f"⚠️ Low Stock Alert: {product.name}"
+                message = f"""
+Dear {vendor_name},
+
+Your product "{product.name}" is currently low on stock with only {product.stock} units left.
+
+Please update the stock from your dashboard at your earliest convenience.
+
+Thank you,
+Inventory Management Team
+"""
+
+                send_mail(subject, message.strip(), settings.DEFAULT_FROM_EMAIL, [vendor_email])
+                messages.success(request, f"Alert email sent to {vendor_name} for '{product.name}'.")
+            else:
+                messages.error(request, "No vendor or email associated with the product.")
+            return redirect('Products:low_stock_products')
+
+    return render(request, 'products/low_stock_products.html', {
+        'products': products,
+        'stock_form': UpdateStockForm()
     })
