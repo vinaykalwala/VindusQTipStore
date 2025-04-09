@@ -417,6 +417,7 @@ Please update the stock from your dashboard at your earliest convenience.
 
 Thank you,
 Inventory Management Team
+QTipStore
 """
 
                 send_mail(subject, message.strip(), settings.DEFAULT_FROM_EMAIL, [vendor_email])
