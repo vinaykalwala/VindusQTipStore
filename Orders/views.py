@@ -165,7 +165,7 @@ def cod_payment(request):
             variant=variant,
             quantity=item['quantity'], 
             price=item_price,
-            status='Processing',
+            status='Pending',
             expected_delivery_date=now().date() + timedelta(days=3)
         )
 
@@ -242,7 +242,7 @@ def razorpay_callback(request):
                 address=selected_address,
                 total_price=cart_data['total_price'],
                 payment_method='Razorpay',
-                status='Processing',
+                status='Confirmed',
                 payment_status='Completed',
                 razorpay_order_id=razorpay_order_id,
                 razorpay_payment_id=razorpay_payment_id,
@@ -261,7 +261,7 @@ def razorpay_callback(request):
                     variant=variant,
                     quantity=item['quantity'],
                     price=item_price,
-                    status='Processing',
+                    status='Confirmed',
                     expected_delivery_date=now().date() + timedelta(days=3)
                 )
 
@@ -314,7 +314,7 @@ def order_summary(request):
         )
 
         for item in order.items.all():
-            item.can_cancel = item.status in ["Processing", "Pending"]
+            item.can_cancel = item.status in ["Confirmed", "Pending"]
             
             # Ensure delivered_date is not None before doing date calculations
             if item.delivered_date:

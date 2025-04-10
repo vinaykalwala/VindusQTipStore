@@ -14,13 +14,15 @@ logger = logging.getLogger(__name__)
 
 ORDER_STATUS = (
     ('pending', 'Pending'),
-    ('Processing', 'Processing'),
+    ('Confirmed', 'Confirmed'),
     ('shipped', 'Shipped'),
+    ('Partially Shipped', 'Partially Shipped'),
+    ('Partially Dispatched', 'Partially Dispatched'),
+    ('Dispatched', 'Dispatched'),
     ('Out for Delivery', 'Out for Delivery'),
     ('delivered', 'Delivered'),
-    ('cancelled', 'Cancelled'),
-    ('Refunded', 'Refunded'),
-    ('Replaced', 'Replaced'),
+    ('Partially Delivered', 'Partially Delivered'),
+    ('cancelled', 'Cancelled'),  
 )
 
 class Order(models.Model):
@@ -114,18 +116,13 @@ class Order(models.Model):
 # Order Items
 class OrderItem(models.Model):
     STATUS_CHOICES = [
-        ('Processing', 'Processing'),
-        ('Shipped', 'Shipped'),
+        ('pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
+        ('shipped', 'Shipped'),
+        ('Dispatched', 'Dispatched'),
         ('Out for Delivery', 'Out for Delivery'),
-        ('Delivered', 'Delivered'),
-        ('Return Requested', 'Return Requested'),
-        ('Returned & Refunded', 'Returned & Refunded'),
-        ('Return Processing', 'Return Processing'),
-        ('ItemReturned', 'ItemReturned'),
-        ('Replacement Requested', 'Replacement Requested'),
-        ('Replacement Processing', 'Replacement Processing'),
-        ('Replaced', 'Replaced'),
-        ('Cancelled', 'Cancelled'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
     ]
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
