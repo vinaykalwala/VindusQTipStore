@@ -476,3 +476,90 @@ def orders_page(request):
     }
 
     return render(request, "orders/orders_page.html", context)
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from Orders.models import OrderItem, OrderTracking
+from django.utils import timezone
+
+@csrf_exempt
+@login_required
+def delivery_update_status(request, item_id):
+    user = request.user
+
+    # Ensure only delivery personnel can update
+    if user.role != 'delivery':
+        return JsonResponse({'error': 'Only delivery personnel can update status'}, status=403)
+
+    if request.method == 'POST':
+        item = get_object_or_404(OrderItem, id=item_id)
+
+        # Check that this delivery person is actually assigned to this order item
+        if item.delivery_person != user:
+            return JsonResponse({'error': 'This item is not assigned to you'}, status=403)
+
+        # Get form data
+        status = request.POST.get("status")
+        location = request.POST.get("location")
+        departed = request.POST.get("departed", "false").lower() == "true"
+
+        print("DEBUG: status =", status)
+        print("DEBUG: location =", location)
+        print("DEBUG: departed =", departed)
+
+        # Validate status
+        valid_statuses = [choice[0] for choice in OrderItem.STATUS_CHOICES]
+        if status not in valid_statuses:
+            return JsonResponse({'error': 'Invalid status'}, status=400)
+
+        # Update the OrderItem model
+        item.status = status
+        if status == 'Delivered':
+            item.delivered_date = timezone.now().date()
+        item.save()  # <-- THIS MUST BE EXECUTED
+
+        # Create a tracking entry
+        OrderTracking.objects.create(
+            order_item=item,
+            location=location or "Unknown",
+            status=status,
+            departed_at=timezone.now() if departed else None
+        )
+
+        return redirect("dashboard")
+
+    return JsonResponse({'error': 'Only POST allowed'}, status=405)
+
+# views.py
+
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from .models import OrderItem
+from Users.models import CustomUser
+
+@csrf_exempt
+@login_required
+def assign_delivery_person(request, item_id):
+    if not request.user.is_superuser and request.user.role != 'DeliveryAdmin':
+        return JsonResponse({'error': 'Only admin can assign delivery person'}, status=403)
+
+    if request.method == 'POST':
+        delivery_person_id = request.POST.get('delivery_person_id')
+        item = get_object_or_404(OrderItem, id=item_id)
+
+        try:
+            delivery_person = CustomUser.objects.get(id=delivery_person_id, role='delivery')
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'error': 'Invalid delivery person ID'}, status=400)
+
+        item.delivery_person = delivery_person
+        item.save()
+
+        return redirect("dashboard")
+
+    return JsonResponse({'error': 'Only POST allowed'}, status=405)

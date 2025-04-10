@@ -16,6 +16,9 @@ urlpatterns = [
     path('add-bank-details/', add_bank_details, name="add_bank_details"),
     path('cancel-order/<int:order_id>/', cancel_order, name='cancel_order'),
     path('cancel-item/<int:order_item_id>/', cancel_order_item, name='cancel_order_item'),
+    path('delivery/update-status/<int:item_id>/', delivery_update_status, name='delivery-update-status'),
+    path('assign-delivery/<int:item_id>/', assign_delivery_person, name='assign-delivery'),
+    
 
     
 ]

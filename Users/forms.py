@@ -54,6 +54,22 @@ class DeliveryPersonRegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+class DeliveryAdminRegistrationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True, help_text="Required")
+    last_name = forms.CharField(max_length=30, required=True, help_text="Required")
+    phone = forms.CharField(max_length=15, required=True)
+    profile_picture = forms.ImageField(required=False)
+
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'username', 'email', 'phone', 'profile_picture', 'password1', 'password2']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.role = 'DeliveryAdmin'  # Assign role
+        if commit:
+            user.save()
+        return user
 
 # User Login Form
 class UserLoginForm(forms.Form):

@@ -137,24 +137,41 @@ class OrderItem(models.Model):
     delivered_date = models.DateField(null=True, blank=True)
     return_requested_at = models.DateTimeField(null=True, blank=True)
     replacement_requested_at = models.DateTimeField(null=True, blank=True)
+    tracking_number = models.CharField(max_length=20, blank=True, null=True)
+    delivery_person = models.ForeignKey(
+        CustomUser,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        limit_choices_to={'role': 'delivery'},
+        related_name='assigned_items'
+    )
 
     
     def subtotal(self):
         return self.quantity * self.price
     
     def save(self, *args, **kwargs):
-        # ✅ Check if requested quantity is available
-        if self.product.stock < self.quantity:
-            raise ValidationError(f"Only {self.product.stock} items in stock for {self.product.name}")
+        is_new = self._state.adding  # Only true for new objects
 
-        # ✅ Deduct stock
-        self.product.stock -= self.quantity
-        self.product.save()
+        if is_new:
+            if self.product.stock < self.quantity:
+                raise ValidationError(f"Only {self.product.stock} items in stock for {self.product.name}")
 
-        if not self.expected_delivery_date:
-            self.expected_delivery_date = (self.created_at + timedelta(days=5)).date()
+            if not self.tracking_number:
+                import uuid
+                self.tracking_number = f"TRK-{uuid.uuid4().hex[:10].upper()}"
+
+            # Deduct stock only on new
+            self.product.stock -= self.quantity
+            self.product.save()
+
+            if not self.expected_delivery_date:
+                from datetime import timedelta
+                self.expected_delivery_date = timezone.now().date() + timedelta(days=5)
 
         super().save(*args, **kwargs)
+
 
     def cancel_item(self):
         """Cancels an order item, restores stock, and updates order total."""
@@ -206,3 +223,14 @@ class BankDetail(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.bank_name} ({self.account_number})"
+
+
+class OrderTracking(models.Model):
+    order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE, related_name="tracking_logs")
+    location = models.CharField(max_length=255)
+    arrived_at = models.DateTimeField(default=timezone.now)
+    departed_at = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=50, choices=OrderItem.STATUS_CHOICES)
+
+    def __str__(self):
+        return f"{self.order_item.tracking_number} - {self.status} @ {self.location}"

@@ -3,7 +3,7 @@ from django.db import models
 
 # User Roles
 USER_ROLES = (
-    ('admin', 'Admin'),
+    ('DeliveryAdmin', 'DeliveryAdmin'),
     ('vendor', 'Vendor'),
     ('customer', 'Customer'),
     ('delivery', 'Delivery Person'),

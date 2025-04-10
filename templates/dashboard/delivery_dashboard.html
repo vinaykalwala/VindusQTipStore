@@ -2,8 +2,32 @@
 <div class="container">
     <h2>Delivery Dashboard</h2>
     <p>Welcome, {{ user.username }}! Here are your assigned deliveries.</p>
-    <ul>
+    <ul class="list-group">
+        {% for item in order_items %}
+        <li class="list-group-item">
+            <strong>Order #{{ item.order.id }}</strong> - {{ item.product.name }}<br>
+            <strong>Status:</strong> {{ item.status }}<br>
+            <form method="post" action="{% url 'delivery-update-status' item.id %}">
+                {% csrf_token %}
+                <label for="status">Update Status:</label>
+                <select name="status" class="form-select form-select-sm" required>
+                    {% for key, value in item.STATUS_CHOICES %}
+                    <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
 
+                <label for="location">Location:</label>
+                <input type="text" name="location" class="form-control form-control-sm" required>
+
+                <label for="departed">Departed:</label>
+                <input type="checkbox" name="departed" value="true">
+
+                <button type="submit" class="btn btn-primary btn-sm mt-2">Update</button>
+            </form>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No deliveries assigned to you yet.</li>
+        {% endfor %}
     </ul>
 </div>
 {% endblock %}

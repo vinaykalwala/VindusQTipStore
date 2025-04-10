@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
 from Ai.models import Recommendation
+from Orders.models import OrderItem
 from .models import CustomUser, Address
-from .forms import UserLoginForm, AddressForm
+from .forms import DeliveryAdminRegistrationForm, UserLoginForm, AddressForm
 from .forms import CustomerRegistrationForm, VendorRegistrationForm, DeliveryPersonRegistrationForm
 import random
 from django.core.mail import send_mail
@@ -77,6 +79,19 @@ def register_delivery_person(request):
         form = DeliveryPersonRegistrationForm()
 
     return render(request, 'users/register_delivery.html', {'form': form})
+
+def register_delivery_admin(request):
+    if request.method == 'POST':
+        form = DeliveryAdminRegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            request.session['user_data'] = form.cleaned_data  # Store temporarily in session
+            send_otp(form.cleaned_data['email'], request)  # Send OTP to email
+            messages.success(request, "OTP sent to your email. Please verify.")
+            return redirect('verify_registration_otp')  # Redirect to OTP verification view
+    else:
+        form = DeliveryAdminRegistrationForm()
+
+    return render(request, 'users/register_delivery_admin.html', {'form': form})
 
 # OTP Verification for Registration
 def verify_registration_otp(request):
@@ -198,6 +213,8 @@ def dashboard_view(request):
     vendor_products = None
     vendors_with_products = None 
     unassociated_products=[]
+    order_items=[]
+    delivery_people=[]
 
     if user.is_superuser:
         template = 'dashboard/admin_dashboard.html'
@@ -278,9 +295,17 @@ def dashboard_view(request):
 
     elif user.role == 'delivery':
         template = 'dashboard/delivery_dashboard.html'
+        user = request.user
+        if user.role != 'delivery':
+            return JsonResponse({'error': 'Access denied'}, status=403)
+
+        order_items = OrderItem.objects.filter(delivery_person=user)
 
     else:
         template = 'dashboard/default_dashboard.html'
+        order_items = OrderItem.objects.select_related('order', 'product', 'delivery_person').all()
+        delivery_people = CustomUser.objects.filter(role='delivery')
+
 
     return render(request, template, {
         'user': user,
@@ -294,6 +319,8 @@ def dashboard_view(request):
         'vendor_products': vendor_products,
         'vendors_with_products': vendors_with_products,
         'unassociated_products': unassociated_products,
+        'order_items': order_items,
+        'delivery_people': delivery_people
     })
 
 

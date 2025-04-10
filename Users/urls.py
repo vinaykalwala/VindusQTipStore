@@ -5,6 +5,7 @@ urlpatterns = [
     path('register/customer/', register_customer, name='register_customer'),
     path('register/vendor/', register_vendor, name='register_vendor'),
     path('register/delivery/', register_delivery_person, name='register_delivery_person'),
+    path('register/delivery-admin/', register_delivery_admin, name='register_delivery_admin'),
     path('verify-registration-otp/', verify_registration_otp, name='verify_registration_otp'),
     path('login/', login_view, name='user-login'),
     path('logout/', logout_view, name='user-logout'),

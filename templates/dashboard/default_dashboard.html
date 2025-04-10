@@ -1,7 +1,47 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container">
     <h2>Welcome to the Dashboard</h2>
-    <p>Hello, {{ user.username }}! You don’t have a specific role assigned.</p>
-    <p>Please contact support if you need access to additional features.</p>
+    <p>Hello, {{ user.username }}!</p>
+
+    {% if order_items %}
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Delivery Person</th>
+                <th>Assign Delivery Person</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.order.id }}</td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.status }}</td>
+                <td>
+                    {% if item.delivery_person %} {{ item.delivery_person.username }} {% else %}
+                    <em>Not Assigned</em> {% endif %}
+                </td>
+                <td>
+                    <form method="post" action="{% url 'assign-delivery' item.id %}">
+                        {% csrf_token %}
+                        <select name="delivery_person_id" class="form-select form-select-sm" required>
+                            <option value="">-- Select Delivery Person --</option>
+                            {% for person in delivery_people %}
+                            <option value="{{ person.id }}">{{ person.username }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm mt-1">Assign</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No order items found.</p>
+    {% endif %}
 </div>
 {% endblock %}
