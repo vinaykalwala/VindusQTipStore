@@ -1,22 +1,45 @@
-# signals.py
-
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import OrderItem, Order
 
 @receiver(post_save, sender=OrderItem)
 def update_order_status(sender, instance, **kwargs):
-    all_items = instance.order.items.all()
+    order = instance.order
+    items = order.items.all()
+    
+    item_statuses = [item.status for item in items]
 
-    if all(i.status == 'Delivered' for i in all_items):
-        instance.order.status = 'delivered'
-    elif any(i.status == 'Out for Delivery' for i in all_items):
-        instance.order.status = 'Out for Delivery'
-    elif any(i.status == 'Shipped' for i in all_items):
-        instance.order.status = 'shipped'
-    elif all(i.status == 'Cancelled' for i in all_items):
-        instance.order.status = 'cancelled'
+    if all(status == 'delivered' for status in item_statuses):
+        order.status = 'delivered'
+
+    elif any(status == 'delivered' for status in item_statuses) and not all(status == 'delivered' for status in item_statuses):
+        order.status = 'Partially Delivered'
+
+    elif all(status == 'Out for Delivery' for status in item_statuses):
+        order.status = 'Out for Delivery'
+
+    elif any(status == 'Out for Delivery' for status in item_statuses):
+        order.status = 'Out for Delivery'
+
+    elif all(status == 'Dispatched' for status in item_statuses):
+        order.status = 'Dispatched'
+
+    elif any(status == 'Dispatched' for status in item_statuses):
+        order.status = 'Partially Dispatched'
+
+    elif all(status == 'shipped' for status in item_statuses):
+        order.status = 'shipped'
+
+    elif any(status == 'shipped' for status in item_statuses):
+        order.status = 'Partially Shipped'
+
+    elif all(status == 'cancelled' for status in item_statuses):
+        order.status = 'cancelled'
+
+    elif all(status in ['pending', 'Confirmed'] for status in item_statuses):
+        order.status = 'Confirmed'
+
     else:
-        instance.order.status = 'Processing'
+        order.status = 'pending'  # fallback or mixed state
 
-    instance.order.save()
+    order.save()

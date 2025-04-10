@@ -300,6 +300,8 @@ def dashboard_view(request):
             return JsonResponse({'error': 'Access denied'}, status=403)
 
         order_items = OrderItem.objects.filter(delivery_person=user)
+        for item in order_items:
+            item.STATUS_CHOICES = OrderItem.STATUS_CHOICES
 
     else:
         template = 'dashboard/default_dashboard.html'
