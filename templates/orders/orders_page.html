@@ -21,6 +21,7 @@
         <th>Quantity</th>
         <th>Price</th>
         <th>Subtotal</th>
+        <th>Actions</th>
     </tr>
     {% for item in order_data.items %}
     <tr>
@@ -28,6 +29,8 @@
         <td>{{ item.quantity }}</td>
         <td>₹{{ item.price }}</td>
         <td>₹{{ item.subtotal }}</td>
+        <td><a href="{% url 'track-order' item.id %}" class="btn btn-info btn-sm mt-2">Track Order</a>
+        </td>
     </tr>
     {% endfor %}
 </table>

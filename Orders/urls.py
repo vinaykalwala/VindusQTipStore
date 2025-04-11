@@ -18,6 +18,7 @@ urlpatterns = [
     path('delivery/update-status/<int:item_id>/', delivery_update_status, name='delivery-update-status'),
     path('assign-delivery/<int:item_id>/', assign_delivery_person, name='assign-delivery'),
     path('track-order/<int:order_item_id>/', track_order_view, name='track-order'),
+     path('track-order/',track_order_by_tracking_number, name='track_by_tracking_number'),
     
 
     

@@ -1,0 +1,50 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-4">
+    <h2>Track Your Order</h2>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="get" action="{% url 'track_by_tracking_number' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="tracking_number" class="form-control" placeholder="Enter Tracking Number" value="{{ tracking_number|default:'' }}" required>
+            <button class="btn btn-primary" type="submit">Track</button>
+        </div>
+    </form>
+
+    {% if order_item %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Product: {{ order_item.product.name }}</h5>
+            <p><strong>Tracking Number:</strong> {{ order_item.tracking_number }}</p>
+            <p><strong>Current Status:</strong> <span class="badge bg-info text-dark">{{ order_item.status }}</span></p>
+        </div>
+    </div>
+
+    <h5>Tracking History:</h5>
+    <ul class="list-group">
+        {% for log in tracking_logs %}
+        <li class="list-group-item">
+            <strong>Status:</strong> {{ log.status }}<br>
+            <strong>Location:</strong> {{ log.location }}<br>
+            <strong>Arrived:</strong> {{ log.arrived_at|date:"d M Y, h:i A" }} IST<br> {% if log.departed_at %}
+            <strong>Departed:</strong> {{ log.departed_at|date:"d M Y, h:i A" }} IST {% endif %}
+        </li>
+        {% empty %}
+        <li class="list-group-item">No tracking information available yet.</li>
+        {% endfor %}
+    </ul>
+    {% elif tracking_number %}
+    <div class="alert alert-warning mt-4">No order found with tracking number: <strong>{{ tracking_number }}</strong></div>
+    {% endif %} {% if all_tracking_numbers %}
+    <hr>
+    <h5>All Tracking Numbers (Admin View):</h5>
+    <ul>
+        {% for tn in all_tracking_numbers %}
+        <li>{{ tn }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

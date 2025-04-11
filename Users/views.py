@@ -302,6 +302,9 @@ def dashboard_view(request):
         order_items = OrderItem.objects.filter(delivery_person=user)
         for item in order_items:
             item.STATUS_CHOICES = OrderItem.STATUS_CHOICES
+        
+        for item in order_items:
+            item.is_delivered = (item.status == "delivered")
 
     else:
         template = 'dashboard/default_dashboard.html'

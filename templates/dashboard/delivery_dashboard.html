@@ -2,29 +2,33 @@
 <div class="container">
     <h2>Delivery Dashboard</h2>
     <p>Welcome, {{ user.username }}! Here are your assigned deliveries.</p>
+
     <ul class="list-group">
         {% for item in order_items %}
-        <li class="list-group-item">
+        <li class="list-group-item mb-3">
             <strong>Order #{{ item.order.id }}</strong> - {{ item.product.name }}<br>
             <strong>Tracking ID:</strong> {{ item.tracking_number }}<br>
             <strong>Status:</strong> {{ item.status }}<br>
-            <form method="post" action="{% url 'delivery-update-status' item.id %}">
+
+            <form method="post" action="{% url 'delivery-update-status' item.id %}" {% if item.is_delivered %}onsubmit="return false;" {% endif %}>
                 {% csrf_token %}
-                <label for="status">Update Status:</label>
-                <select name="status" class="form-select form-select-sm" required>
+
+                <label>Status:</label>
+                <select name="status" class="form-select form-select-sm status-select" {% if item.is_delivered %}disabled{% endif %} required>
                     {% for key, value in item.STATUS_CHOICES %}
-                        <option value="{{ key }}" {% if item.status == key %}selected{% endif %}>{{ value }}</option>
+                        <option value="{{ key }}" {% if key == item.status %}selected{% endif %}>{{ value }}</option>
                     {% endfor %}
                 </select>
 
+                <label class="mt-2 location-label" style="display: none;">Location:</label>
+                <input type="text" name="location" class="form-control form-control-sm location-input" style="display: none;" {% if item.is_delivered %}disabled{% endif %}>
 
-                <label for="location">Location:</label>
-                <input type="text" name="location" class="form-control form-control-sm" required>
+                <label class="mt-2">Departed:</label>
+                <input type="checkbox" name="departed" value="true" {% if item.is_delivered %}disabled{% endif %}>
 
-                <label for="departed">Departed:</label>
-                <input type="checkbox" name="departed" value="true">
+                <div class="otp-wrapper mt-2"></div>
 
-                <button type="submit" class="btn btn-primary btn-sm mt-2">Update</button>
+                <button type="submit" class="btn btn-primary btn-sm mt-3" {% if item.is_delivered %}disabled{% endif %}>Update</button>
             </form>
         </li>
         {% empty %}
@@ -32,4 +36,48 @@
         {% endfor %}
     </ul>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.status-select').forEach(select => {
+            const form = select.closest('form');
+            const locationInput = form.querySelector('.location-input');
+            const locationLabel = form.querySelector('.location-label');
+            const otpWrapper = form.querySelector('.otp-wrapper');
+
+            const otpInput = document.createElement('input');
+            otpInput.name = 'otp';
+            otpInput.placeholder = 'Enter OTP';
+            otpInput.className = 'form-control form-control-sm';
+            otpInput.required = true;
+
+            function handleStatusChange() {
+                const value = select.value;
+
+                if (['shipped', 'Dispatched', 'Out for Delivery'].includes(value)) {
+                    locationInput.style.display = 'block';
+                    locationLabel.style.display = 'block';
+                    locationInput.required = true;
+                } else {
+                    locationInput.style.display = 'none';
+                    locationLabel.style.display = 'none';
+                    locationInput.required = false;
+                }
+
+                if (value === 'delivered') {
+                    if (!otpWrapper.contains(otpInput)) {
+                        otpWrapper.appendChild(otpInput);
+                    }
+                } else {
+                    if (otpWrapper.contains(otpInput)) {
+                        otpWrapper.removeChild(otpInput);
+                    }
+                }
+            }
+
+            select.addEventListener('change', handleStatusChange);
+            handleStatusChange(); // run on load
+        });
+    });
+</script>
 {% endblock %}

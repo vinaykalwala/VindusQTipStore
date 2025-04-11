@@ -355,6 +355,12 @@
                             <i class="fas fa-box-open"></i>Low Stock
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'track_by_tracking_number' %}">
+                            <i class="fas fa-box-open"></i>Find Order
+                        </a>
+                    </li>
+
                     {% elif user.role == "vendor" %}
                     <!-- Vendor Navigation -->
                     <li class="nav-item">
@@ -387,6 +393,12 @@
                             <i class="fas fa-box-open"></i>Low Stock
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'track_by_tracking_number' %}">
+                            <i class="fas fa-box-open"></i>Find Order
+                        </a>
+                    </li>
+
                     {% elif user.role == "customer" %}
                     <!-- Customer Navigation -->
                     <li class="nav-item">

@@ -37,10 +37,11 @@
     {% endif %}
 
     <div class="mt-4">
-        {% if user.role == 'customer' %}
+        {% if user.role == 'Customer' %}
         <a href="{% url 'order-summary' %}" class="btn btn-secondary">Back to Orders</a> {% elif user.role == 'vendor' or user.is_superuser %}
         <a href="{% url 'orders_page' %}" class="btn btn-secondary">Back to Orders</a> {% endif %}
     </div>
+
 </div>
 
 <style>

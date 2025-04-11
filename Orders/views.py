@@ -472,23 +472,26 @@ def orders_page(request):
 
     return render(request, "orders/orders_page.html", context)
 
+# Orders/views.py
 
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from Orders.models import OrderItem, OrderTracking
 from django.utils import timezone
-
-from django.utils import timezone
+from django.contrib import messages
+from django.core.mail import send_mail
 import pytz
+
+from Orders.models import OrderItem, OrderTracking
+from .utils import generate_otp
 
 @csrf_exempt
 @login_required
 def delivery_update_status(request, item_id):
     user = request.user
     IST = pytz.timezone('Asia/Kolkata')
-    
+
     if user.role != 'delivery':
         return JsonResponse({'error': 'Only delivery personnel can update status'}, status=403)
 
@@ -497,46 +500,97 @@ def delivery_update_status(request, item_id):
 
         if item.delivery_person != user:
             return JsonResponse({'error': 'This item is not assigned to you'}, status=403)
+        
+        if item.status == 'delivered':
+            messages.error(request, "This order has already been delivered and cannot be updated.")
+            return redirect("dashboard")
 
         status = request.POST.get("status")
         location = request.POST.get("location", "").strip()
         departed = request.POST.get("departed", "false").lower() == "true"
+        input_otp = request.POST.get("otp", "").strip()
 
-        valid_statuses = [
-            'pending', 'Confirmed', 'shipped', 'Dispatched',
-            'Out for Delivery', 'delivered', 'cancelled'
-        ]
-
+        valid_statuses = ['pending', 'Confirmed', 'shipped', 'Dispatched', 'Out for Delivery', 'delivered', 'cancelled']
         if status not in valid_statuses:
             return JsonResponse({'error': 'Invalid status'}, status=400)
 
-        # Optional: Require location for only certain statuses
         location_required = ['shipped', 'Dispatched', 'Out for Delivery']
         if status in location_required and not location:
             return JsonResponse({'error': 'Location is required for this status'}, status=400)
 
-        # Update OrderItem
-        item.status = status
-        if status == 'delivered':
-            item.delivered_date = timezone.now().astimezone(IST).date()
-        item.save()
-
         now_ist = timezone.now().astimezone(IST)
 
-        tracking_data = {
-            'order_item': item,
-            'status': status,
-            'location': location if location else "Unknown",
-        }
+        # OTP Handling for 'Out for Delivery'
+        if status == 'Out for Delivery':
+            otp = generate_otp()
+            item.delivery_otp = otp
+            item.otp_verified = False
+            item.status = status
+            item.save()
 
-        if not item.tracking_logs.exists() or status in ['shipped', 'Dispatched', 'Out for Delivery']:
-            tracking_data['arrived_at'] = now_ist
+            # Email OTP (can be replaced by SMS API)
+            customer_email = item.order.user.email
+            send_mail(
+                subject="Your Delivery OTP",
+                message=f"Dear Customer, your OTP for order #{item.order.id} is {otp}.",
+                from_email="noreply@yourdomain.com",
+                recipient_list=[customer_email],
+                fail_silently=True,
+            )
+
+            OrderTracking.objects.create(
+                order_item=item,
+                status=status,
+                location=location if location else "Unknown",
+                arrived_at=now_ist
+            )
+
+            messages.success(request, "OTP has been sent to the customer.")
+            return redirect("dashboard")
+
+        # OTP Verification for 'delivered'
+        if status == 'delivered':
+            if not input_otp:
+                messages.error(request, "Please enter the OTP to mark as delivered.")
+                return redirect("dashboard")
+
+            if input_otp != item.delivery_otp:
+                messages.error(request, "Invalid OTP. Please try again.")
+                return redirect("dashboard")
+
+            item.status = status
+            item.delivered_date = now_ist.date()
+            item.otp_verified = True
+            item.save()
+
+            OrderTracking.objects.create(
+                order_item=item,
+                status=status,
+                location=location if location else "Unknown",
+                arrived_at=now_ist
+            )
+
+            messages.success(request, "Order successfully marked as delivered.")
+            return redirect("dashboard")
+
+        # Other statuses
+        item.status = status
+        item.save()
 
         if departed:
-            tracking_data['departed_at'] = now_ist
+            latest_tracking = item.tracking_logs.order_by('-arrived_at').first()
+            if latest_tracking and not latest_tracking.departed_at:
+                latest_tracking.departed_at = now_ist
+                latest_tracking.save()
+        else:
+            OrderTracking.objects.create(
+                order_item=item,
+                status=status,
+                location=location if location else "Unknown",
+                arrived_at=now_ist
+            )
 
-        OrderTracking.objects.create(**tracking_data)
-
+        messages.success(request, f"Status updated to {status}")
         return redirect("dashboard")
 
     return JsonResponse({'error': 'Only POST allowed'}, status=405)
@@ -581,4 +635,40 @@ def track_order_view(request, order_item_id):
         'order_item': order_item,
         'tracking_logs': tracking_logs,
         'order_status': order_status
+    })
+
+
+# views.py
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import OrderItem
+
+@login_required
+def track_order_by_tracking_number(request):
+    user = request.user
+    tracking_number = request.GET.get('tracking_number')
+    order_item = None
+    tracking_logs = []
+
+    if tracking_number:
+        if user.is_superuser:
+            order_item = get_object_or_404(OrderItem, tracking_number=tracking_number)
+        elif user.role == 'vendor':
+            order_item = get_object_or_404(OrderItem, tracking_number=tracking_number, product__vendor=user)
+        else:
+            return render(request, 'orders/track_by_number.html', {
+                'error': 'You are not authorized to view this tracking.'
+            })
+
+        tracking_logs = order_item.tracking_logs.order_by('-arrived_at')
+
+    all_tracking_numbers = []
+    if user.is_superuser:
+        all_tracking_numbers = OrderItem.objects.values_list('tracking_number', flat=True)
+
+    return render(request, 'orders/track_by_number.html', {
+        'order_item': order_item,
+        'tracking_logs': tracking_logs,
+        'tracking_number': tracking_number,
+        'all_tracking_numbers': all_tracking_numbers,
     })

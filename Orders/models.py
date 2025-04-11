@@ -135,6 +135,8 @@ class OrderItem(models.Model):
     return_requested_at = models.DateTimeField(null=True, blank=True)
     replacement_requested_at = models.DateTimeField(null=True, blank=True)
     tracking_number = models.CharField(max_length=20, blank=True, null=True)
+    delivery_otp = models.CharField(max_length=6, blank=True, null=True)
+    otp_verified = models.BooleanField(default=False)
     delivery_person = models.ForeignKey(
         CustomUser,
         null=True,
