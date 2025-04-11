@@ -184,11 +184,6 @@ def order_detail(request, order_id):
     order = Order.objects.get(id=order_id)
     return render(request, 'orders/order_detail.html', {'order': order})
 
-# Track Order
-def track_order(request, order_id):
-    order = Order.objects.get(id=order_id)
-    return render(request, 'orders/track_order.html', {'order': order})
-
 
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
@@ -485,49 +480,62 @@ from django.contrib.auth.decorators import login_required
 from Orders.models import OrderItem, OrderTracking
 from django.utils import timezone
 
+from django.utils import timezone
+import pytz
+
 @csrf_exempt
 @login_required
 def delivery_update_status(request, item_id):
     user = request.user
-
-    # Ensure only delivery personnel can update
+    IST = pytz.timezone('Asia/Kolkata')
+    
     if user.role != 'delivery':
         return JsonResponse({'error': 'Only delivery personnel can update status'}, status=403)
 
     if request.method == 'POST':
         item = get_object_or_404(OrderItem, id=item_id)
 
-        # Check that this delivery person is actually assigned to this order item
         if item.delivery_person != user:
             return JsonResponse({'error': 'This item is not assigned to you'}, status=403)
 
-        # Get form data
         status = request.POST.get("status")
-        location = request.POST.get("location")
+        location = request.POST.get("location", "").strip()
         departed = request.POST.get("departed", "false").lower() == "true"
 
-        print("DEBUG: status =", status)
-        print("DEBUG: location =", location)
-        print("DEBUG: departed =", departed)
+        valid_statuses = [
+            'pending', 'Confirmed', 'shipped', 'Dispatched',
+            'Out for Delivery', 'delivered', 'cancelled'
+        ]
 
-        # Validate status
-        valid_statuses = [choice[0] for choice in OrderItem.STATUS_CHOICES]
         if status not in valid_statuses:
             return JsonResponse({'error': 'Invalid status'}, status=400)
 
-        # Update the OrderItem model
-        item.status = status
-        if status == 'Delivered':
-            item.delivered_date = timezone.now().date()
-        item.save()  # <-- THIS MUST BE EXECUTED
+        # Optional: Require location for only certain statuses
+        location_required = ['shipped', 'Dispatched', 'Out for Delivery']
+        if status in location_required and not location:
+            return JsonResponse({'error': 'Location is required for this status'}, status=400)
 
-        # Create a tracking entry
-        OrderTracking.objects.create(
-            order_item=item,
-            location=location or "Unknown",
-            status=status,
-            departed_at=timezone.now() if departed else None
-        )
+        # Update OrderItem
+        item.status = status
+        if status == 'delivered':
+            item.delivered_date = timezone.now().astimezone(IST).date()
+        item.save()
+
+        now_ist = timezone.now().astimezone(IST)
+
+        tracking_data = {
+            'order_item': item,
+            'status': status,
+            'location': location if location else "Unknown",
+        }
+
+        if not item.tracking_logs.exists() or status in ['shipped', 'Dispatched', 'Out for Delivery']:
+            tracking_data['arrived_at'] = now_ist
+
+        if departed:
+            tracking_data['departed_at'] = now_ist
+
+        OrderTracking.objects.create(**tracking_data)
 
         return redirect("dashboard")
 
@@ -563,3 +571,14 @@ def assign_delivery_person(request, item_id):
         return redirect("dashboard")
 
     return JsonResponse({'error': 'Only POST allowed'}, status=405)
+
+
+def track_order_view(request, order_item_id):
+    order_item = get_object_or_404(OrderItem, id=order_item_id)
+    tracking_logs = order_item.tracking_logs.order_by('-arrived_at')
+    order_status = order_item.order.status
+    return render(request, 'orders/track_order.html', {
+        'order_item': order_item,
+        'tracking_logs': tracking_logs,
+        'order_status': order_status
+    })

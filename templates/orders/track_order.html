@@ -1,4 +1,69 @@
 {% extends 'base.html' %} {% block content %}
-<h2>Tracking Order #{{ order.id }}</h2>
-<p>Status: {{ order.status }}</p>
+<div class="container mt-4">
+    <h3 class="mb-3">Tracking for Order #{{ order_item.order.id }}</h3>
+    <p><strong>Product:</strong> {{ order_item.product.name }}</p>
+    <p><strong>Tracking ID :</strong> {{order_item.tracking_number}}</p>
+    <p><strong>Current Status:</strong>
+        <span class="badge bg-danger">{{ order_item.status }}</span>
+    </p>
+
+    {% if tracking_logs %}
+    <div class="timeline mt-4">
+        <ul class="list-group">
+            {% for log in tracking_logs %}
+            <li class="list-group-item mb-2">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1">
+                            <span class="badge bg-warning">{{ log.status }}</span>
+                        </h6>
+                        <p class="mb-1"><strong>Location:</strong> {{ log.location }}</p>
+                        <p class="mb-1">
+                            <strong>Arrived At:</strong> {{ log.arrived_at|date:"d M Y, h:i A" }}
+                        </p>
+                        {% if log.departed_at %}
+                        <p class="mb-1">
+                            <strong>Departed At:</strong> {{ log.departed_at|date:"d M Y, h:i A" }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <p>No tracking updates yet.</p>
+    {% endif %}
+
+    <div class="mt-4">
+        {% if user.role == 'customer' %}
+        <a href="{% url 'order-summary' %}" class="btn btn-secondary">Back to Orders</a> {% elif user.role == 'vendor' or user.is_superuser %}
+        <a href="{% url 'orders_page' %}" class="btn btn-secondary">Back to Orders</a> {% endif %}
+    </div>
+</div>
+
+<style>
+    .timeline ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .timeline li {
+        position: relative;
+        padding-left: 25px;
+        border-left: 3px solid #5a2e05;
+    }
+    
+    .timeline li::before {
+        content: "";
+        position: absolute;
+        left: -8px;
+        top: 12px;
+        width: 16px;
+        height: 16px;
+        background-color: #fd0d2d;
+        border-radius: 50%;
+    }
+</style>
 {% endblock %}

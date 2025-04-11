@@ -9,7 +9,6 @@ urlpatterns = [
     path('cod-payment/', cod_payment, name='cod-payment'),
     path('order-confirmation/<int:order_id>/', payment_success, name='order-confirmation'),
     path('<int:order_id>/', order_detail, name='order-detail'),
-    path('track/<int:order_id>/', track_order, name='track-order'),
     path("order-summary/", order_summary, name="order-summary"),
     path('orders/', orders_page, name='orders_page'),
     
@@ -18,6 +17,7 @@ urlpatterns = [
     path('cancel-item/<int:order_item_id>/', cancel_order_item, name='cancel_order_item'),
     path('delivery/update-status/<int:item_id>/', delivery_update_status, name='delivery-update-status'),
     path('assign-delivery/<int:item_id>/', assign_delivery_person, name='assign-delivery'),
+    path('track-order/<int:order_item_id>/', track_order_view, name='track-order'),
     
 
     

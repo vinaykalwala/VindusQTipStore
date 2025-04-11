@@ -1,22 +1,14 @@
-{% extends "base.html" %}
-
-{% block title %}Order Summary{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Order Summary{% endblock %} {% block content %}
 <div class="container my-4">
     <h2 class="mb-4 text-primary">Order Summary</h2>
 
     <!-- Display Messages -->
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    {% for order in orders %}
+    {% if messages %} {% for message in messages %}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %} {% endif %} {% for order in orders %}
     <div class="card mb-4 shadow-sm">
         <div class="card-header bg-light">
             <h5 class="mb-0" style="color: rgb(86, 86, 202);">Order ID: <span class="text-primary">{{ order.id }}</span></h5>
@@ -37,6 +29,7 @@
                             <th>Status</th>
                             <th>Expected Delivery</th>
                             <th>Delivered Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,11 +37,7 @@
                         <tr>
                             <td>{{ item.product.name }}</td>
                             <td>
-                                {% if item.variant %}
-                                    {{ item.variant.color|default:"No Color" }} / {{ item.variant.size|default:"No Size" }}
-                                {% else %}
-                                    -
-                                {% endif %}
+                                {% if item.variant %} {{ item.variant.color|default:"No Color" }} / {{ item.variant.size|default:"No Size" }} {% else %} - {% endif %}
                             </td>
                             <td>{{ item.product.vendor }}</td>
                             <td>₹{{ item.price }}</td>
@@ -57,6 +46,8 @@
                             <td style="color: orangered;">{{ item.status }}</td>
                             <td>{{ item.expected_delivery_date|default:"Not Set" }}</td>
                             <td>{{ item.delivered_date|default:"Not Delivered" }}</td>
+                            <td><a href="{% url 'track-order' item.id %}" class="btn btn-info btn-sm mt-2">Track Order</a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
