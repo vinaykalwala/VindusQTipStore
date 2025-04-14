@@ -420,37 +420,71 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add to cart functionality
-        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const productId = this.getAttribute('data-product-id');
-                
-                // Show loading state
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
-                
-                // Simulate API call (replace with actual AJAX call)
-                setTimeout(() => {
-                    this.innerHTML = '<i class="fas fa-check"></i> Added!';
+document.addEventListener('DOMContentLoaded', function() {
+    // Add to cart functionality
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            const button = this;
+            
+            // Show loading state
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            button.disabled = true;
+
+            // Send AJAX request to add to cart
+            fetch('/cart/add/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    button.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    // Optional: Update cart count in UI if you have a cart icon
+                    // Example: document.querySelector('.cart-count').textContent = data.cart_count;
                     setTimeout(() => {
-                        this.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+                        button.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+                        button.disabled = false;
                     }, 1500);
-                }, 800);
-            });
-        });
-        
-        // Quick view functionality
-        document.querySelectorAll('.product-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const quickView = this.querySelector('.quick-view');
-                if (e.target === quickView || quickView.contains(e.target)) {
-                    e.preventDefault();
-                    // Redirect to product detail page
-                    window.location.href = this.getAttribute('href');
+                } else {
+                    button.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                    console.error('Error:', data.error);
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+                        button.disabled = false;
+                    }, 1500);
                 }
+            })
+            .catch(error => {
+                button.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                console.error('Fetch Error:', error);
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+                    button.disabled = false;
+                }, 1500);
             });
         });
     });
-    </script>
+    
+    // Quick view functionality
+    document.querySelectorAll('.product-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const quickView = this.querySelector('.quick-view');
+            if (e.target === quickView || quickView.contains(e.target)) {
+                e.preventDefault();
+                // Redirect to product detail page
+                window.location.href = this.getAttribute('href');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

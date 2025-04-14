@@ -36,14 +36,14 @@
                             {% if field.name == 'profile_picture' %}
                                 <div class="file-upload-wrapper mb-1">
                                     <input type="file" class="form-control" id="{{ field.id_for_label }}" name="{{ field.name }}" accept="image/*">
-                                    <div class="file-upload-label d-flex align-items-center justify-content-between p-2 border rounded-3" style="background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(4px);">
-                                        <span class="text-muted" style="font-size: 0.85rem;">Upload Profile Picture</span>
-                                        <i class="fas fa-cloud-upload-alt text-primary"></i>
+                                    <div class="file-upload-label d-flex align-items-center p-2 border rounded-3" style="background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(4px);">
+                                        <span class="text-muted" style="font-size: 0.85rem; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Upload Profile Picture</span>
+                                        <i class="fas fa-cloud-upload-alt text-primary ms-2"></i>
                                     </div>
                                     <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">JPEG or PNG, Max 2MB</small>
                                 </div>
                             {% else %}
-                                <div class="input-group">
+                                <div class="input-group w-100">
                                     {{ field }}
                                     {% if field.name == 'password' %}
                                     <span class="input-group-text toggle-password" style="cursor: pointer; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(4px);">
@@ -170,6 +170,8 @@ body {
     transition: all 0.3s ease;
     font-size: 0.875rem;
     color: var(--text-color);
+    width: 100% !important;
+    box-sizing: border-box;
 }
 
 .form-control:focus, .form-select:focus {
@@ -177,6 +179,44 @@ body {
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
     background: rgba(255, 255, 255, 0.6);
     outline: none;
+}
+
+.input-group {
+    display: flex;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+.input-group > * {
+    flex: 1 1 auto;
+}
+
+.input-group .toggle-password {
+    flex: 0 0 auto;
+}
+
+.file-upload-wrapper {
+    position: relative;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+.file-upload-wrapper input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100% !important;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-upload-label {
+    transition: all 0.3s ease;
+    width: 100% !important;
+    box-sizing: border-box;
 }
 
 .btn-primary {
@@ -276,32 +316,6 @@ body {
 .invalid-feedback {
     font-size: 0.75rem;
     color: #dc2626;
-}
-
-.file-upload-wrapper {
-    position: relative;
-}
-
-.file-upload-wrapper input[type="file"] {
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-}
-
-.file-upload-label {
-    transition: all 0.3s ease;
-}
-
-.file-upload-label:hover {
-    background: rgba(255, 255, 255, 0.7);
-    border-color: var(--primary-color);
-    box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
 }
 
 .benefit-icon {
