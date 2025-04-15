@@ -1,9 +1,9 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container-fluid px-0">
 
-    <form method="get" action="{% url 'Products:search' %}">
-        <input type="text" name="query" placeholder="Search products, categories, or subcategories..." class="form-control" required>
-        <button type="submit">Search</button>
+    <form method="get" action="{% url 'Products:search' %}" class="search-form d-flex align-items-center justify-content-center mb-4">
+        <input type="text" name="query" placeholder="Search products, categories, or subcategories..." class="form-control search-input" required>
+        <button type="submit" class="btn btn-search">Search</button>
     </form>
 
     <!-- Full Width Banner with Carousel -->
@@ -158,7 +158,6 @@
         </section>
         {% endif %}
 
-
         <!-- Hot Deals -->
         {% if top_discount_deals %}
         <section class="hot-deals mb-5">
@@ -196,9 +195,8 @@
 </div>
 
 <style>
-    /* Same CSS as in your original document */
-    
-     :root {
+    /* Existing CSS from your original document */
+    :root {
         --primary-color: #4A90E2;
         --secondary-color: #FF6B35;
         --accent-color: #f59e0b;
@@ -212,8 +210,8 @@
         --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
+
     /* Banner Styles */
-    
     .banner-wrapper {
         width: 100vw;
         position: relative;
@@ -226,26 +224,26 @@
         margin-bottom: 2rem;
         box-shadow: var(--card-shadow);
     }
-    
+
     .banner-track {
         display: flex;
         transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .banner-item {
         flex: 0 0 100vw;
         min-width: 100vw;
         position: relative;
     }
-    
+
     .banner-image {
         width: 100%;
         height: 180px;
         object-fit: cover;
         object-position: center;
     }
+
     /* Section Styles */
-    
     .section-title {
         font-size: 1.8rem;
         font-weight: 700;
@@ -256,7 +254,7 @@
         padding-bottom: 15px;
         display: inline-block;
     }
-    
+
     .section-title::after {
         content: '';
         position: absolute;
@@ -267,34 +265,34 @@
         background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
         border-radius: 3px;
     }
+
     /* Product Grid */
-    
     .product-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
-    
+
     @media (min-width: 576px) {
         .product-grid {
             grid-template-columns: repeat(3, 1fr);
         }
     }
-    
+
     @media (min-width: 768px) {
         .product-grid {
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
         }
     }
-    
+
     @media (min-width: 992px) {
         .product-grid {
             grid-template-columns: repeat(5, 1fr);
         }
     }
+
     /* Product Card */
-    
     .product-card {
         display: flex;
         flex-direction: column;
@@ -309,14 +307,14 @@
         box-shadow: var(--card-shadow);
         height: 100%;
     }
-    
+
     .product-card:hover {
         transform: translateY(-5px);
         box-shadow: var(--card-hover-shadow);
         border-color: var(--primary-color);
     }
+
     /* Image Container */
-    
     .product-image-container {
         width: 100%;
         position: relative;
@@ -328,7 +326,7 @@
         align-items: center;
         justify-content: center;
     }
-    
+
     .product-image {
         width: 100%;
         height: 100%;
@@ -340,12 +338,12 @@
         max-width: 100%;
         max-height: 100%;
     }
-    
+
     .product-card:hover .product-image {
         transform: scale(1.05);
     }
+
     /* Product Info Section */
-    
     .product-info {
         width: 100%;
         display: flex;
@@ -355,7 +353,7 @@
         border-top: 1px solid var(--medium-gray);
         flex-grow: 1;
     }
-    
+
     .product-title {
         font-size: 0.95rem;
         font-weight: 600;
@@ -367,8 +365,8 @@
         color: var(--text-color);
         line-height: 1.3;
     }
+
     /* Price Section */
-    
     .product-price {
         display: flex;
         flex-direction: column;
@@ -376,21 +374,21 @@
         gap: 4px;
         margin: 8px 0;
     }
-    
+
     .original-price {
         text-decoration: line-through;
         color: var(--dark-gray);
         font-size: 0.85rem;
         font-weight: 500;
     }
-    
+
     .discounted-price {
         color: var(--secondary-color);
         font-weight: 700;
         font-size: 1.1rem;
     }
+
     /* Rating Section */
-    
     .product-rating {
         display: flex;
         justify-content: center;
@@ -400,45 +398,41 @@
         color: var(--accent-color);
         margin-top: 6px;
         transition: opacity 0.3s ease;
-        /* Added for smooth updates */
     }
-    
+
     .stars {
         unicode-bidi: bidi-override;
         direction: rtl;
         white-space: nowrap;
     }
-    
+
     .star {
         display: inline-block;
         font-size: 1rem;
         cursor: default;
     }
-    
+
     .star.full::before {
         content: '\2605';
-        /* Full star */
     }
-    
+
     .star.half::before {
         content: '\2605';
-        /* Half star */
         width: 50%;
         overflow: hidden;
         display: inline-block;
     }
-    
+
     .star.empty::before {
         content: '\2606';
-        /* Empty star */
     }
-    
+
     .rating-count {
         color: var(--dark-gray);
         font-weight: 400;
     }
+
     /* Time Left Section */
-    
     .time-left {
         font-size: 0.75rem;
         color: var(--secondary-color);
@@ -451,13 +445,13 @@
         display: inline-block;
         align-self: center;
     }
-    
+
     .time-left.ended {
         background-color: rgba(0, 0, 0, 0.1);
         color: var(--dark-gray);
     }
+
     /* Badges */
-    
     .discount-badge {
         position: absolute;
         top: 10px;
@@ -471,7 +465,7 @@
         font-size: 0.85rem;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
-    
+
     .hot-deal-badge {
         position: absolute;
         top: 10px;
@@ -485,7 +479,7 @@
         font-size: 0.85rem;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
-    
+
     .recently-viewed-badge {
         position: absolute;
         bottom: 10px;
@@ -499,8 +493,8 @@
         font-size: 0.85rem;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
+
     /* Marquee Styles */
-    
     .marquee-container {
         width: 100%;
         overflow: hidden;
@@ -511,7 +505,7 @@
         border: 1px solid var(--medium-gray);
         box-shadow: var(--card-shadow);
     }
-    
+
     .marquee-track {
         display: flex;
         width: max-content;
@@ -521,7 +515,7 @@
         will-change: transform;
         transform: translateZ(0);
     }
-    
+
     @keyframes scroll {
         0% {
             transform: translateX(0);
@@ -530,12 +524,12 @@
             transform: translateX(-50%);
         }
     }
-    
+
     .marquee-item {
         flex: 0 0 auto;
     }
+
     /* Category Card */
-    
     .category-card {
         display: flex;
         flex-direction: column;
@@ -544,11 +538,11 @@
         width: 140px;
         transition: transform 0.3s ease;
     }
-    
+
     .category-card:hover {
         transform: translateY(-3px);
     }
-    
+
     .category-image-container {
         width: 100%;
         position: relative;
@@ -562,18 +556,18 @@
         justify-content: center;
         align-items: center;
     }
-    
+
     .category-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
     }
-    
+
     .category-card:hover .category-image {
         transform: scale(1.05);
     }
-    
+
     .category-label {
         position: absolute;
         color: white;
@@ -591,13 +585,13 @@
         backdrop-filter: blur(2px);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
-    
+
     .category-card:hover .category-label {
         padding: 10px 18px;
         background: rgba(37, 99, 235, 0.95);
     }
+
     /* Navigation Buttons */
-    
     .banner-nav {
         position: absolute;
         top: 50%;
@@ -618,7 +612,7 @@
         transition: all 0.3s ease;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
-    
+
     .banner-nav:hover {
         background: var(--primary-color);
         color: white;
@@ -626,16 +620,70 @@
         transform: translateY(-50%) scale(1.1);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
     }
-    
+
     .prev-btn {
         left: 20px;
     }
-    
+
     .next-btn {
         right: 20px;
     }
+
+    /* Search Form Styles */
+    .search-form {
+        position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--card-border-radius) 0 0 var(--card-border-radius);
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .search-input:focus {
+        border-color: var(--primary-color);
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    }
+
+    .search-input::placeholder {
+        color: var(--dark-gray);
+        opacity: 0.7;
+    }
+
+    .btn-search {
+        position: absolute;
+        width: 125px;
+        right: 15px;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 0 var(--card-border-radius) var(--card-border-radius) 0;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(74, 144, 226, 0.4);
+        background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    }
+
     /* Responsive Adjustments */
-    
     @media (min-width: 576px) {
         .banner-image {
             height: 220px;
@@ -644,7 +692,7 @@
             width: 160px;
         }
     }
-    
+
     @media (min-width: 768px) {
         .section-title {
             font-size: 2rem;
@@ -660,7 +708,7 @@
             height: 280px;
         }
     }
-    
+
     @media (min-width: 992px) {
         .marquee-container {
             padding: 16px 0;
@@ -672,7 +720,7 @@
             height: 350px;
         }
     }
-    
+
     @media (max-width: 768px) {
         .product-title {
             font-size: 0.9rem;
@@ -682,6 +730,14 @@
         }
         .original-price {
             font-size: 0.8rem;
+        }
+        .search-input {
+            padding: 10px 16px;
+            font-size: 0.95rem;
+        }
+        .btn-search {
+            padding: 10px 16px;
+            font-size: 0.95rem;
         }
     }
 </style>
@@ -854,12 +910,10 @@
             }
         }
 
-
         // Initialize components
         try {
             const banner = new BannerCarousel();
             const marquee = new MarqueeHandler();
-
 
             window.addEventListener('unload', () => {
                 banner.pauseAutoSlide();
