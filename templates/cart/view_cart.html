@@ -22,7 +22,7 @@
                 <p class="cart-price">
                     {% if item.product.discount > 0 %}
                     <span class="price-discounted">₹{{ item.total_price }}</span>
-                    <span class="price-original">₹{{ item.product.price }}</span>
+
                     {% else %}
                     <span class="price-regular">₹{{ item.total_price }}</span>
                     {% endif %}
