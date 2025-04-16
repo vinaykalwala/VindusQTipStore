@@ -16,7 +16,7 @@ def safe_get_or_create_activity(user, product, activity_type):
     ).first()
     
     if existing:
-        print(f"⚠️ UserActivity already exists — skipping {activity_type} for {product.name}")
+       
         return existing, False
     
     activity = UserActivity.objects.create(

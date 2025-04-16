@@ -11,6 +11,16 @@ def update_order_status(sender, instance, **kwargs):
 
     if all(status == 'delivered' for status in item_statuses):
         order.status = 'delivered'
+        # Get the latest delivered_date among all items in the order
+        latest_delivery_date = order.items.filter(status='delivered') \
+            .order_by('-delivered_date') \
+            .values_list('delivered_date', flat=True) \
+            .first()
+
+        if latest_delivery_date:
+            order.delivered_date = latest_delivery_date
+
+        order.save()
 
     elif any(status == 'delivered' for status in item_statuses) and not all(status == 'delivered' for status in item_statuses):
         order.status = 'Partially Delivered'
