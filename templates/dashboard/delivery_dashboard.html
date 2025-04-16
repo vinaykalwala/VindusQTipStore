@@ -15,6 +15,7 @@
             <strong>Order #{{ item.order.id }}</strong> - {{ item.product.name }}<br>
             <strong>Tracking ID:</strong> {{ item.tracking_number }}<br>
             <strong>Status:</strong> {{ item.status }}<br>
+            
 
             <form method="post" action="{% url 'delivery-update-status' item.id %}" {% if item.is_delivered %}onsubmit="return false;" {% endif %}>
                 {% csrf_token %}
