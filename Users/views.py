@@ -295,11 +295,15 @@ def dashboard_view(request):
 
     elif user.role == 'delivery':
         template = 'dashboard/delivery_dashboard.html'
+        query = request.GET.get('q', '').strip()
         user = request.user
         if user.role != 'delivery':
             return JsonResponse({'error': 'Access denied'}, status=403)
 
-        order_items = OrderItem.objects.filter(delivery_person=user)
+        order_items = OrderItem.objects.filter(delivery_person=user).order_by('-id')
+        if query:
+            order_items = order_items.filter(tracking_number__icontains=query)
+
         for item in order_items:
             item.STATUS_CHOICES = OrderItem.STATUS_CHOICES
         
@@ -308,8 +312,20 @@ def dashboard_view(request):
 
     else:
         template = 'dashboard/default_dashboard.html'
-        order_items = OrderItem.objects.select_related('order', 'product', 'delivery_person').all()
+        query = request.GET.get('q', '').strip()
+        
+        order_items = OrderItem.objects.select_related('order', 'product', 'delivery_person').order_by('-id')
+
+        if query:
+            order_items = order_items.filter(tracking_number__icontains=query)
+        
+        order_items = order_items.all()
         delivery_people = CustomUser.objects.filter(role='delivery')
+        for item in order_items:
+            item.STATUS_CHOICES = OrderItem.STATUS_CHOICES
+        
+        for item in order_items:
+            item.is_delivered = (item.status == "delivered")
 
 
     return render(request, template, {

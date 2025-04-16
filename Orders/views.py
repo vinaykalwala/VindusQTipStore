@@ -492,14 +492,15 @@ def delivery_update_status(request, item_id):
     user = request.user
     IST = pytz.timezone('Asia/Kolkata')
 
-    if user.role != 'delivery':
-        return JsonResponse({'error': 'Only delivery personnel can update status'}, status=403)
+    if user.role not in ['delivery', 'DeliveryAdmin']:
+        return JsonResponse({'error': 'Only delivery personnel or delivery admin can update status'}, status=403)
 
     if request.method == 'POST':
         item = get_object_or_404(OrderItem, id=item_id)
 
-        if item.delivery_person != user:
+        if user.role != 'DeliveryAdmin' and item.delivery_person != user:
             return JsonResponse({'error': 'This item is not assigned to you'}, status=403)
+
         
         if item.status == 'delivered':
             messages.error(request, "This order has already been delivered and cannot be updated.")
@@ -563,10 +564,12 @@ def delivery_update_status(request, item_id):
             item.otp_verified = True
             item.save()
 
+            order_address = item.order.address
+            location_str = str(order_address) if order_address else "Unknown"
             OrderTracking.objects.create(
                 order_item=item,
                 status=status,
-                location=location if location else "Unknown",
+                location=location_str,
                 arrived_at=now_ist
             )
 
