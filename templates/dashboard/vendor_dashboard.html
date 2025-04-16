@@ -1,94 +1,574 @@
-{% extends 'base.html' %} {% block content %}
-<div class="container">
-    <h2 class="text-center my-4">Vendor Dashboard</h2>
-    <p class="text-center">Welcome, {{ user.username }}! Manage your store and orders here.</p>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="container mt-4 px-2">
+        <h2 class="section-title">Vendor Dashboard</h2>
+        <p class="text-center">Welcome, {{ user.username }}! Manage your store and orders here.</p>
 
-    <h3 class="mt-4">Your Products</h3>
-
-    {% if vendor_products %}
-    <div class="row">
-        {% for product in vendor_products %}
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <!-- Main Product Image -->
-                <div class="text-center">
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
-                </div>
-
-                <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
-
-                    <!-- Display Discounted Price if Available -->
-                    <p class="card-text">
-                        <strong>Price:</strong> {% if product.discount and product.discount > 0 %}
-                        <span class="text-danger">${{ product.discounted_price|floatformat:2 }}</span>
-                        <del class="text-muted">${{ product.price|floatformat:2 }}</del>
-                        <span class="badge bg-success">{{ product.discount }}% OFF</span> {% else %} ${{ product.price|floatformat:2 }} {% endif %}
-                    </p>
-
-                    <p class="text-muted">{{ product.description|truncatechars:100 }}</p>
-
-                    <!-- View Product Button -->
-                    <a href="{% url 'Products:view_product' product.id %}" class="btn btn-primary btn-sm d-block my-2">
-                        👁 View Product
-                    </a>
-
-                    <!-- Variants Section -->
-                    {% if product.variants.all %}
-                    <h6 class="mt-3">Variants:</h6>
-                    <div class="row">
-                        {% for variant in product.variants.all %}
-                        <div class="col-6 text-center mb-2">
-                            <!-- Variant Image -->
-                            <img src="{{ variant.image.url }}" alt="{{ variant }}" class="img-fluid rounded" style="height: 80px; object-fit: cover;">
-
-                            <p class="mb-0"><strong>{{ variant.color|default:"N/A" }} / {{ variant.size|default:"N/A" }}</strong></p>
-
-                            <!-- Variant Price -->
-                            <small class="text-primary">${{ variant.additional_price|floatformat:2 }}</small>
-
-                            <!-- View Variant Button -->
-                            <a href="{% url 'Products:view_variant' variant.id %}" class="btn btn-info btn-sm mt-1 d-block">
-                                👁 View Variant
-                            </a>
-                        </div>
-                        {% endfor %}
+        <!-- Your Products Section -->
+        {% if vendor_products %}
+        <section class="vendor-products mb-5">
+            <h3 class="section-title">Your Products</h3>
+            <div class="product-grid">
+                {% for product in vendor_products %}
+                <div class="product-card" data-product-id="{{ product.id }}" aria-label="{{ product.name }} - ${{ product.discounted_price|floatformat:2 }}" tabindex="0">
+                    <div class="product-image-container">
+                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy" width="200" height="200">
+                        {% if product.discount > 0 %}
+                        <div class="discount-badge">-{{ product.discount }}%</div>
+                        {% endif %}
                     </div>
-                    {% endif %}
+                    <div class="product-info">
+                        <div class="product-title">{{ product.name|truncatechars:30 }}</div>
+                        <div class="product-price">
+                            {% if product.discount > 0 %}
+                            <span class="original-price">${{ product.price|floatformat:2 }}</span>
+                            <span class="discounted-price">${{ product.discounted_price|floatformat:2 }}</span>
+                            {% else %}
+                            <span>${{ product.price|floatformat:2 }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="product-description">{{ product.description|truncatechars:50 }}</div>
+                        <!-- Action Buttons -->
+                        <div class="action-buttons mt-2">
+                            <a href="{% url 'Products:view_product' product.id %}" class="btn btn-primary btn-sm">👁 View Product</a>
+                            <!-- Variants Section -->
+                            {% if product.variants.all %}
+                            <div class="variants mt-2">
+                                <h6>Variants:</h6>
+                                <div class="variant-grid">
+                                    {% for variant in product.variants.all %}
+                                    <div class="variant-item text-center">
+                                        <img src="{{ variant.image.url }}" alt="{{ variant }}" class="variant-image" loading="lazy" width="60" height="60">
+                                        <p class="mb-0"><small>{{ variant.color|default:"N/A" }} / {{ variant.size|default:"N/A" }}</small></p>
+                                        <small class="text-primary">${{ variant.additional_price|floatformat:2 }}</small>
+                                        <a href="{% url 'Products:view_variant' variant.id %}" class="btn btn-info btn-sm mt-1">👁 View</a>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-        </div>
-        {% endfor %}
+        </section>
+        {% else %}
+        <p class="text-center">You haven't added any products yet.</p>
+        {% endif %}
     </div>
-    {% else %}
-    <p class="text-center">You haven't added any products yet.</p>
-    {% endif %}
 </div>
 
-<!-- Bootstrap CSS -->
 <style>
-    .card {
-        transition: 0.3s;
+    :root {
+        --primary-color: #4A90E2;
+        --secondary-color: #FF6B35;
+        --accent-color: #f59e0b;
+        --background-color: #f8fafc;
+        --text-color: #1e293b;
+        --light-gray: #f1f5f9;
+        --medium-gray: #e2e8f0;
+        --dark-gray: #64748b;
+        --card-border-radius: 12px;
+        --image-border-radius: 8px;
+        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
-    
-    .card:hover {
-        transform: scale(1.03);
+
+    /* Banner Styles */
+    .banner-wrapper {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        overflow: hidden;
+        border-radius: var(--card-border-radius);
+        margin-bottom: 2rem;
+        box-shadow: var(--card-shadow);
     }
-    
-    .img-fluid {
-        border: 1px solid #ddd;
-        padding: 5px;
-        background: #f8f8f8;
+
+    .banner-track {
+        display: flex;
+        transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
-    del {
-        font-size: 0.9rem;
-        margin-left: 5px;
+
+    .banner-item {
+        flex: 0 0 100vw;
+        min-width: 100vw;
+        position: relative;
     }
-    
-    .btn {
+
+    .banner-image {
         width: 100%;
+        height: 180px;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* Navigation Buttons */
+    .banner-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--primary-color);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        cursor: pointer;
+        z-index: 2;
+        opacity: 0.9;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .banner-nav:hover {
+        background: var(--primary-color);
+        color: white;
+        opacity: 1;
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .prev-btn {
+        left: 20px;
+    }
+
+    .next-btn {
+        right: 20px;
+    }
+
+    /* Section Styles */
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 2rem;
+        text-align: center !important;
+        position: relative;
+        padding-bottom: 15px;
+        display: inline-block;
+        
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-radius: 3px;
+    }
+
+    /* Product Grid */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    @media (min-width: 576px) {
+        .product-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .product-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .product-grid {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+
+    /* Product Card */
+    .product-card {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--medium-gray);
+        border-radius: var(--card-border-radius);
+        background: white;
+        text-decoration: none;
+        color: var(--text-color);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--card-shadow);
+        height: 100%;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--card-hover-shadow);
+        border-color: var(--primary-color);
+    }
+
+    /* Image Container */
+    .product-image-container {
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--image-border-radius) var(--image-border-radius) 0 0;
+        aspect-ratio: 1/1;
+        background: var(--light-gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        padding: 16px;
+        background: white;
+        transition: transform 0.3s ease;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    /* Product Info Section */
+    .product-info {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+        background: white;
+        border-top: 1px solid var(--medium-gray);
+        flex-grow: 1;
+    }
+
+    .product-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+        color: var(--text-color);
+        line-height: 1.3;
+    }
+
+    .product-description {
+        font-size: 0.85rem;
+        color: var(--dark-gray);
+        text-align: center;
+        margin-bottom: 8px;
+    }
+
+    /* Price Section */
+    .product-price {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        margin: 8px 0;
+    }
+
+    .original-price {
+        text-decoration: line-through;
+        color: var(--dark-gray);
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .discounted-price {
+        color: var(--secondary-color);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    /* Badges */
+    .discount-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 0.3rem 0.6rem;
+        border-radius: 20px;
+        font-weight: 700;
+        z-index: 2;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: var(--card-border-radius);
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(74, 144, 226, 0.4);
+        background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    }
+
+    .btn-info {
+        background: var(--accent-color);
+        color: white;
+        border: none;
+    }
+
+    .btn-info:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(46, 11, 245, 0.4);
+    }
+
+    /* Variants Section */
+    .variants {
+        margin-top: 8px;
+    }
+
+    .variants h6 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    .variant-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .variant-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .variant-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: var(--image-border-radius);
+        border: 1px solid var(--medium-gray);
+        margin-bottom: 4px;
+    }
+
+    /* Responsive Adjustments */
+    @media (min-width: 576px) {
+        .banner-image {
+            height: 220px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+        .product-title {
+            font-size: 1rem;
+        }
+        .banner-image {
+            height: 280px;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .banner-image {
+            height: 350px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .product-title {
+            font-size: 0.9rem;
+        }
+        .discounted-price {
+            font-size: 1rem;
+        }
+        .original-price {
+            font-size: 0.8rem;
+        }
+        .variant-image {
+            width: 50px;
+            height: 50px;
+        }
     }
 </style>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Banner Carousel
+        class BannerCarousel {
+            constructor() {
+                this.wrapper = document.querySelector('.banner-wrapper');
+                this.track = document.querySelector('.banner-track');
+                this.init();
+            }
+
+            init() {
+                if (!this.track || !this.wrapper) return;
+
+                this.items = this.track.querySelectorAll('.banner-item');
+                this.totalItems = this.items.length;
+                this.currentIndex = 0;
+                this.isDragging = false;
+                this.startPos = 0;
+                this.currentTranslate = 0;
+                this.prevTranslate = 0;
+                this.animationID = null;
+                this.isAnimating = false;
+
+                this.setupEventListeners();
+                this.startAutoSlide();
+                this.resizeHandler();
+            }
+
+            setupEventListeners() {
+                this.track.addEventListener('touchstart', this.touchStart.bind(this), { passive: false });
+                this.track.addEventListener('touchmove', this.touchMove.bind(this), { passive: false });
+                this.track.addEventListener('touchend', this.touchEnd.bind(this));
+                this.track.addEventListener('mousedown', this.touchStart.bind(this));
+                this.track.addEventListener('mousemove', this.touchMove.bind(this));
+                this.track.addEventListener('mouseup', this.touchEnd.bind(this));
+                this.track.addEventListener('mouseleave', this.touchEnd.bind(this));
+
+                const prevBtn = this.wrapper.querySelector('.prev-btn');
+                const nextBtn = this.wrapper.querySelector('.next-btn');
+
+                prevBtn?.addEventListener('click', () => this.prevSlide());
+                nextBtn?.addEventListener('click', () => this.nextSlide());
+
+                this.wrapper.addEventListener('mouseenter', () => this.pauseAutoSlide());
+                this.wrapper.addEventListener('mouseleave', () => this.startAutoSlide());
+                window.addEventListener('resize', this.resizeHandler.bind(this));
+            }
+
+            getPositionX(event) {
+                return event.type.includes('touch') ? event.touches[0].clientX : event.clientX;
+            }
+
+            touchStart(event) {
+                if (this.isAnimating) return;
+                this.startPos = this.getPositionX(event);
+                this.isDragging = true;
+                this.animationID = requestAnimationFrame(this.animate.bind(this));
+                this.track.style.transition = 'none';
+                if (!event.type.includes('touch')) {
+                    event.preventDefault();
+                }
+            }
+
+            touchMove(event) {
+                if (!this.isDragging) return;
+                const currentPosition = this.getPositionX(event);
+                this.currentTranslate = this.prevTranslate + (currentPosition - this.startPos);
+            }
+
+            touchEnd() {
+                if (!this.isDragging) return;
+                cancelAnimationFrame(this.animationID);
+                this.isDragging = false;
+                const movedBy = this.currentTranslate - this.prevTranslate;
+
+                if (movedBy < -50 && this.currentIndex < this.totalItems - 1) {
+                    this.nextSlide();
+                } else if (movedBy > 50 && this.currentIndex > 0) {
+                    this.prevSlide();
+                } else {
+                    this.setPosition();
+                }
+            }
+
+            animate() {
+                if (!this.isDragging) return;
+                this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+                this.animationID = requestAnimationFrame(this.animate.bind(this));
+            }
+
+            setPosition() {
+                this.isAnimating = true;
+                this.currentTranslate = this.currentIndex * -window.innerWidth;
+                this.prevTranslate = this.currentTranslate;
+                this.track.style.transition = 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
+                this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+
+                this.track.addEventListener('transitionend', () => {
+                    this.isAnimating = false;
+                }, { once: true });
+            }
+
+            nextSlide() {
+                this.currentIndex = (this.currentIndex + 1) % this.totalItems;
+                this.setPosition();
+                this.resetAutoSlide();
+            }
+
+            prevSlide() {
+                this.currentIndex = (this.currentIndex - 1 + this.totalItems) % this.totalItems;
+                this.setPosition();
+                this.resetAutoSlide();
+            }
+
+            startAutoSlide() {
+                this.autoSlideInterval = setInterval(() => this.nextSlide(), 5000);
+            }
+
+            pauseAutoSlide() {
+                clearInterval(this.autoSlideInterval);
+            }
+
+            resetAutoSlide() {
+                this.pauseAutoSlide();
+                this.startAutoSlide();
+            }
+
+            resizeHandler() {
+                this.setPosition();
+            }
+        }
+
+        // Initialize components
+        try {
+            const banner = new BannerCarousel();
+            window.addEventListener('unload', () => {
+                banner.pauseAutoSlide();
+            });
+        } catch (error) {
+            console.error('Error initializing components:', error);
+        }
+    });
+</script>
 {% endblock %}
