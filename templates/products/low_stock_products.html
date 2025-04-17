@@ -1,60 +1,393 @@
 {% extends 'base.html' %} {% block content %}
+<div class="container-fluid px-3">
+    <h2 class="section-title">📦 Low Stock Products (Below 5)</h2>
 
-<h2>📦 Low Stock Products (Below 5)</h2>
-
-{% if messages %} {% for message in messages %}
-<p style="color:{% if message.tags == 'success' %}green{% elif message.tags == 'error' %}red{% else %}black{% endif %};">
-    {{ message }}
-</p>
-{% endfor %} {% endif %} {% if products %}
-<table border="1" cellpadding="8" cellspacing="0">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Stock</th>
-            <th>Vendor</th>
-            <th>Update Stock</th>
-            {% if request.user.is_superuser %}
-            <th>Send Alert Email</th>
-            {% endif %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for product in products %}
-        <tr>
-            <td>{{ product.name }}</td>
-            <td>{{ product.stock }}</td>
-            <td>
-                {% if product.vendor %} {{ product.vendor.username }} {% else %}
-                <em>No Vendor</em> {% endif %}
-            </td>
-            <td>
-                <form method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="product_id" value="{{ product.id }}"> {% if request.user.is_superuser and product.vendor %}
-                    <input type="number" name="stock" value="{{ product.stock }}" disabled>
-                    <button type="submit" name="update_stock" disabled>Update</button>
-                    <br><small><em>Vendor managed</em></small> {% else %}
-                    <input type="number" name="stock" min="0" value="{{ product.stock }}" required>
-                    <button type="submit" name="update_stock">Update</button> {% endif %}
-                </form>
-            </td>
-            {% if request.user.is_superuser %}
-            <td>
-                {% if product.vendor %}
-                <form method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="product_id" value="{{ product.id }}">
-                    <button type="submit" name="send_alert">📧 Send Alert</button>
-                </form>
-                {% else %}
-                <em>N/A</em> {% endif %}
-            </td>
-            {% endif %}
-        </tr>
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <p class="message {{ message.tags }}">
+            {{ message }}
+        </p>
         {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No products with low stock.</p>
-{% endif %} {% endblock %}
+    </div>
+    {% endif %}
+
+    {% if products %}
+    <div class="table-container">
+        <table class="stock-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Stock</th>
+                    <th>Vendor</th>
+                    <th>Update Stock</th>
+                    {% if request.user.is_superuser %}
+                    <th>Send Alert Email</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.stock }}</td>
+                    <td>
+                        {% if product.vendor %}
+                        {{ product.vendor.username }}
+                        {% else %}
+                        <em>No Vendor</em>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" class="update-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            {% if request.user.is_superuser and product.vendor %}
+                            <input type="number" name="stock" value="{{ product.stock }}" disabled>
+                            <button type="submit" name="update_stock" disabled>Update</button>
+                            <br><small><em>Vendor managed</em></small>
+                            {% else %}
+                            <input type="number" name="stock" min="0" value="{{ product.stock }}" required>
+                            <button type="submit" name="update_stock">Update</button>
+                            {% endif %}
+                        </form>
+                    </td>
+                    {% if request.user.is_superuser %}
+                    <td>
+                        {% if product.vendor %}
+                        <form method="post" class="alert-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <button type="submit" name="send_alert">📧 Send Alert</button>
+                        </form>
+                        {% else %}
+                        <em>N/A</em>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="no-products">No products with low stock.</p>
+    {% endif %}
+</div>
+
+<!-- Styling -->
+<style>
+    :root {
+        --primary-color: #4A90E2;
+        --secondary-color: #FF6B35;
+        --accent-color: #f59e0b;
+        --background-color: #f8fafc;
+        --text-color: #1e293b;
+        --light-gray: #f1f5f9;
+        --medium-gray: #e2e8f0;
+        --dark-gray: #64748b;
+        --card-border-radius: 12px;
+        --image-border-radius: 8px;
+        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+        background: var(--background-color);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin: 2.5rem 0;
+        text-align: center;
+        position: relative;
+        padding-bottom: 15px;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-radius: 2px;
+    }
+
+    /* Messages */
+    .messages-container {
+        max-width: 800px;
+        margin: 0 auto 2rem;
+        padding: 0 15px;
+    }
+
+    .message {
+        padding: 12px 20px;
+        border-radius: var(--image-border-radius);
+        font-size: 0.95rem;
+        margin: 8px 0;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+    }
+
+    .message.success {
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+        border: 1px solid #28a745;
+    }
+
+    .message.error {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+    .message.info, .message.warning {
+        background: rgba(0, 123, 255, 0.1);
+        color: #007bff;
+        border: 1px solid #007bff;
+    }
+
+    /* Table Container */
+    .table-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--card-shadow);
+        backdrop-filter: blur(8px);
+        overflow-x: auto;
+    }
+
+    /* Stock Table */
+    .stock-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.95rem;
+        color: var(--text-color);
+    }
+
+    .stock-table th, .stock-table td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--medium-gray);
+    }
+
+    .stock-table th {
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .stock-table th:first-child {
+        border-top-left-radius: var(--image-border-radius);
+    }
+
+    .stock-table th:last-child {
+        border-top-right-radius: var(--image-border-radius);
+    }
+
+    .stock-table tr {
+        transition: background 0.3s ease;
+    }
+
+    .stock-table tr:hover {
+        background: var(--light-gray);
+    }
+
+    .stock-table tr:nth-child(even) {
+        background: rgba(241, 245, 249, 0.5);
+    }
+
+    .stock-table td {
+        vertical-align: middle;
+    }
+
+    .stock-table em {
+        color: var(--dark-gray);
+        font-style: italic;
+    }
+
+    /* Forms */
+    .update-form, .alert-form {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .update-form input[type="number"] {
+        width: 80px;
+        padding: 8px;
+        font-size: 0.9rem;
+        border: 1px solid var(--medium-gray);
+        border-radius: var(--image-border-radius);
+        background: var(--light-gray);
+        color: var(--text-color);
+        transition: all 0.3s ease;
+    }
+
+    .update-form input[type="number"]:focus {
+        border-color: var(--primary-color);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        outline: none;
+    }
+
+    .update-form input[type="number"]:disabled {
+        background: var(--medium-gray);
+        cursor: not-allowed;
+    }
+
+    .update-form button, .alert-form button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--image-border-radius);
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .update-form button:hover, .alert-form button:hover {
+        background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        transform: translateY(-2px);
+        box-shadow: var(--card-hover-shadow);
+    }
+
+    .update-form button:disabled {
+        background: var(--medium-gray);
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
+
+    .update-form button::before, .alert-form button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .update-form button:hover::before, .alert-form button:hover::before {
+        width: 150px;
+        height: 150px;
+    }
+
+    .update-form small {
+        color: var(--dark-gray);
+        font-size: 0.8rem;
+        margin-top: 4px;
+        display: block;
+    }
+
+    /* No Products */
+    .no-products {
+        font-size: 1.2rem;
+        color: var(--dark-gray);
+        margin: 4rem 0;
+        text-align: center;
+        padding: 20px;
+        background: var(--light-gray);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--card-shadow);
+    }
+
+    /* Responsive Adjustments */
+    @media (min-width: 1200px) {
+        .section-title {
+            font-size: 2.4rem;
+        }
+        .stock-table {
+            font-size: 1rem;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .section-title {
+            font-size: 2.2rem;
+        }
+        .table-container {
+            padding: 24px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 1.8rem;
+        }
+        .stock-table {
+            font-size: 0.9rem;
+        }
+        .stock-table th, .stock-table td {
+            padding: 10px;
+        }
+        .update-form input[type="number"] {
+            width: 60px;
+            padding: 6px;
+        }
+        .update-form button, .alert-form button {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .table-container {
+            padding: 15px;
+        }
+        .stock-table {
+            font-size: 0.85rem;
+        }
+        .stock-table th, .stock-table td {
+            padding: 8px;
+        }
+        .update-form {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .update-form input[type="number"] {
+            width: 100%;
+        }
+        .update-form button {
+            width: 100%;
+            padding: 8px;
+        }
+        .alert-form button {
+            width: 100%;
+            padding: 8px;
+        }
+    }
+</style>
+{% endblock %}

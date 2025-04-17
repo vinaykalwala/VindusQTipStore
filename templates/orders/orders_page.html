@@ -1,49 +1,493 @@
 {% extends "base.html" %} {% block title %}Orders - My Store{% endblock %} {% block content %}
-<h2>Orders Summary</h2>
-<p><strong>Total Orders:</strong> {{ total_orders }}</p>
-<p><strong>Grand Total:</strong> ₹{{ grand_total }}</p>
+<div class="container-fluid px-3">
+    <h2 class="section-title">Orders Summary</h2>
+    <div class="find-order-container">
+        <a href="{% url 'track_by_tracking_number' %}" class="btn btn-track">Find Order</a>
+    </div>
 
-<p><strong>Order Status Breakdown:</strong></p>
-{% for status, count in status_counts.items %}
-<li>{{ status }}: {{ count }}</li>
-{% endfor %}
+    <div class="summary-container">
+        <div class="summary-card">
+            <p class="summary-item"><strong>Total Orders:</strong> {{ total_orders }}</p>
+            <p class="summary-item"><strong>Grand Total:</strong> ₹{{ grand_total }}</p>
+        </div>
+        <div class="status-card">
+            <p class="status-title"><strong>Order Status Breakdown:</strong></p>
+            <div class="status-scroll">
+                <ul class="status-list">
+                    {% for status, count in status_counts.items %}
+                    <li>{{ status }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
+    <hr class="section-divider">
 
-<hr>
+    {% for order_data in orders %}
+    <div class="order-container">
+        <h3 class="order-title">Order ID: {{ order_data.order.id }} - {{ order_data.order.status }}</h3>
+        <p class="order-subtotal">Total Order Price: ₹{{ order_data.subtotal }}</p>
 
-<hr> {% for order_data in orders %}
-<h2>Order ID: {{ order_data.order.id }} - {{ order_data.order.status }}</h2>
-<p>Total Order Price: ₹{{ order_data.subtotal }}</p>
+        <div class="table-container">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Tracking ID</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_data.items %}
+                    <tr>
+                        <td>{{ item.tracking_number }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ item.price }}</td>
+                        <td>₹{{ item.subtotal }}</td>
+                        <td>
+                            <a href="{% url 'track-order' item.id %}" class="btn btn-track">Track Order</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-<table>
-    <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Subtotal</th>
-        <th>Actions</th>
-    </tr>
-    {% for item in order_data.items %}
-    <tr>
-        <td>{{ item.product.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>₹{{ item.price }}</td>
-        <td>₹{{ item.subtotal }}</td>
-        <td><a href="{% url 'track-order' item.id %}" class="btn btn-info btn-sm mt-2">Track Order</a>
-        </td>
-    </tr>
+        <div class="shipping-address">
+            {% if order_data.shipping_address %}
+            <p><strong>Shipping Address:</strong> {{ order_data.shipping_address.street }}, {{ order_data.shipping_address.city }}, {{ order_data.shipping_address.state }}, {{ order_data.shipping_address.zip_code }}</p>
+            {% else %}
+            <p><strong>Shipping Address:</strong> Not provided</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr class="section-divider">
+    {% empty %}
+    <p class="no-orders">No orders found.</p>
     {% endfor %}
-</table>
-
-<div class="order">
-    {% if order_data.shipping_address %}
-    <p><strong>Shipping Address:</strong> {{ order_data.shipping_address.street }}, {{ order_data.shipping_address.city }}, {{ order_data.shipping_address.state }}, {{ order_data.shipping_address.zip_code }}
-    </p>
-    {% else %}
-    <p><strong>Shipping Address:</strong> Not provided</p>
-    {% endif %}
 </div>
 
-<hr> {% empty %}
-<p>No orders found.</p>
-{% endfor %} {% endblock %}
+<!-- Styling -->
+<style>
+    :root {
+        --primary-color: #4A90E2;
+        --secondary-color: #FF6B35;
+        --accent-color: #f59e0b;
+        --background-color: #f8fafc;
+        --text-color: #1e293b;
+        --light-gray: #f1f5f9;
+        --medium-gray: #e2e8f0;
+        --dark-gray: #64748b;
+        --card-border-radius: 16px;
+        --image-border-radius: 10px;
+        --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        --card-hover-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+        background: var(--background-color);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin: 3rem 0;
+        text-align: center;
+        position: relative;
+        padding-bottom: 16px;
+        letter-spacing: -0.02em;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 4px;
+        background: var(--primary-color);
+        border-radius: 2px;
+    }
+
+    /* Find Order Button Container */
+    .find-order-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    /* Summary Container */
+    .summary-container {
+        max-width: 900px;
+        margin: 0 auto 3rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 0 15px;
+    }
+
+    .summary-card, .status-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--card-shadow);
+        backdrop-filter: blur(10px);
+        padding: 24px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .summary-card:hover, .status-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--card-hover-shadow);
+    }
+
+    .summary-item {
+        font-size: 1.2rem;
+        color: var(--text-color);
+        margin: 12px 0;
+        text-align: center;
+    }
+
+    .summary-item strong {
+        color: var(--secondary-color);
+        font-weight: 700;
+    }
+
+    .status-card .status-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 12px;
+    }
+
+    .status-scroll {
+        max-height: 200px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary-color) var(--light-gray);
+    }
+
+    .status-scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .status-scroll::-webkit-scrollbar-track {
+        background: var(--light-gray);
+        border-radius: 10px;
+    }
+
+    .status-scroll::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 10px;
+    }
+
+    .status-scroll::-webkit-scrollbar-thumb:hover {
+        background: #3a7cc8;
+    }
+
+    .status-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .status-list li {
+        font-size: 1rem;
+        color: var(--text-color);
+        margin: 8px 0;
+        padding: 10px;
+        background: var(--light-gray);
+        border-radius: var(--image-border-radius);
+        border-left: 4px solid var(--accent-color);
+        transition: background 0.3s ease;
+    }
+
+    .status-list li:hover {
+        background: rgba(74, 144, 226, 0.1);
+    }
+
+    /* Section Divider */
+    .section-divider {
+        border: 0;
+        height: 3px;
+        background: var(--accent-color);
+        margin: 2.5rem 0;
+        border-radius: 2px;
+    }
+
+    /* Order Container */
+    .order-container {
+        max-width: 1000px;
+        margin: 0 auto 3rem;
+        padding: 24px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--card-shadow);
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s ease;
+    }
+
+    .order-container:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--card-hover-shadow);
+    }
+
+    .order-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 1.2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .order-title::after {
+        content: '';
+        display: block;
+        width: 100px;
+        height: 3px;
+        background: var(--primary-color);
+        margin: 10px auto;
+        border-radius: 2px;
+    }
+
+    .order-subtotal {
+        font-size: 1.2rem;
+        color: var(--text-color);
+        text-align: center;
+        margin-bottom: 1.8rem;
+    }
+
+    .order-subtotal strong {
+        color: var(--secondary-color);
+        font-weight: 700;
+    }
+
+    /* Table Container */
+    .table-container {
+        overflow-x: auto;
+        margin-bottom: 1.8rem;
+        border-radius: var(--image-border-radius);
+        background: white;
+        box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Order Table */
+    .order-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 1rem;
+        color: var(--text-color);
+    }
+
+    .order-table th, .order-table td {
+        padding: 14px 18px;
+        text-align: left;
+        border-bottom: 1px solid var(--medium-gray);
+        vertical-align: middle;
+    }
+
+    .order-table th {
+        background: var(--primary-color);
+        color: white;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .order-table th:first-child {
+        border-top-left-radius: var(--image-border-radius);
+    }
+
+    .order-table th:last-child {
+        border-top-right-radius: var(--image-border-radius);
+    }
+
+    .order-table tr {
+        transition: background 0.3s ease;
+    }
+
+    .order-table tr:hover {
+        background: rgba(74, 144, 226, 0.05);
+    }
+
+    .order-table tr:nth-child(even) {
+        background: var(--light-gray);
+    }
+
+    /* Track Order Button */
+    .btn-track {
+        text-align: center;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--image-border-radius);
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        width: 180px;
+    }
+
+    .btn-track:hover {
+        background: #3a7cc8;
+        transform: translateY(-2px);
+        box-shadow: var(--card-hover-shadow);
+    }
+
+    .btn-track::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .btn-track:hover::before {
+        width: 200px;
+        height: 200px;
+    }
+
+    /* Shipping Address */
+    .shipping-address {
+        font-size: 1rem;
+        color: var(--text-color);
+        text-align: center;
+        padding: 14px;
+        background: var(--light-gray);
+        border-radius: var(--image-border-radius);
+        margin-top: 1.5rem;
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .shipping-address strong {
+        color: var(--text-color);
+        font-weight: 700;
+    }
+
+    /* No Orders */
+    .no-orders {
+        font-size: 1.3rem;
+        color: var(--dark-gray);
+        margin: 4rem 0;
+        text-align: center;
+        padding: 24px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--card-shadow);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Responsive Adjustments */
+    @media (min-width: 1200px) {
+        .section-title {
+            font-size: 2.6rem;
+        }
+        .order-title {
+            font-size: 2rem;
+        }
+        .order-table {
+            font-size: 1.1rem;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .section-title {
+            font-size: 2.4rem;
+        }
+        .order-container {
+            padding: 28px;
+        }
+        .summary-container {
+            padding: 0 20px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .summary-container {
+            grid-template-columns: 1fr;
+        }
+        .summary-card, .status-card {
+            padding: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 2rem;
+        }
+        .order-title {
+            font-size: 1.6rem;
+        }
+        .order-table {
+            font-size: 0.95rem;
+        }
+        .order-table th, .order-table td {
+            padding: 12px;
+        }
+        .btn-track {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        .summary-item, .status-title {
+            font-size: 1.1rem;
+        }
+        .status-list li {
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .summary-container, .order-container {
+            padding: 0 10px;
+        }
+        .order-table {
+            font-size: 0.9rem;
+        }
+        .order-table th, .order-table td {
+            padding: 10px;
+        }
+        .btn-track {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            width: 100%;
+            text-align: center;
+        }
+        .shipping-address {
+            font-size: 0.95rem;
+        }
+        .no-orders {
+            font-size: 1.2rem;
+            padding: 20px;
+        }
+        .find-order-container {
+            margin-bottom: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
