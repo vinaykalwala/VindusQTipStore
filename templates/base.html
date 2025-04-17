@@ -9,16 +9,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-         :root {
+        :root {
             --primary-color: #4A90E2;
             --secondary-color: #FF6B35;
             --background-color: #F4F7FA;
             --text-color: #2D2D2D;
             --light-gray: #E8EFF5;
             --white: #FFFFFF;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
+
         /* Base Styles */
-        
         body {
             background-color: var(--background-color);
             color: var(--text-color);
@@ -28,175 +29,201 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         a {
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease-in-out;
         }
+
         /* Navigation Bar */
-        
         .navbar {
             background-color: var(--primary-color);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 0.8rem 0;
-            padding-bottom: 1rem;
-            width: 100% !important;
+            padding: 0.75rem 0;
+            width: 100%;
         }
-        
+
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
+
         .navbar-logo {
             height: 40px;
             width: auto;
             border-radius: 6px;
         }
-        
+
         .navbar-brand span {
             color: var(--white);
             font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
-        
+
+        .navbar-brand span:hover {
+            color: gold;
+        }
+
+        .navbar-nav {
+            gap: 0.5rem; 
+        }
+
         .navbar-nav .nav-link {
             color: var(--white);
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            margin: 0 0.2rem;
-            border-radius: 5px;
+            font-size: 0.95rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            min-height: 44px; /* Touch-friendly */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease-in-out;
         }
-        
+
         .navbar-nav .nav-link:hover,
         .navbar-nav .nav-link:focus {
-            background-color: var(--secondary-color);
+            background-color: var(--secondary-color); /* Darker shade of --primary-color */
             color: var(--white);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
-        
+
         .navbar-nav .nav-link i {
-            font-size: 1rem;
+            font-size: 0.9rem; /* Smaller icons for balance */
         }
-        
+
+        .navbar-nav .nav-link:focus {
+            outline: 2px solid var(--white);
+            outline-offset: 2px;
+        }
+
         .navbar-toggler {
             border: none;
             color: var(--white);
             padding: 0.5rem;
+            font-size: 1.25rem;
         }
-        
+
         .navbar-toggler:focus {
             box-shadow: none;
+            outline: 2px solid var(--white);
         }
+
         /* Main Content */
-        
         .main-container {
             flex: 1;
             padding: 2rem 0;
         }
-        
+
         .container {
             width: 100%;
         }
+
         /* Cards */
-        
         .card {
             border: none;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--card-shadow);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             margin-bottom: 1.5rem;
         }
-        
+
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
-        
+
         .card-header {
             background-color: var(--primary-color);
             color: var(--white);
-            border-radius: 10px 10px 0 0 !important;
+            border-radius: 10px 10px 0 0;
             padding: 1rem;
         }
+
         /* Buttons */
-        
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
+            border-radius: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
         }
-        
+
         .btn-primary:hover {
             background-color: #3a7bc8;
             border-color: #3a7bc8;
         }
-        
+
         .btn-secondary {
             background-color: var(--secondary-color);
             border-color: var(--secondary-color);
+            border-radius: 8px;
         }
-        
+
         .btn-secondary:hover {
             background-color: #e05a2a;
             border-color: #e05a2a;
         }
-        
+
         .btn-outline-primary {
             color: var(--primary-color);
             border-color: var(--primary-color);
+            border-radius: 8px;
         }
-        
+
         .btn-outline-primary:hover {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
+            color: var(--white);
         }
+
         /* Alerts */
-        
         .alert {
             border-radius: 8px;
         }
+
         /* Forms */
-        
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
         }
+
         /* Footer */
-        
         footer {
             background-color: var(--primary-color);
             color: var(--white);
             padding: 2rem 0;
             margin-top: auto;
         }
-        
+
         .footer-links {
             display: flex;
             justify-content: center;
             gap: 1.5rem;
             margin-bottom: 1rem;
         }
-        
+
         .footer-links a {
             color: var(--white);
             font-weight: 500;
         }
-        
+
         .footer-links a:hover {
             color: var(--secondary-color);
         }
-        
+
         .social-icons {
             display: flex;
             justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .social-icons a {
             color: var(--white);
             font-size: 1.5rem;
@@ -209,81 +236,90 @@
             background-color: rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
         }
-        
+
         .social-icons a:hover {
             background-color: var(--secondary-color);
             transform: translateY(-3px);
         }
-        
+
         .copyright {
             font-size: 0.9rem;
             opacity: 0.8;
         }
+
         /* Responsive Adjustments */
-        
         @media (max-width: 991.98px) {
             .navbar-collapse {
                 background-color: var(--primary-color);
-                padding: 1rem;
+                padding: 1.5rem;
                 border-radius: 0 0 10px 10px;
                 margin-top: 0.5rem;
             }
+
             .navbar-nav {
-                gap: 0.5rem;
+                gap: 0.75rem;
             }
+
             .navbar-nav .nav-link {
-                padding: 0.75rem;
-                justify-content: center;
+                padding: 0.75rem 1rem;
+                justify-content: flex-start;
+                font-size: 1rem;
+                border-radius: 8px;
             }
+
             .dropdown-submenu .dropdown-menu {
                 position: static;
-                margin-left: 0;
+                margin-left: 1rem;
                 box-shadow: none;
+                background-color: rgba(255, 255, 255, 0.1);
             }
-            .dropdown-submenu:hover .dropdown-menu {
+
+            .dropdown-submenu:hover .dropdown-menu,
+            .dropdown-submenu .dropdown-menu.show {
                 display: block;
             }
         }
+
         /* Utility Classes */
-        
         .text-primary {
             color: var(--primary-color) !important;
         }
-        
+
         .text-secondary {
             color: var(--secondary-color) !important;
         }
-        
+
         .bg-light {
             background-color: var(--light-gray) !important;
         }
+
         /* Shop Dropdown Menu Styling */
-        
         .nav-item.dropdown .dropdown-menu {
             background-color: var(--white);
             border-radius: 8px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--card-shadow);
             padding: 0.5rem 0;
             min-width: 220px;
             z-index: 1000;
         }
-        
+
         .dropdown-menu .dropdown-item {
             padding: 0.5rem 1rem;
             color: var(--text-color);
             font-weight: 500;
+            border-radius: 4px;
         }
-        
+
         .dropdown-menu .dropdown-item:hover,
         .dropdown-menu .dropdown-item:focus {
             background-color: var(--light-gray);
             color: var(--primary-color);
         }
-        
+
         .dropdown-submenu {
             position: relative;
         }
-        
+
         .dropdown-submenu>.dropdown-toggle::after {
             content: "▲";
             float: right;
@@ -291,20 +327,37 @@
             font-size: 0.6rem;
             transform: rotate(90deg);
         }
-        
+
         .dropdown-submenu .dropdown-menu {
             background-color: var(--white);
             border-radius: 8px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--card-shadow);
             margin-left: 0.2rem;
             top: 0;
             left: 100%;
             display: none;
             position: absolute;
         }
-        
-        .dropdown-submenu:hover>.dropdown-menu {
+
+        .dropdown-submenu:hover>.dropdown-menu,
+        .dropdown-submenu .dropdown-menu.show {
             display: block;
+        }
+
+        /* Dropdown Toggle Button (Mobile) */
+        .dropdown-toggle-split {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            padding: 0.6rem 0.5rem;
+            margin-left: 0.2rem;
+            border-radius: 8px;
+            min-height: 44px;
+        }
+
+        .dropdown-toggle-split:hover,
+        .dropdown-toggle-split:focus {
+            background: #3a7bc8;
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -323,44 +376,39 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %} {% if user.is_superuser %}
+                    {% if user.is_authenticated %}
+                    {% if user.is_superuser %}
                     <!-- Admin Navigation -->
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'dashboard' %}">
                             <i class="fas fa-tachometer-alt"></i> Home
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Products:add_product' %}">
-                            <i class="fas fa-plus-circle"></i> Add Product
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="" id="productsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-box"></i> Products
                         </a>
+                        <ul class="dropdown-menu" aria-labelledby="productsDropdown">
+                            <li><a class="dropdown-item" href="{% url 'Products:add_product' %}">Add Product</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Products:manage_products' %}">Manage Products</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Products:low_stock_products' %}">Low Stock</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Products:manage_products' %}">
-                            <i class="fas fa-edit"></i> Manage Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'orders_page'%}">
+                        <a class="nav-link" href="{% url 'orders_page' %}">
                             <i class="fas fa-clipboard-list"></i> Orders
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'superuser_sales_report' %}">
-                            <i class="fas fa-file"></i>Sales Report
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Products:low_stock_products' %}">
-                            <i class="fas fa-box-open"></i>Low Stock
+                            <i class="fas fa-file"></i> Sales Report
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'track_by_tracking_number' %}">
-                            <i class="fas fa-box-open"></i>Find Order
+                            <i class="fas fa-box-open"></i> Find Order
                         </a>
                     </li>
-
                     {% elif user.role == "vendor" %}
                     <!-- Vendor Navigation -->
                     <li class="nav-item">
@@ -368,37 +416,31 @@
                             <i class="fas fa-tachometer-alt"></i> Home
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Products:add_product' %}">
-                            <i class="fas fa-plus-circle"></i> Add Product
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="productsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-box"></i> Products
                         </a>
+                        <ul class="dropdown-menu" aria-labelledby="productsDropdown">
+                            <li><a class="dropdown-item" href="{% url 'Products:add_product' %}">Add Product</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Products:manage_products' %}">Manage Products</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Products:low_stock_products' %}">Low Stock</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Products:manage_products' %}">
-                            <i class="fas fa-edit"></i> Manage Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'vendor_sales_report' %}">
-                            <i class="fas fa-file"></i>Sales Report
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'orders_page'%}">
+                        <a class="nav-link" href="{% url 'orders_page' %}">
                             <i class="fas fa-clipboard-list"></i> Orders
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'Products:low_stock_products' %}">
-                            <i class="fas fa-box-open"></i>Low Stock
+                        <a class="nav-link" href="{% url 'vendor_sales_report' %}">
+                            <i class="fas fa-file"></i> Sales Report
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'track_by_tracking_number' %}">
-                            <i class="fas fa-box-open"></i>Find Order
+                            <i class="fas fa-box-open"></i> Find Order
                         </a>
                     </li>
-
                     {% elif user.role == "customer" %}
                     <!-- Customer Navigation -->
                     <li class="nav-item">
@@ -406,20 +448,17 @@
                             <i class="fas fa-home"></i> Home
                         </a>
                     </li>
-
                     <li class="nav-item dropdown" id="shopMenu">
-                        <a class="nav-link" href="{% url 'Products:product_list' %}" id="shopDropdown">
+                        <a class="nav-link dropdown-toggle" href="{% url 'Products:product_list' %}" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-shopping-bag"></i> Shop
                         </a>
-                        <button class="btn dropdown-toggle dropdown-toggle-split d-inline-block d-lg-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
                         <ul class="dropdown-menu" aria-labelledby="shopDropdown">
                             {% for category in nav_categories %}
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="{% url 'Products:category_products' category.slug %}">
                                     {{ category.name }}
-                                </a> {% if category.subcategories.all %}
+                                </a>
+                                {% if category.subcategories.all %}
                                 <ul class="dropdown-menu">
                                     {% for sub in category.subcategories.all %}
                                     <li>
@@ -434,7 +473,6 @@
                             {% endfor %}
                         </ul>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'order-summary' %}">
                             <i class="fas fa-receipt"></i> Orders
@@ -445,13 +483,11 @@
                             <i class="fas fa-user-circle"></i> Profile
                         </a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'view-wishlist' %}">
                             <i class="fas fa-heart"></i> Wishlist
                         </a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'view-cart' %}">
                             <i class="fas fa-shopping-cart"></i> Cart
@@ -513,7 +549,8 @@
                     {% endfor %}
                 </div>
             </div>
-            {% endif %} {% block content %}{% endblock %}
+            {% endif %}
+            {% block content %}{% endblock %}
         </div>
     </main>
 
@@ -530,7 +567,6 @@
                         <a href="#">Privacy Policy</a>
                         <a href="#">Terms of Service</a>
                     </div>
-
                     <div class="social-icons">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -538,7 +574,6 @@
                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         <a href="#"><i class="fab fa-pinterest-p"></i></a>
                     </div>
-
                     <p class="copyright">© 2025 QTipStore. All Rights Reserved.</p>
                 </div>
             </div>
@@ -550,42 +585,53 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // Dropdown handling for Shop menu (primarily for customers)
             const shopMenu = document.getElementById("shopMenu");
-            const dropdownMenu = shopMenu.querySelector(".dropdown-menu");
-            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-            if (!isTouchDevice) {
-                // Desktop: Hover functionality
-                shopMenu.addEventListener("mouseenter", () => {
-                    shopMenu.classList.add("show");
-                    dropdownMenu.classList.add("show");
-                });
-
-                shopMenu.addEventListener("mouseleave", () => {
-                    shopMenu.classList.remove("show");
-                    dropdownMenu.classList.remove("show");
-                });
-            } else {
-                // Mobile: Toggle dropdown on first tap, go to link on second tap
-                let tappedOnce = false;
-                const shopLink = shopMenu.querySelector("a.nav-link");
-
-                shopLink.addEventListener("click", function(e) {
-                    if (!tappedOnce) {
-                        e.preventDefault(); // prevent navigation
-                        dropdownMenu.classList.toggle("show");
-                        tappedOnce = true;
-
-                        // Reset tap after short delay
-                        setTimeout(() => {
-                            tappedOnce = false;
-                        }, 1000);
-                    }
+            if (shopMenu) {
+                const dropdownMenu = shopMenu.querySelector(".dropdown-menu");
+                const shopLink = document.getElementById("shopDropdown");
+                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
+                if (!isTouchDevice) {
+                    // Desktop: Hover functionality
+                    shopMenu.addEventListener("mouseenter", () => {
+                        shopMenu.classList.add("show");
+                        dropdownMenu.classList.add("show");
+                    });
+        
+                    shopMenu.addEventListener("mouseleave", () => {
+                        shopMenu.classList.remove("show");
+                        dropdownMenu.classList.remove("show");
+                    });
+                }
+        
+                // Handle click on Shop link to redirect to product_list
+                shopLink.addEventListener("click", function(event) {
+                    // Prevent Bootstrap's default dropdown toggle and navigation block
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    // Navigate to the product_list URL
+                    window.location.href = shopLink.getAttribute("href");
                 });
             }
+        
+            // Ensure dropdowns are accessible via keyboard
+            document.querySelectorAll(".dropdown-toggle").forEach(toggle => {
+                toggle.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        // For Shop link, trigger redirect; for others, simulate click
+                        if (toggle.id === "shopDropdown") {
+                            window.location.href = toggle.getAttribute("href");
+                        } else {
+                            toggle.click();
+                        }
+                    }
+                });
+            });
         });
-    </script>
-
+        </script>
 
     {% block extra_js %}{% endblock %}
 </body>

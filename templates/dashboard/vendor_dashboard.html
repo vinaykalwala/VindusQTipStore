@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container-fluid px-0">
-    <div class="container mt-4 px-2">
-        <h2 class="section-title">Vendor Dashboard</h2>
+<div class="container-fluid px-0">  
+        <div class="section-title-wrapper">
+            <h2 class="section-title">Vendor Dashboard</h2>
+        </div>
         <p class="text-center">Welcome, {{ user.username }}! Manage your store and orders here.</p>
 
         <!-- Your Products Section -->
         {% if vendor_products %}
         <section class="vendor-products mb-5">
-            <h3 class="section-title">Your Products</h3>
+            <div class="section-title-wrapper">
+                <h3 class="section-title">Your Products</h3>
+            </div>
             <div class="product-grid">
                 {% for product in vendor_products %}
                 <div class="product-card" data-product-id="{{ product.id }}" aria-label="{{ product.name }} - ${{ product.discounted_price|floatformat:2 }}" tabindex="0">
@@ -34,12 +37,15 @@
                             <a href="{% url 'Products:view_product' product.id %}" class="btn btn-primary btn-sm">👁 View Product</a>
                             <!-- Variants Section -->
                             {% if product.variants.all %}
-                            <div class="variants mt-2">
+                            <button class="btn btn-secondary btn-sm toggle-variants" type="button" aria-expanded="false" aria-controls="variants-{{ product.id }}" data-toggle-text="Hide Variants">
+                                Show Variants
+                            </button>
+                            <div class="variants mt-2" id="variants-{{ product.id }}" style="display: none;">
                                 <h6>Variants:</h6>
                                 <div class="variant-grid">
                                     {% for variant in product.variants.all %}
                                     <div class="variant-item text-center">
-                                        <img src="{{ variant.image.url }}" alt="{{ variant }}" class="variant-image" loading="lazy" width="60" height="60">
+                                        <img src="{{ variant.image.url }}" alt="{{ variant.color|default:'Variant' }} {{ variant.size|default:'' }}" class="variant-image" loading="lazy">
                                         <p class="mb-0"><small>{{ variant.color|default:"N/A" }} / {{ variant.size|default:"N/A" }}</small></p>
                                         <small class="text-primary">${{ variant.additional_price|floatformat:2 }}</small>
                                         <a href="{% url 'Products:view_variant' variant.id %}" class="btn btn-info btn-sm mt-1">👁 View</a>
@@ -74,6 +80,15 @@
         --image-border-radius: 8px;
         --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Center the container */
+    .container {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     /* Banner Styles */
@@ -130,7 +145,7 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
-    .banner-nav:hover {
+    .banner-nav:hover, .banner-nav:focus {
         background: var(--primary-color);
         color: white;
         opacity: 1;
@@ -146,28 +161,88 @@
         right: 20px;
     }
 
+    /* Search Form Styles */
+    .search-form {
+        position: relative;
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: 1px solid var(--medium-gray);
+        border-radius: var(--card-border-radius);
+        background: var(--light-gray);
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .search-input:focus {
+        border-color: var(--primary-color);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    }
+
+    .search-input::placeholder {
+        color: var(--dark-gray);
+        opacity: 0.7;
+    }
+
+    .btn-search {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 0 var(--card-border-radius) var(--card-border-radius) 0;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-search:hover, .btn-search:focus {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(74, 144, 226, 0.4);
+        background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    }
+
+    /* Section Title Wrapper */
+    .section-title-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
     /* Section Styles */
     .section-title {
         font-size: 1.8rem;
         font-weight: 700;
         color: var(--text-color);
         margin-bottom: 2rem;
-        text-align: center !important;
+        text-align: center;
         position: relative;
         padding-bottom: 15px;
         display: inline-block;
-        
     }
 
     .section-title::after {
         content: '';
         position: absolute;
-        left: 0;
+        left: 50%;
         bottom: 0;
         width: 100%;
         height: 3px;
         background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
         border-radius: 3px;
+        transform: translateX(-50%);
     }
 
     /* Product Grid */
@@ -175,6 +250,7 @@
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
+        justify-content: center;
     }
 
     @media (min-width: 576px) {
@@ -196,6 +272,12 @@
         }
     }
 
+    @media (max-width: 576px) {
+        .product-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
     /* Product Card */
     .product-card {
         display: flex;
@@ -212,10 +294,11 @@
         height: 100%;
     }
 
-    .product-card:hover {
+    .product-card:hover, .product-card:focus {
         transform: translateY(-5px);
         box-shadow: var(--card-hover-shadow);
         border-color: var(--primary-color);
+        outline: none;
     }
 
     /* Image Container */
@@ -243,7 +326,7 @@
         max-height: 100%;
     }
 
-    .product-card:hover .product-image {
+    .product-card:hover .product-image, .product-card:focus .product-image {
         transform: scale(1.05);
     }
 
@@ -275,6 +358,7 @@
         color: var(--dark-gray);
         text-align: center;
         margin-bottom: 8px;
+        line-height: 1.4;
     }
 
     /* Price Section */
@@ -327,6 +411,8 @@
         border-radius: var(--card-border-radius);
         transition: all 0.3s ease;
         text-align: center;
+        padding: 10px;
+        min-height: 44px; /* Touch-friendly size */
     }
 
     .btn-primary {
@@ -335,10 +421,24 @@
         border: none;
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover, .btn-primary:focus {
         transform: translateY(-2px);
         box-shadow: 0 6px 15px rgba(74, 144, 226, 0.4);
         background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        outline: none;
+    }
+
+    .btn-secondary {
+        background: var(--dark-gray);
+        color: white;
+        border: none;
+    }
+
+    .btn-secondary:hover, .btn-secondary:focus {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(100, 116, 139, 0.4);
+        background: var(--primary-color);
+        outline: none;
     }
 
     .btn-info {
@@ -347,14 +447,23 @@
         border: none;
     }
 
-    .btn-info:hover {
+    .btn-info:hover, .btn-info:focus {
         transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(46, 11, 245, 0.4);
+        box-shadow: 0 6px 15px rgba(245, 158, 11, 0.4);
+        outline: none;
     }
 
     /* Variants Section */
     .variants {
         margin-top: 8px;
+        transition: all 0.3s ease;
+        max-height: 0;
+        overflow: hidden;
+    }
+
+    .variants.show {
+        max-height: 500px; /* Adjust based on content */
+        padding-bottom: 8px;
     }
 
     .variants h6 {
@@ -385,10 +494,23 @@
         margin-bottom: 4px;
     }
 
+    @media (max-width: 576px) {
+        .variant-grid {
+            grid-template-columns: 1fr;
+        }
+        .variant-image {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
     /* Responsive Adjustments */
     @media (min-width: 576px) {
         .banner-image {
             height: 220px;
+        }
+        .section-title {
+            font-size: 1.9rem;
         }
     }
 
@@ -406,12 +528,18 @@
     }
 
     @media (min-width: 992px) {
+        .container {
+            max-width: 1140px;
+        }
         .banner-image {
             height: 350px;
         }
     }
 
     @media (max-width: 768px) {
+        .section-title {
+            font-size: 1.6rem;
+        }
         .product-title {
             font-size: 0.9rem;
         }
@@ -421,9 +549,33 @@
         .original-price {
             font-size: 0.8rem;
         }
-        .variant-image {
-            width: 50px;
-            height: 50px;
+        .product-description {
+            font-size: 0.8rem;
+        }
+        .btn {
+            font-size: 0.85rem;
+            padding: 8px;
+        }
+        .search-input {
+            padding: 10px 16px;
+            font-size: 0.95rem;
+        }
+        .btn-search {
+            padding: 10px 16px;
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .banner-image {
+            height: 150px;
+        }
+        .section-title {
+            font-size: 1.4rem;
+        }
+        .container {
+            padding-left: 10px;
+            padding-right: 10px;
         }
     }
 </style>
@@ -562,9 +714,52 @@
 
         // Initialize components
         try {
+            // Banner Carousel
             const banner = new BannerCarousel();
             window.addEventListener('unload', () => {
                 banner.pauseAutoSlide();
+            });
+
+            // Keyboard navigation for product cards
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.querySelector('.btn-primary').click();
+                    }
+                });
+            });
+
+            // Toggle Variants Dropdown
+            document.querySelectorAll('.toggle-variants').forEach(button => {
+                button.addEventListener('click', () => {
+                    const variantsSection = button.nextElementSibling;
+                    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                    
+                    if (!isExpanded) {
+                        variantsSection.style.display = 'block';
+                        setTimeout(() => {
+                            variantsSection.classList.add('show');
+                        }, 10); // Small delay for transition
+                        button.setAttribute('aria-expanded', 'true');
+                        button.textContent = button.getAttribute('data-toggle-text');
+                    } else {
+                        variantsSection.classList.remove('show');
+                        setTimeout(() => {
+                            variantsSection.style.display = 'none';
+                        }, 300); // Match transition duration
+                        button.setAttribute('aria-expanded', 'false');
+                        button.textContent = 'Show Variants';
+                    }
+                });
+
+                // Keyboard accessibility for toggle button
+                button.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        button.click();
+                    }
+                });
             });
         } catch (error) {
             console.error('Error initializing components:', error);

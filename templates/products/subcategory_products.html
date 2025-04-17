@@ -1,86 +1,188 @@
-{% extends 'base.html' %} {% block content %}
-<div class="container">
-    <h2 class="text-center mb-4">Products in {{ subcategory.name }}</h2>
+{% extends 'base.html' %}
+{% block content %}
+<div class="category-container">
+    <!-- Category Header -->
+    <div class="category-header">
+        <h1 class="category-title">Products in {{ subcategory.name }}</h1>
+        <p class="category-description">{{ subcategory.description|default:"Explore our premium collection of "|add:subcategory.name }}</p>
+        <div class="category-meta">
+            <span class="product-count">{{ products|length }} products available</span>
+            {% if subcategory.parent %}
+            <a href="{% url 'Products:category_products' subcategory.parent.slug %}" class="parent-category">
+                <i class="fas fa-arrow-left"></i> Back to {{ subcategory.parent.name }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
 
+    <!-- Search Form -->
     <form method="get" action="{% url 'Products:search' %}" class="search-form d-flex align-items-center justify-content-center mb-4">
         <input type="text" name="query" placeholder="Search products, categories, or subcategories..." class="form-control search-input" required>
         <button type="submit" class="btn btn-search">Search</button>
     </form>
 
-    {% if products %}
-    <div class="row">
-        {% for product in products %}
-        <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-                <div class="card-body text-center">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">{{ product.description|truncatechars:100 }}</p>
-
-                    <!-- Price Display with Discount -->
-                    <p class="product-price">
+    <!-- Product Grid -->
+    <div class="product-grid-container">
+        {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card" data-product-id="{{ product.id }}" aria-label="{{ product.name }} - ₹{{ product.discounted_price|floatformat:2 }}" tabindex="0">
+                <a href="{% url 'Products:product_detail' product.slug %}" class="product-link">
+                    <div class="product-image-container">
+                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy">
                         {% if product.discount > 0 %}
-                        <s class="text-danger">₹{{ product.price }}</s>
-                        <strong class="text-success">₹{{ product.discounted_price }}</strong> {% else %} ₹{{ product.price }} {% endif %}
-                    </p>
-
-                    <a href="{% url 'Products:product_detail' product.slug %}" class="btn btn-primary">View Details</a>
-                </div>
+                        <div class="discount-badge">-{{ product.discount }}% OFF</div>
+                        {% endif %}
+                        <div class="quick-view">Quick View</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">{{ product.name|truncatechars:30 }}</h3>
+                        <div class="product-price">
+                            {% if product.discount > 0 %}
+                            <div class="original-price">₹{{ product.price|floatformat:2 }}</div>
+                            <div class="discounted-price">₹{{ product.discounted_price|floatformat:2 }}</div>
+                            {% else %}
+                            <div class="current-price">₹{{ product.price|floatformat:2 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-count">({{ product.review_count|default:0 }})</span>
+                        </div>
+                    </div>
+                </a>
+                <button class="add-to-cart-btn" data-product-id="{{ product.id }}">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <h3>No products available in this subcategory</h3>
+            <p>We're working on adding more products soon. Check back later!</p>
+            <a href="{% url 'Products:category_list' %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Browse Other Categories
+            </a>
+        </div>
+        {% endif %}
     </div>
-    {% else %}
-    <p class="text-center mt-3">No products found in this subcategory.</p>
-    {% endif %}
 </div>
 
-<!-- Bootstrap & Custom Styling -->
+<!-- Custom Styling -->
 <style>
-    .card {
-        border-radius: 10px;
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    }
-    
-    .card:hover {
-        transform: scale(1.05);
-        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-    }
-    
-    .card-img-top {
-        height: 250px;
-        object-fit: cover;
-        border-radius: 10px 10px 0 0;
-    }
-    
-    .product-price {
-        font-size: 18px;
-    }
-    
-    .product-price s {
-        color: red;
-        margin-right: 8px;
-    }
+:root {
+    --primary-color: #4a6bff;
+    --secondary-color: #ff6b35;
+    --accent-color: #f59e0b;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --text-color: #333;
+    --text-muted: #6c757d;
+    --border-color: #e0e0e0;
+    --success-color: #28a745;
+    --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    --card-hover-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --dark-gray: #64748b;
+}
 
-    /* Search Form Styles */
-    .search-form {
+/* Base Styles */
+.category-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Category Header */
+.category-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.category-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+}
+
+.category-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+.category-description {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 800px;
+    margin: 0 auto 20px;
+    line-height: 1.6;
+}
+
+.category-meta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    font-size: 0.9rem;
+}
+
+.product-count {
+    color: var(--text-muted);
+}
+
+.parent-category {
+    color: var(--primary-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: var(--transition);
+}
+
+.parent-category:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* Search Form Styles */
+.search-form {
     position: relative;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
-    
 }
 
 .search-input {
     width: 100%;
     padding: 12px 20px;
     font-size: 1rem;
-    border: 1px solid var(--primary-color); /* Consistent border color */
-    border-radius: var(--card-border-radius) 0 0 var(--card-border-radius);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(8px);
     color: var(--text-color);
-    transition: all 0.3s ease;
+    transition: var(--transition);
     outline: none;
     border-radius: 10px;
 }
@@ -99,16 +201,17 @@
 .btn-search {
     position: absolute;
     width: 125px;
+    height: 100%;
     right: 15px;
     padding: 12px 20px;
     font-size: 1rem;
     font-weight: 600;
     border: none;
-    border-radius: 0 var(--card-border-radius) var(--card-border-radius) 0;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
     background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
     color: white;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: var(--transition);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
@@ -118,27 +221,326 @@
     box-shadow: 0 6px 15px rgba(74, 144, 226, 0.4);
     background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
 }
+
+/* Product Grid */
+.product-grid-container {
+    margin: 30px 0;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    justify-items: center;
+}
+
+/* Product Card */
+.product-card {
+    width: 100%;
+    max-width: 280px;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    position: relative;
+}
+
+.product-card:hover,
+.product-card:focus {
+    transform: translateY(-5px);
+    box-shadow: var(--card-hover-shadow);
+    outline: none;
+}
+
+.product-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Image Container */
+.product-image-container {
+    position: relative;
+    padding-top: 100%;
+    overflow: hidden;
+}
+
+.product-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image,
+.product-card:focus .product-image {
+    transform: scale(1.05);
+}
+
+/* Discount Badge */
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 1;
+}
+
+/* Quick View */
+.quick-view {
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    padding: 8px;
+    transition: var(--transition);
+    z-index: 1;
+}
+
+.product-card:hover .quick-view {
+    bottom: 0;
+}
+
+/* Product Info */
+.product-info {
+    padding: 15px;
+    text-align: left;
+}
+.product-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-color);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 40px;
+}
+
+.product-price {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.discounted-price {
+    color: var(--secondary-color);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.current-price {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* Product Rating */
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.stars {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+}
+
+.rating-count {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Add to Cart Button */
+.add-to-cart-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.add-to-cart-btn:hover {
+    background: var(--dark-color);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--dark-color);
+    transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+}
+
 @media (max-width: 768px) {
     .category-title {
         font-size: 1.8rem;
     }
-    
+
     .category-description {
         font-size: 1rem;
     }
-    
+
     .product-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 15px;
     }
+
     .search-input {
         padding: 10px 16px;
         font-size: 0.95rem;
     }
+
     .btn-search {
         padding: 10px 16px;
         font-size: 0.95rem;
     }
+
+    .product-title {
+        font-size: 0.95rem;
+    }
+
+    .discounted-price, .current-price {
+        font-size: 1.1rem;
+    }
+
+    .original-price {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .category-container {
+        padding: 15px;
+    }
+
+    .category-title {
+        font-size: 1.5rem;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+    }
+
+    .product-info {
+        padding: 12px;
+    }
+
+    .product-title {
+        font-size: 0.9rem;
+    }
+
+    .discounted-price, .current-price {
+        font-size: 1rem;
+    }
+
+    .add-to-cart-btn {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
 }
 </style>
+
+<!-- JavaScript for Accessibility and Functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Keyboard navigation for product cards
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.querySelector('.product-link').click();
+            }
+        });
+    });
+
+    // Add to cart functionality
+    const buttons = document.querySelectorAll('.add-to-cart-btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const addToCartUrl = "{% url 'add-to-cart' 0 %}".replace('0', productId);
+            window.location.href = addToCartUrl;
+        });
+    });
+
+    // Quick view functionality
+    document.querySelectorAll('.product-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const quickView = this.querySelector('.quick-view');
+            if (e.target === quickView || quickView.contains(e.target)) {
+                e.preventDefault();
+                window.location.href = this.getAttribute('href');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
