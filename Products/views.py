@@ -93,6 +93,7 @@ def product_detail(request, product_slug):
             "image": variant.image.url if variant.image else product.image.url,
             "additional_price": variant.additional_price,
             "final_price": discounted_price + variant.additional_price,  # Adjusting variant price with discount
+            "original_price": product.price + variant.additional_price,
         }
         for variant in variants
     ]

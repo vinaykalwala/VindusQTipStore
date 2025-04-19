@@ -675,3 +675,52 @@ def track_order_by_tracking_number(request):
         'tracking_number': tracking_number,
         'all_tracking_numbers': all_tracking_numbers,
     })
+
+
+
+
+@login_required
+def assigned_order_items_view(request):
+    user = request.user
+
+    # All items excluding 'delivered'
+    all_items = OrderItem.objects.all().select_related('order', 'product', 'delivery_person')
+
+    # Filter in Python without query methods
+    undelivered_items = [item for item in all_items if item.status.lower() != 'delivered']
+
+    if user.is_superuser:
+        order_items = undelivered_items
+    elif user.role == 'delivery':
+        order_items = [item for item in undelivered_items if item.delivery_person == user]
+    elif user.role == 'DeliveryAdmin':
+        order_items = undelivered_items
+    else:
+        order_items = []
+
+    return render(request, 'orders/assigned_order_items.html', {'order_items': order_items, 'user': user})
+
+# views.py
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import OrderItem
+
+@login_required
+def delivered_order_items_view(request):
+    user = request.user
+
+    all_items = OrderItem.objects.all().select_related('order', 'product', 'delivery_person')
+
+    # Filter delivered items in plain Python
+    delivered_items = [item for item in all_items if item.status.lower() == 'delivered']
+
+    if user.is_superuser:
+        order_items = delivered_items
+    elif user.role == 'delivery':
+        order_items = [item for item in delivered_items if item.delivery_person == user]
+    elif user.role == 'DeliveryAdmin':
+        order_items = delivered_items 
+    else:
+        order_items = []
+
+    return render(request, 'orders/delivered_order_items.html', {'order_items': order_items, 'user': user})

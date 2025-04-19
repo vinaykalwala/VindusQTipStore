@@ -1,0 +1,43 @@
+<!-- templates/orders/assigned_order_items.html -->
+{% extends "base.html" %}
+{% block content %}
+<h2>Assigned Order Items</h2>
+
+{% if order_items %}
+<table border="1" cellpadding="10">
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Status</th>
+      <th>Expected Delivery</th>
+      <th>Tracking #</th>
+      <th>Amount</th>
+      {% if user.is_superuser %}
+      <th>Delivery Person</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in order_items %}
+    <tr>
+      <td>{{ item.order.id }}</td>
+      <td>{{ item.product.name }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.status }}</td>
+      <td>{{ item.expected_delivery_date|default:"N/A" }}</td>
+      <td>{{ item.tracking_number|default:"N/A" }}</td>
+      <td>₹{{ item.subtotal }}</td>
+      {% if user.is_superuser %}
+      <td>{{ item.delivery_person.get_full_name|default:"Unassigned" }}</td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No undelivered items found.</p>
+{% endif %}
+
+{% endblock %}

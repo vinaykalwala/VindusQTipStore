@@ -400,6 +400,16 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'assigned_order_items'%}">
+                            <i class="fas fa-truck"></i> Assigned Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'delivered_order_items' %}">
+                            <i class="fas fa-history"></i> Delivery History
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'superuser_sales_report' %}">
                             <i class="fas fa-file"></i> Sales Report
                         </a>
@@ -486,17 +496,34 @@
                     {% elif user.role == "delivery" %}
                     <!-- Delivery Personnel Navigation -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'assigned_order_items'%}">
                             <i class="fas fa-truck"></i> Assigned Orders
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'delivered_order_items' %}">
+                            <i class="fas fa-history"></i> Delivery History
+                        </a>
+                    </li>
+                    {% elif user.role == "DeliveryAdmin" %}
+                    <!-- Delivery Personnel Navigation -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'assigned_order_items'%}">
+                            <i class="fas fa-truck"></i> Assigned Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'delivered_order_items' %}">
                             <i class="fas fa-history"></i> Delivery History
                         </a>
                     </li>

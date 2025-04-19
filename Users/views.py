@@ -310,7 +310,7 @@ def dashboard_view(request):
         for item in order_items:
             item.is_delivered = (item.status == "delivered")
 
-    else:
+    elif user.role == 'DeliveryAdmin':
         template = 'dashboard/default_dashboard.html'
         query = request.GET.get('q', '').strip()
         
@@ -326,6 +326,8 @@ def dashboard_view(request):
         
         for item in order_items:
             item.is_delivered = (item.status == "delivered")
+    else :
+        return redirect('user-login')
 
 
     return render(request, template, {
