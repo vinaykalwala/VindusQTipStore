@@ -209,37 +209,49 @@ def view_variant(request, variant_id):
 
 
 
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Product
 from .forms import ProductForm
 
 @login_required
 def edit_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id, vendor=request.user)
+    product = get_object_or_404(Product, id=product_id)
+
+    # Allow access only if the user is the vendor or a superuser
+    if request.user != product.vendor and not request.user.is_superuser:
+        return HttpResponseForbidden("You do not have permission to edit this product.")
 
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            return redirect('vendor_dashboard')  # Redirect back to vendor dashboard after save
+            return redirect('dashboard')  # Or use a different redirect for admin
     else:
         form = ProductForm(instance=product)
 
     return render(request, 'products/edit_product.html', {'form': form, 'product': product})
 
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import ProductVariant
 from .forms import ProductVariantForm
 
 @login_required
 def edit_variant(request, variant_id):
-    variant = get_object_or_404(ProductVariant, id=variant_id, product__vendor=request.user)
+    variant = get_object_or_404(ProductVariant, id=variant_id)
+
+    # Check if the current user is the product's vendor or a superuser
+    if request.user != variant.product.vendor and not request.user.is_superuser:
+        return HttpResponseForbidden("You do not have permission to edit this variant.")
 
     if request.method == "POST":
         form = ProductVariantForm(request.POST, request.FILES, instance=variant)
         if form.is_valid():
             form.save()
-            return redirect('vendor_dashboard')  # Redirect to vendor dashboard after save
+            return redirect('dashboard')  # Or use a different redirect for admin
     else:
         form = ProductVariantForm(instance=variant)
 
