@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container-fluid px-3">
+<div class="manage-products-page container-fluid px-3">
     <h2 class="section-title">Manage Products</h2>
 
     {% if products %}
@@ -31,7 +31,7 @@
 
                     <!-- Actions -->
                     <div class="d-flex justify-content-between action-buttons">
-                        <a href="{% url 'Products:edit_product' product.id %}" class="btn Pal btn-warning btn-sm">✏️ Edit</a>
+                        <a href="{% url 'Products:edit_product' product.id %}" class="btn btn-warning btn-sm">✏️ Edit</a>
                         <a href="{% url 'Products:delete_product' product.id %}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">🗑 Delete</a>
                     </div>
 
@@ -93,13 +93,13 @@
         --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
 
-    body {
-        background: var(--background-color);
+    .manage-products-page {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--background-color);
     }
 
     /* Section Title */
-    .section-title {
+    .manage-products-page .section-title {
         font-size: 2.2rem;
         font-weight: 700;
         color: var(--text-color);
@@ -110,7 +110,7 @@
         letter-spacing: -0.02em;
     }
 
-    .section-title::after {
+    .manage-products-page .section-title::after {
         content: '';
         position: absolute;
         left: 50%;
@@ -123,7 +123,7 @@
     }
 
     /* Product Card */
-    .product-card {
+    .manage-products-page .product-card {
         background: rgba(255, 255, 255, 0.95);
         border: none;
         border-radius: var(--card-border-radius);
@@ -134,15 +134,16 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        z-index: 1; /* Ensure cards stay below navbar */
     }
 
-    .product-card:hover {
+    .manage-products-page .product-card:hover {
         transform: translateY(-8px);
         box-shadow: var(--card-hover-shadow);
     }
 
     /* Product Image */
-    .product-image-container {
+    .manage-products-page .product-image-container {
         width: 100%;
         aspect-ratio: 1/1;
         overflow: hidden;
@@ -154,19 +155,19 @@
         border-bottom: 1px solid var(--medium-gray);
     }
 
-    .product-image-container img {
+    .manage-products-page .product-image-container img {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
         transition: transform 0.4s ease;
     }
 
-    .product-card:hover .product-image-container img {
+    .manage-products-page .product-card:hover .product-image-container img {
         transform: scale(1.1);
     }
 
     /* Card Body */
-    .card-body {
+    .manage-products-page .card-body {
         padding: 20px;
         flex-grow: 1;
         display: flex;
@@ -174,7 +175,7 @@
         gap: 12px;
     }
 
-    .card-title {
+    .manage-products-page .card-title {
         font-size: 1.15rem;
         font-weight: 600;
         color: var(--text-color);
@@ -186,7 +187,7 @@
     }
 
     /* Price Section */
-    .price-section {
+    .manage-products-page .price-section {
         margin: 0;
         font-size: 0.95rem;
         display: flex;
@@ -195,30 +196,30 @@
         align-items: center;
     }
 
-    .price-section strong {
+    .manage-products-page .price-section strong {
         color: var(--text-color);
         font-weight: 500;
     }
 
-    .discounted-price {
+    .manage-products-page .discounted-price {
         color: var(--secondary-color);
         font-weight: 700;
         font-size: 1.1rem;
     }
 
-    .original-price {
+    .manage-products-page .original-price {
         color: var(--dark-gray);
         font-size: 0.85rem;
         margin-left: 6px;
     }
 
-    .normal-price {
+    .manage-products-page .normal-price {
         color: var(--text-color);
         font-weight: 600;
         font-size: 1rem;
     }
 
-    .discount-badge {
+    .manage-products-page .discount-badge {
         background: var(--accent-color);
         color: white;
         padding: 4px 10px;
@@ -229,7 +230,7 @@
     }
 
     /* Description */
-    .description {
+    .manage-products-page .description {
         font-size: 0.9rem;
         color: var(--dark-gray);
         margin: 0;
@@ -238,11 +239,11 @@
     }
 
     /* Action Buttons */
-    .action-buttons {
+    .manage-products-page .action-buttons {
         gap: 12px;
     }
 
-    .action-buttons .btn {
+    .manage-products-page .action-buttons .btn {
         flex: 1;
         padding: 10px;
         font-size: 0.9rem;
@@ -257,31 +258,31 @@
         overflow: hidden;
     }
 
-    .btn-warning {
+    .manage-products-page .btn-warning {
         background: var(--accent-color);
         border: none;
         color: white;
     }
 
-    .btn-warning:hover {
+    .manage-products-page .btn-warning:hover {
         background: #e68a00;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
-    .btn-danger {
+    .manage-products-page .btn-danger {
         background: var(--secondary-color);
         border: none;
         color: white;
     }
 
-    .btn-danger:hover {
+    .manage-products-page .btn-danger:hover {
         background: #e55a1f;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
-    .action-buttons .btn::before {
+    .manage-products-page .action-buttons .btn::before {
         content: '';
         position: absolute;
         top: 50%;
@@ -294,17 +295,17 @@
         transition: width 0.6s ease, height 0.6s ease;
     }
 
-    .action-buttons .btn:hover::before {
+    .manage-products-page .action-buttons .btn:hover::before {
         width: 150px;
         height: 150px;
     }
 
     /* Variants Section */
-    .variants-section {
+    .manage-products-page .variants-section {
         padding-top: 12px;
     }
 
-    .variant-toggle {
+    .manage-products-page .variant-toggle {
         font-size: 1rem;
         color: var(--text-color);
         margin-bottom: 8px;
@@ -315,24 +316,24 @@
         transition: color 0.3s ease;
     }
 
-    .variant-toggle:hover {
+    .manage-products-page .variant-toggle:hover {
         color: var(--primary-color);
     }
 
-    .toggle-icon {
+    .manage-products-page .toggle-icon {
         font-size: 0.8rem;
         transition: transform 0.3s ease;
     }
 
-    .variant-toggle[aria-expanded="true"] .toggle-icon {
+    .manage-products-page .variant-toggle[aria-expanded="true"] .toggle-icon {
         transform: rotate(180deg);
     }
 
-    .collapse {
+    .manage-products-page .collapse {
         transition: height 0.3s ease;
     }
 
-    .variant-image-container {
+    .manage-products-page .variant-image-container {
         width: 100%;
         aspect-ratio: 1/1;
         overflow: hidden;
@@ -342,63 +343,63 @@
         border: 1px solid var(--medium-gray);
     }
 
-    .variant-image-container img {
+    .manage-products-page .variant-image-container img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
     }
 
-    .variant-image-container:hover img {
+    .manage-products-page .variant-image-container:hover img {
         transform: scale(1.1);
     }
 
-    .variant-details {
+    .manage-products-page .variant-details {
         font-size: 0.85rem;
         color: var(--text-color);
         line-height: 1.3;
         font-weight: 500;
     }
 
-    .variant-price {
+    .manage-products-page .variant-price {
         color: var(--primary-color);
         font-weight: 600;
         font-size: 0.85rem;
     }
 
-    .btn-group .btn {
+    .manage-products-page .btn-group .btn {
         padding: 6px 12px;
         font-size: 0.8rem;
         border-radius: var(--image-border-radius);
         transition: all 0.3s ease;
     }
 
-    .btn-info {
+    .manage-products-page .btn-info {
         background: var(--primary-color);
         border: none;
         color: white;
     }
 
-    .btn-info:hover {
+    .manage-products-page .btn-info:hover {
         background: #3a7cc8;
         transform: translateY(-2px);
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .btn-danger {
+    .manage-products-page .btn-danger {
         background: var(--secondary-color);
         border: none;
         color: white;
     }
 
-    .btn-danger:hover {
+    .manage-products-page .btn-danger:hover {
         background: #e55a1f;
         transform: translateY(-2px);
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     }
 
     /* No Products */
-    .no-products {
+    .manage-products-page .no-products {
         font-size: 1.2rem;
         color: var(--dark-gray);
         margin: 4rem 0;
@@ -410,60 +411,58 @@
 
     /* Responsive Adjustments */
     @media (min-width: 1200px) {
-        .section-title {
+        .manage-products-page .section-title {
             font-size: 2.4rem;
         }
-        .card-title {
+        .manage-products-page .card-title {
             font-size: 1.2rem;
         }
     }
 
     @media (min-width: 768px) {
-        .section-title {
+        .manage-products-page .section-title {
             font-size: 2.2rem;
         }
-        .card-body {
+        .manage-products-page .card-body {
             padding: 24px;
         }
     }
 
     @media (max-width: 576px) {
-        .section-title {
+        .manage-products-page .section-title {
             font-size: 1.8rem;
         }
-        .card-title {
+        .manage-products-page .card-title {
             font-size: 1rem;
         }
-        .price-section {
+        .manage-products-page .price-section {
             font-size: 0.9rem;
         }
-        .discounted-price {
+        .manage-products-page .discounted-price {
             font-size: 1rem;
         }
-        .action-buttons .btn {
+        .manage-products-page .action-buttons .btn {
             padding: 8px;
             font-size: 0.85rem;
         }
-        .variant-details, .variant-price {
+        .manage-products-page .variant-details, .manage-products-page .variant-price {
             font-size: 0.8rem;
         }
-        .btn-group .btn {
+        .manage-products-page .btn-group .btn {
             padding: 5px 10px;
             font-size: 0.75rem;
         }
-        .product-image-container {
+        .manage-products-page .product-image-container {
             aspect-ratio: 1/1;
         }
     }
 </style>
 
-<!-- Bootstrap JS for Collapse (Variants Dropdown) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+{% block extra_js %}
 <!-- JavaScript for Variant Toggle Icon -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const toggles = document.querySelectorAll('.variant-toggle');
+        const toggles = document.querySelectorAll('.manage-products-page .variant-toggle');
         toggles.forEach(toggle => {
             toggle.addEventListener('click', function() {
                 const isExpanded = this.getAttribute('aria-expanded') === 'true';
@@ -473,4 +472,5 @@
         });
     });
 </script>
+{% endblock %}
 {% endblock %}

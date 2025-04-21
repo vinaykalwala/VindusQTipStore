@@ -1,15 +1,234 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container">
-    <h2 class="text-center my-4">Variant Details</h2>
+<div class="variant-detail-page">
+    <!-- Styling -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-    <div class="row">
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #FF6B35;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-gray: #f1f5f9;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --card-border-radius: 16px;
+            --image-border-radius: 12px;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.05);
+            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .variant-detail-page {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 3.5rem;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--primary-color);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .variant-detail-page h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0 0 2.5rem;
+            text-align: center;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .variant-detail-page h2::after {
+            content: '';
+            display: block;
+            width: 140px;
+            height: 6px;
+            background: linear-gradient(45deg, var(--primary-color), #6BA8F5);
+            margin: 14px auto;
+            border-radius: 3px;
+        }
+
+        .variant-detail-page .variant-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .variant-detail-page .variant-image,
+        .variant-detail-page .variant-details {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--image-border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            opacity: 0;
+            animation: cardFadeIn 0.5s ease forwards;
+        }
+
+        .variant-detail-page .variant-image:hover,
+        .variant-detail-page .variant-details:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .variant-detail-page .variant-image img {
+            max-height: 300px;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: var(--image-border-radius);
+            display: block;
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+        }
+
+        .variant-detail-page .variant-image img:hover {
+            transform: scale(1.05);
+        }
+
+        .variant-detail-page .variant-details p {
+            font-size: 1.05rem;
+            color: var(--text-color);
+            margin: 0.75rem 0;
+        }
+
+        .variant-detail-page .variant-details strong {
+            color: var(--primary-color);
+        }
+
+        .variant-detail-page .text-danger {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .variant-detail-page .text-muted {
+            color: var(--dark-gray);
+        }
+
+        .variant-detail-page .btn-back {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary-color), #6BA8F5);
+            border: none;
+            border-radius: var(--image-border-radius);
+            padding: 0.6rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .variant-detail-page .btn-back:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .variant-detail-page .btn-back::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .variant-detail-page .btn-back:hover::before {
+            width: 120px;
+            height: 120px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 1200px) {
+            .variant-detail-page {
+                max-width: 1000px;
+            }
+            .variant-detail-page h2 {
+                font-size: 3rem;
+            }
+            .variant-detail-page .variant-details p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .variant-detail-page {
+                padding: 4rem;
+            }
+            .variant-detail-page .variant-image,
+            .variant-detail-page .variant-details {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .variant-detail-page {
+                max-width: 90%;
+                padding: 2rem;
+                margin: 1.5rem auto;
+            }
+            .variant-detail-page h2 {
+                font-size: 2.2rem;
+            }
+            .variant-detail-page h2::after {
+                width: 100px;
+                height: 4px;
+                margin: 10px auto;
+            }
+            .variant-detail-page .variant-container {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .variant-detail-page .variant-image,
+            .variant-detail-page .variant-details {
+                min-width: 100%;
+                padding: 1rem;
+            }
+            .variant-detail-page .variant-image img {
+                max-height: 250px;
+            }
+            .variant-detail-page .variant-details p {
+                font-size: 0.95rem;
+            }
+            .variant-detail-page .btn-back {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+
+    <h2>Variant Details</h2>
+
+    <div class="variant-container">
         <!-- Variant Image -->
-        <div class="col-md-6 text-center">
-            <img src="{{ variant.image.url }}" alt="{{ variant }}" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;">
+        <div class="variant-image text-center">
+            <img src="{{ variant.image.url }}" alt="{{ variant }}" class="img-fluid rounded">
         </div>
 
         <!-- Variant Details -->
-        <div class="col-md-6">
+        <div class="variant-details">
             <p><strong>Product:</strong> {{ variant.product.name }}</p>
             <p><strong>Category:</strong> {{ variant.product.category.name }}</p>
             {% if variant.product.subcategory %}
@@ -20,15 +239,15 @@
             <p><strong>Size:</strong> {{ variant.size|default:"N/A" }}</p>
             <p><strong>Additional Price:</strong> ${{ variant.additional_price }}</p>
 
-            <p><strong>Total Price:</strong> {% if variant.product.discount > 0 %}
+            <!-- <p><strong>Total Price:</strong> {% if variant.product.discount > 0 %}
                 <span class="text-danger">${{ variant.product.discounted_price|floatformat:2|add:variant.additional_price }}</span>
                 <del class="text-muted">${{ variant.product.price|floatformat:2|add:variant.additional_price }}</del> {% else %} ${{ variant.product.price|floatformat:2|add:variant.additional_price }} {% endif %}
-            </p>
+            </p> -->
         </div>
     </div>
 
     <div class="text-center mt-4">
-        <a href="{% url 'Products:view_product' variant.product.id %}" class="btn btn-secondary">⬅ Back to Product</a>
+        <a href="{% url 'Products:view_product' variant.product.id %}" class="btn-back">⬅ Back to Product</a>
     </div>
 </div>
 {% endblock %}

@@ -1,15 +1,524 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container">
-    <h2 class="text-center my-4">{{ product.name }}</h2>
+<div class="product-detail-page">
+    <!-- Styling -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-    <div class="row">
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #FF6B35;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-gray: #f1f5f9;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --card-border-radius: 16px;
+            --image-border-radius: 12px;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.05);
+            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-detail-page {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 3.5rem;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--primary-color);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .product-detail-page h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0 0 2.5rem;
+            text-align: center;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-detail-page h2::after {
+            content: '';
+            display: block;
+            width: 140px;
+            height: 6px;
+            background: linear-gradient(45deg, var(--primary-color), #6BA8F5);
+            margin: 14px auto;
+            border-radius: 3px;
+        }
+
+        .product-detail-page h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 2rem 0 1.5rem;
+            position: relative;
+        }
+
+        .product-detail-page h3::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--primary-color), #6BA8F5);
+            margin: 8px 0;
+            border-radius: 2px;
+        }
+
+        .product-detail-page .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .product-detail-page .product-image,
+        .product-detail-page .product-details {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--image-border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .product-detail-page .product-image:hover,
+        .product-detail-page .product-details:hover {
+            transform: translateY(-2px);
+        }
+
+        .product-detail-page .product-image img {
+            max-height: 300px;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: var(--image-border-radius);
+            display: block;
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+        }
+
+        .product-detail-page .product-image img:hover {
+            transform: scale(1.05);
+        }
+
+        .product-detail-page .product-details p {
+            font-size: 1.05rem;
+            color: var(--text-color);
+            margin: 0.75rem 0;
+        }
+
+        .product-detail-page .product-details strong {
+            color: var(--primary-color);
+        }
+
+        .product-detail-page .description-wrapper {
+            position: relative;
+        }
+
+        .product-detail-page .description {
+            font-size: 1.05rem;
+            color: var(--text-color);
+            margin: 0.75rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-height: 7.5rem;
+            transition: max-height 0.3s ease;
+        }
+
+        .product-detail-page .description.expanded {
+            -webkit-line-clamp: unset;
+            max-height: 1000px;
+            overflow: visible;
+        }
+
+        .product-detail-page .read-more {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary-color), #6BA8F5);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.5rem 1.2rem;
+            border-radius: var(--image-border-radius);
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-detail-page .read-more:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-detail-page .read-more::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .product-detail-page .read-more:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+
+        .product-detail-page .text-danger {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .product-detail-page .text-muted {
+            color: var(--dark-gray);
+        }
+
+        .product-detail-page .badge.bg-success {
+            background: #28a745 !important;
+            color: white;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--image-border-radius);
+        }
+
+        .product-detail-page .variants-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .product-detail-page .variant-card {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--image-border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: transform 0.3s ease;
+            opacity: 0;
+            animation: cardFadeIn 0.5s ease forwards;
+            animation-delay: calc(var(--card-index) * 0.1s);
+        }
+
+        .product-detail-page .variant-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .product-detail-page .variant-card img {
+            max-height: 150px;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: var(--image-border-radius);
+            margin-bottom: 1rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .product-detail-page .variant-card img:hover {
+            transform: scale(1.05);
+        }
+
+        .product-detail-page .variant-card p {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin: 0.5rem 0;
+        }
+
+        .product-detail-page .variant-card strong {
+            color: var(--primary-color);
+        }
+
+        .product-detail-page .btn-info {
+            background: linear-gradient(45deg, var(--primary-color), #6BA8F5);
+            border: none;
+            border-radius: var(--image-border-radius);
+            padding: 0.6rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-detail-page .btn-info:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-detail-page .btn-info::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .product-detail-page .btn-info:hover::before {
+            width: 120px;
+            height: 120px;
+        }
+
+        .product-detail-page .reviews-container .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--image-border-radius);
+            border: 1px solid var(--primary-color);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+            opacity: 0;
+            animation: cardFadeIn 0.5s ease forwards;
+            animation-delay: calc(var(--card-index) * 0.1s);
+        }
+
+        .product-detail-page .reviews-container .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .product-detail-page .card-body {
+            padding: 1.5rem;
+        }
+
+        .product-detail-page .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .product-detail-page .card-title::after {
+            content: '⭐';
+            color: var(--secondary-color);
+            margin-left: 0.5rem;
+        }
+
+        .product-detail-page .card-text {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .product-detail-page .card img {
+            max-height: 150px;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: var(--image-border-radius);
+            margin-bottom: 1rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .product-detail-page .card img:hover {
+            transform: scale(1.05);
+        }
+
+        .product-detail-page .text-muted {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
+        .product-detail-page .no-reviews {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--image-border-radius);
+            border-left: 5px solid var(--primary-color);
+            box-shadow: var(--card-shadow);
+            margin: 2rem 0;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .product-detail-page .debug-message {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            text-align: center;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--image-border-radius);
+            border: 1px solid var(--secondary-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 1200px) {
+            .product-detail-page {
+                max-width: 1000px;
+            }
+            .product-detail-page h2 {
+                font-size: 3rem;
+            }
+            .product-detail-page h3 {
+                font-size: 2.2rem;
+            }
+            .product-detail-page .product-details p,
+            .product-detail-page .variant-card p,
+            .product-detail-page .card-text {
+                font-size: 1.1rem;
+            }
+            .product-detail-page .description {
+                font-size: 1.1rem;
+            }
+            .product-detail-page .card-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .product-detail-page {
+                padding: 4rem;
+            }
+            .product-detail-page .product-image,
+            .product-detail-page .product-details {
+                padding: 2rem;
+            }
+            .product-detail-page .variant-card,
+            .product-detail-page .card {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .product-detail-page {
+                max-width: 90%;
+                padding: 2rem;
+                margin: 1.5rem auto;
+            }
+            .product-detail-page h2 {
+                font-size: 2.2rem;
+            }
+            .product-detail-page h2::after {
+                width: 100px;
+                height: 4px;
+                margin: 10px auto;
+            }
+            .product-detail-page h3 {
+                font-size: 1.6rem;
+            }
+            .product-detail-page h3::after {
+                width: 80px;
+                height: 3px;
+            }
+            .product-detail-page .product-container {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .product-detail-page .product-image,
+            .product-detail-page .product-details {
+                min-width: 100%;
+                padding: 1rem;
+            }
+            .product-detail-page .product-image img {
+                max-height: 250px;
+            }
+            .product-detail-page .product-details p,
+            .product-detail-page .variant-card p,
+            .product-detail-page .card-text {
+                font-size: 0.95rem;
+            }
+            .product-detail-page .description {
+                font-size: 0.95rem;
+                -webkit-line-clamp: 4;
+                max-height: 6rem;
+            }
+            .product-detail-page .read-more {
+                font-size: 0.9rem;
+                padding: 0.4rem 1rem;
+            }
+            .product-detail-page .variant-card {
+                min-width: 100%;
+                padding: 1rem;
+            }
+            .product-detail-page .variant-card img {
+                max-height: 120px;
+            }
+            .product-detail-page .btn-info {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            .product-detail-page .card {
+                padding: 1rem;
+            }
+            .product-detail-page .card-title {
+                font-size: 1.1rem;
+            }
+            .product-detail-page .card img {
+                max-height: 120px;
+            }
+            .product-detail-page .no-reviews {
+                font-size: 1rem;
+                padding: 1rem;
+                margin: 1.5rem 0;
+            }
+            .product-detail-page .debug-message {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+
+    <!-- JavaScript for Read More -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const readMoreLinks = document.querySelectorAll('.product-detail-page .read-more');
+            readMoreLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const description = link.previousElementSibling.querySelector('.description');
+                    description.classList.toggle('expanded');
+                    link.textContent = description.classList.contains('expanded') ? 'Read Less' : 'Read More';
+                });
+            });
+        });
+    </script>
+
+    <h2>{{ product.name }}</h2>
+
+    <div class="product-container">
         <!-- Product Image -->
-        <div class="col-md-6 text-center">
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;">
+        <div class="product-image">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
         </div>
 
         <!-- Product Details -->
-        <div class="col-md-6">
+        <div class="product-details">
             <p><strong>Category:</strong> {{ product.category.name }}</p>
             {% if product.subcategory %}
             <p><strong>Subcategory:</strong> {{ product.subcategory.name }}</p>
@@ -29,42 +538,52 @@
             <p><strong>Replacement Policy:</strong> {% if product.replacement_eligible %} Eligible ({{ product.replacement_days }} days) {% else %} Not Eligible {% endif %}
             </p>
 
-            <p><strong>Description:</strong> {{ product.description }}</p>
+            <div class="description-wrapper">
+                <p><strong>Description:</strong><span class="description">{{ product.description }}</span></p>
+                <span class="read-more">Read More</span>
+            </div>
 
             <p><strong>Average Rating:</strong> ⭐ {{ avg_rating }}/5</p>
         </div>
     </div>
 
     <!-- Variants Section -->
-    {% if variants %}
-    <h3 class="mt-4">Available Variants</h3>
-    <div class="row">
+    <h3>Available Variants</h3>
+    <div class="variants-container">
+        {% if variants %}
         {% for variant in variants %}
-        <div class="col-md-4 text-center">
-            <img src="{{ variant.image.url }}" alt="{{ variant }}" class="img-fluid rounded" style="max-height: 150px; object-fit: cover;">
+        <div class="variant-card" style="--card-index: {{ forloop.counter0 }}">
+            <img src="{{ variant.image.url }}" alt="{{ variant }}" class="img-fluid">
             <p><strong>Color:</strong> {{ variant.color|default:"N/A" }}</p>
             <p><strong>Size:</strong> {{ variant.size|default:"N/A" }}</p>
             <p><strong>Additional Price:</strong> ${{ variant.additional_price }}</p>
             <a href="{% url 'Products:view_variant' variant.id %}" class="btn btn-info btn-sm">👁 View Variant</a>
         </div>
         {% endfor %}
+        {% else %}
+        <p class="debug-message">No variants available for this product (debug).</p>
+        {% endif %}
     </div>
-    {% endif %}
 
     <!-- Reviews Section -->
-    <h3 class="mt-4">Customer Reviews</h3>
-    {% if reviews %} {% for review in reviews %}
-    <div class="card mb-3">
-        <div class="card-body">
-            <h5 class="card-title">{{ review.user.username }} ⭐ {{ review.rating }}/5</h5>
-            <p class="card-text">{{ review.comment }}</p>
-            {% if review.image %}
-            <img src="{{ review.image.url }}" alt="Review Image" class="img-fluid rounded" style="max-height: 150px;"> {% endif %}
-            <p class="text-muted">Reviewed on {{ review.created_at|date:"F j, Y" }}</p>
+    <h3>Customer Reviews</h3>
+    <div class="reviews-container">
+        {% if reviews %}
+        {% for review in reviews %}
+        <div class="card" style="--card-index: {{ forloop.counter0 }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ review.user.username }} ⭐ {{ review.rating }}/5</h5>
+                <p class="card-text">{{ review.comment }}</p>
+                {% if review.image %}
+                <img src="{{ review.image.url }}" alt="Review Image" class="img-fluid">
+                {% endif %}
+                <p class="text-muted">Reviewed on {{ review.created_at|date:"F j, Y" }}</p>
+            </div>
         </div>
+        {% endfor %}
+        {% else %}
+        <p class="no-reviews">No reviews yet. Be the first to review this product!</p>
+        {% endif %}
     </div>
-    {% endfor %} {% else %}
-    <p>No reviews yet. Be the first to review this product!</p>
-    {% endif %}
 </div>
 {% endblock %}
