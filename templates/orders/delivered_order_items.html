@@ -1,43 +1,184 @@
-<!-- templates/orders/delivered_order_items.html -->
-{% extends "base.html" %}
-{% block content %}
-<h2>Delivered Order Items</h2>
+{% extends 'base.html' %} {% block content %}
+<div class="delivered-order-items">
+    <!-- Styling -->
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #FF6B35;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-gray: #f1f5f9;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --card-border-radius: 16px;
+            --image-border-radius: 12px;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
 
-{% if order_items %}
-<table border="1" cellpadding="10">
-  <thead>
-    <tr>
-      <th>Order ID</th>
-      <th>Product</th>
-      <th>Quantity</th>
-      <th>Status</th>
-      <th>Delivered On</th>
-      <th>Tracking #</th>
-      <th>Amount</th>
-      {% if user.is_superuser %}
-      <th>Delivery Person</th>
-      {% endif %}
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in order_items %}
-    <tr>
-      <td>{{ item.order.id }}</td>
-      <td>{{ item.product.name }}</td>
-      <td>{{ item.quantity }}</td>
-      <td>{{ item.status }}</td>
-      <td>{{ item.delivered_date|default:"N/A" }}</td>
-      <td>{{ item.tracking_number|default:"N/A" }}</td>
-      <td>₹{{ item.subtotal }}</td>
-      {% if user.is_superuser %}
-      <td>{{ item.delivery_person.get_full_name|default:"Unassigned" }}</td>
-      {% endif %}
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p>No delivered items found.</p>
-{% endif %}
+        .delivered-order-items {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+        }
 
+        .delivered-order-items h2 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0 0 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .delivered-order-items h2::after {
+            content: '';
+            display: block;
+            width: 140px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 12px auto;
+            border-radius: 2px;
+        }
+
+        .delivered-order-items table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: var(--image-border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .delivered-order-items th,
+        .delivered-order-items td {
+            padding: 1rem;
+            font-size: 1rem;
+            text-align: left;
+            border: none;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .delivered-order-items th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .delivered-order-items tr:hover {
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .delivered-order-items td:nth-child(7) {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .delivered-order-items p {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: var(--image-border-radius);
+            border-left: 4px solid var(--accent-color);
+            margin: 1rem 0;
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 1200px) {
+            .delivered-order-items h2 {
+                font-size: 2.8rem;
+            }
+            .delivered-order-items th,
+            .delivered-order-items td {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .delivered-order-items {
+                padding: 3rem;
+            }
+            .delivered-order-items table {
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .delivered-order-items table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .delivered-order-items {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            .delivered-order-items h2 {
+                font-size: 2.2rem;
+            }
+            .delivered-order-items th,
+            .delivered-order-items td {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+            .delivered-order-items p {
+                font-size: 1rem;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+
+    <h2>Delivered Order Items</h2>
+
+    {% if order_items %}
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Delivered On</th>
+                <th>Tracking #</th>
+                <th>Amount</th>
+                {% if user.is_superuser or user.role = 'DeliveryAdmin' %}
+                <th>Delivery Person</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.order.id }}</td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.status }}</td>
+                <td>{{ item.delivered_date|default:"N/A" }}</td>
+                <td>{{ item.tracking_number|default:"N/A" }}</td>
+                <td>₹{{ item.subtotal }}</td>
+                {% if user.is_superuser or user.role = 'DeliveryAdmin' %}
+                <td>{{ item.delivery_person.get_full_name|default:"Unassigned" }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No delivered items found.</p>
+    {% endif %}
+</div>
 {% endblock %}

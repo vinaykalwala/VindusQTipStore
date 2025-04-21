@@ -1,56 +1,332 @@
-{% extends "base.html" %} {% block content %}
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Platform Sales Report</title>
+{% extends 'base.html' %} {% block content %}
+<div class="platform-sales-report">
+    <!-- Styling -->
     <style>
-        table {
-            border-collapse: collapse;
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #FF6B35;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-gray: #f1f5f9;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --card-border-radius: 16px;
+            --image-border-radius: 12px;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .platform-sales-report {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .platform-sales-report h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0 0 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .platform-sales-report h1::after {
+            content: '';
+            display: block;
+            width: 160px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 12px auto;
+            border-radius: 2px;
+        }
+
+        .platform-sales-report h2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 2rem 0 1rem;
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .platform-sales-report h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 1.5rem 0 1rem;
+            text-align: center;
+        }
+
+        .platform-sales-report p {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin: 0.5rem 0;
+            text-align: center;
+        }
+
+        .platform-sales-report p strong {
+            color: var(--secondary-color);
+        }
+
+        .platform-sales-report form {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        .platform-sales-report form label {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .platform-sales-report form input[type="number"] {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--image-border-radius);
+            width: 120px;
+            transition: border-color 0.3s ease;
+        }
+
+        .platform-sales-report form input[type="number"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
+        }
+
+        .platform-sales-report form button {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--image-border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .platform-sales-report form button:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-2px);
+        }
+
+        .platform-sales-report .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .platform-sales-report .button-group button {
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--image-border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .platform-sales-report .button-group button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .platform-sales-report table {
             width: 100%;
-            margin-bottom: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: var(--image-border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
         }
-        
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
+
+        .platform-sales-report th,
+        .platform-sales-report td {
+            padding: 1rem;
+            font-size: 1rem;
             text-align: left;
+            border: none;
+            border-bottom: 1px solid var(--medium-gray);
         }
-        
-        th {
-            background-color: #f2f2f2;
+
+        .platform-sales-report th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
         }
-        
-        h2,
-        h3 {
-            margin-top: 40px;
+
+        .platform-sales-report tr:hover {
+            background: rgba(74, 144, 226, 0.05);
         }
-        
-        .bar {
-            display: inline-block;
+
+        .platform-sales-report td[colspan="3"] {
+            text-align: center;
+            font-style: italic;
+            color: var(--dark-gray);
+        }
+
+        .platform-sales-report .bar {
             height: 20px;
-            background-color: #4CAF50;
-            margin-bottom: 5px;
+            background-color: var(--accent-color);
+            border-radius: 4px;
+            transition: width 0.3s ease;
         }
-        
-        .section {
+
+        .platform-sales-report ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background: var(--light-gray);
+            border-radius: var(--image-border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .platform-sales-report ul li {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            padding: 1rem 1.5rem;
+            margin: 0.5rem;
+            background: white;
+            border-radius: var(--image-border-radius);
+            border-left: 4px solid var(--accent-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .platform-sales-report ul li:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover-shadow);
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .platform-sales-report ul li span {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .platform-sales-report .section {
             display: none;
         }
-        
-        .button-group {
-            margin-bottom: 20px;
+
+        .platform-sales-report .section.active {
+            display: block;
         }
-        
-        .button-group button {
-            margin-right: 10px;
-            padding: 8px 16px;
-            cursor: pointer;
+
+        /* Responsive Adjustments */
+        @media (min-width: 1200px) {
+            .platform-sales-report h1 {
+                font-size: 3rem;
+            }
+            .platform-sales-report h2 {
+                font-size: 2.4rem;
+            }
+            .platform-sales-report h3 {
+                font-size: 2rem;
+            }
+            .platform-sales-report th,
+            .platform-sales-report td {
+                font-size: 1.1rem;
+            }
+            .platform-sales-report ul li {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .platform-sales-report {
+                padding: 3rem;
+            }
+            .platform-sales-report table {
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .platform-sales-report table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            .platform-sales-report .button-group {
+                gap: 0.5rem;
+            }
+            .platform-sales-report .button-group button {
+                padding: 0.5rem 1rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .platform-sales-report {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            .platform-sales-report h1 {
+                font-size: 2.4rem;
+            }
+            .platform-sales-report h2 {
+                font-size: 2rem;
+            }
+            .platform-sales-report h3 {
+                font-size: 1.6rem;
+            }
+            .platform-sales-report p {
+                font-size: 1.1rem;
+            }
+            .platform-sales-report form {
+                flex-direction: column;
+                align-items: center;
+            }
+            .platform-sales-report form input[type="number"] {
+                width: 100%;
+                max-width: 200px;
+            }
+            .platform-sales-report form button {
+                width: 100%;
+                max-width: 200px;
+            }
+            .platform-sales-report .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .platform-sales-report .button-group button {
+                width: 100%;
+                max-width: 200px;
+                margin-bottom: 0.5rem;
+            }
+            .platform-sales-report th,
+            .platform-sales-report td {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+            .platform-sales-report ul li {
+                font-size: 1rem;
+                padding: 0.8rem 1.2rem;
+            }
         }
     </style>
+
+    <!-- JavaScript -->
     <script>
         function showSection(sectionId) {
-            const sections = document.querySelectorAll('.section');
+            const sections = document.querySelectorAll('.platform-sales-report .section');
             sections.forEach(sec => sec.style.display = 'none');
             document.getElementById(sectionId).style.display = 'block';
         }
@@ -59,9 +335,6 @@
             showSection('monthly_sales');
         }
     </script>
-</head>
-
-<body>
 
     <h1>Platform Sales Report for {{ report.year }}</h1>
     <p><strong>Total Revenue:</strong> ₹{{ report.total_revenue }}</p>
@@ -136,7 +409,7 @@
         <h2>Top Products</h2>
         <ul>
             {% for product in report.top_products %}
-            <li>{{ product.product__name }} - Sold: {{ product.total_sold }} (₹{{ product.revenue }})</li>
+            <li>{{ product.product__name }} - Sold: {{ product.total_sold }} (<span>₹{{ product.revenue }}</span>)</li>
             {% endfor %}
         </ul>
     </div>
@@ -170,8 +443,5 @@
         </table>
         {% endfor %}
     </div>
-
-</body>
-
-</html>
+</div>
 {% endblock %}

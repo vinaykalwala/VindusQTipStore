@@ -1,5 +1,311 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container mt-4">
+<div class="track-order-page">
+    <!-- Styling -->
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #FF6B35;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-gray: #f1f5f9;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --card-border-radius: 16px;
+            --image-border-radius: 12px;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .track-order-page {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .track-order-page h2 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0 0 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .track-order-page h2::after {
+            content: '';
+            display: block;
+            width: 140px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 12px auto;
+            border-radius: 2px;
+        }
+
+        .track-order-page h5 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 1.5rem 0 1rem;
+            position: relative;
+        }
+
+        .track-order-page h5::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: var(--primary-color);
+            margin: 8px 0;
+            border-radius: 2px;
+        }
+
+        .track-order-page .input-group {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .track-order-page .form-control {
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--image-border-radius);
+            padding: 0.75rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .track-order-page .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
+            outline: none;
+        }
+
+        .track-order-page .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: var(--image-border-radius);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .track-order-page .btn-primary:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-2px);
+        }
+
+        .track-order-page .alert-danger,
+        .track-order-page .alert-warning {
+            background: rgba(255, 75, 75, 0.1);
+            border: none;
+            border-left: 4px solid var(--secondary-color);
+            border-radius: var(--image-border-radius);
+            color: var(--text-color);
+            font-size: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .track-order-page .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .track-order-page .alert strong {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .track-order-page .card {
+            background: white;
+            border: none;
+            border-radius: var(--image-border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .track-order-page .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .track-order-page .card-body {
+            padding: 1.5rem;
+        }
+
+        .track-order-page .card-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .track-order-page .card p {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin: 0.5rem 0;
+        }
+
+        .track-order-page .card p strong {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .track-order-page .card p span.tracking-number {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .track-order-page .badge {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--image-border-radius);
+        }
+
+        .track-order-page .list-group {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .track-order-page .list-group-item {
+            background: white;
+            border: none;
+            border-left: 4px solid var(--accent-color);
+            border-radius: var(--image-border-radius);
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .track-order-page .list-group-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover-shadow);
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .track-order-page .list-group-item strong {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .track-order-page .list-group-item span.status {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .track-order-page hr {
+            border: 0;
+            border-top: 2px solid var(--medium-gray);
+            margin: 2rem 0;
+        }
+
+        .track-order-page .admin-tracking-list {
+            background: white;
+            border-radius: var(--image-border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .track-order-page .admin-tracking-list li {
+            font-size: 1rem;
+            color: var(--text-color);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .track-order-page .admin-tracking-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 1200px) {
+            .track-order-page h2 {
+                font-size: 2.8rem;
+            }
+            .track-order-page h5 {
+                font-size: 1.6rem;
+            }
+            .track-order-page .card-title {
+                font-size: 1.8rem;
+            }
+            .track-order-page .card p,
+            .track-order-page .list-group-item {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .track-order-page {
+                padding: 3rem;
+            }
+            .track-order-page .card-body {
+                padding: 2rem;
+            }
+            .track-order-page .list-group-item {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .track-order-page .input-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .track-order-page .form-control,
+            .track-order-page .btn-primary {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .track-order-page {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            .track-order-page h2 {
+                font-size: 2.2rem;
+            }
+            .track-order-page h5 {
+                font-size: 1.4rem;
+            }
+            .track-order-page .card-title {
+                font-size: 1.4rem;
+            }
+            .track-order-page .card p,
+            .track-order-page .list-group-item,
+            .track-order-page .admin-tracking-list li {
+                font-size: 0.95rem;
+            }
+            .track-order-page .card-body,
+            .track-order-page .list-group-item,
+            .track-order-page .admin-tracking-list {
+                padding: 1.2rem;
+            }
+            .track-order-page .badge {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+            .track-order-page .alert {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+
     <h2>Track Your Order</h2>
 
     {% if error %}
@@ -17,7 +323,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <h5 class="card-title">Product: {{ order_item.product.name }}</h5>
-            <p><strong>Tracking Number:</strong> {{ order_item.tracking_number }}</p>
+            <p><strong>Tracking Number:</strong> <span class="tracking-number">{{ order_item.tracking_number }}</span></p>
             <p><strong>Current Status:</strong> <span class="badge bg-info text-dark">{{ order_item.status }}</span></p>
         </div>
     </div>
@@ -26,10 +332,12 @@
     <ul class="list-group">
         {% for log in tracking_logs %}
         <li class="list-group-item">
-            <strong>Status:</strong> {{ log.status }}<br>
+            <strong>Status:</strong> <span class="status">{{ log.status }}</span><br>
             <strong>Location:</strong> {{ log.location }}<br>
-            <strong>Arrived:</strong> {{ log.arrived_at|date:"d M Y, h:i A" }} IST<br> {% if log.departed_at %}
-            <strong>Departed:</strong> {{ log.departed_at|date:"d M Y, h:i A" }} IST {% endif %}
+            <strong>Arrived:</strong> {{ log.arrived_at|date:"d M Y, h:i A" }} IST<br>
+            {% if log.departed_at %}
+            <strong>Departed:</strong> {{ log.departed_at|date:"d M Y, h:i A" }} IST
+            {% endif %}
         </li>
         {% empty %}
         <li class="list-group-item">No tracking information available yet.</li>
@@ -37,10 +345,12 @@
     </ul>
     {% elif tracking_number %}
     <div class="alert alert-warning mt-4">No order found with tracking number: <strong>{{ tracking_number }}</strong></div>
-    {% endif %} {% if all_tracking_numbers %}
+    {% endif %}
+
+    {% if all_tracking_numbers %}
     <hr>
     <h5>All Tracking Numbers (Admin View):</h5>
-    <ul>
+    <ul class="admin-tracking-list">
         {% for tn in all_tracking_numbers %}
         <li>{{ tn }}</li>
         {% endfor %}

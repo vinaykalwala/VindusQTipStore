@@ -1,162 +1,292 @@
 {% extends 'base.html' %} {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+<div class="admin-dashboard">
+    <!-- Styling -->
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #FF6B35;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-gray: #f1f5f9;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --card-border-radius: 16px;
+            --image-border-radius: 12px;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
-        
-        .container {
+
+        .admin-dashboard {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             max-width: 1200px;
-            margin: auto;
-            padding: 30px 20px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
         }
-        
-        h2 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: #333;
+
+        .admin-dashboard h2 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0 0 1rem;
+            text-align: center;
+            position: relative;
         }
-        
-        h3 {
-            font-size: 24px;
-            margin: 40px 0 20px;
-            color: #222;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 5px;
+
+        .admin-dashboard h2::after {
+            content: '';
+            display: block;
+            width: 140px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 12px auto;
+            border-radius: 2px;
         }
-        
-        .vendor-card {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 40px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+        .admin-dashboard h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 2.5rem 0 1.5rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
         }
-        
-        .vendor-header {
-            margin-bottom: 20px;
+
+        .admin-dashboard p {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin: 0.5rem 0;
+            text-align: center;
         }
-        
-        .vendor-header h4 {
+
+        .admin-dashboard .vendor-card {
+            background: white;
+            border-radius: var(--image-border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .admin-dashboard .vendor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .admin-dashboard .vendor-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-dashboard .vendor-header h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
             margin: 0;
-            font-size: 20px;
-            color: #2c3e50;
         }
-        
-        .vendor-header p {
-            margin: 4px 0 0;
-            color: #555;
+
+        .admin-dashboard .vendor-header p {
+            font-size: 1rem;
+            color: var(--dark-gray);
+            margin: 6px 0 0;
+            text-align: left;
         }
-        
-        .products-grid {
+
+        .admin-dashboard .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            gap: 1.5rem;
         }
-        
-        .product-card {
-            background-color: #fafafa;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+        .admin-dashboard .product-card {
+            background: var(--light-gray);
+            border-radius: var(--image-border-radius);
+            padding: 1rem;
+            box-shadow: var(--card-shadow);
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .product-card img {
+
+        .admin-dashboard .product-card:hover {
+            transform: scale(1.03);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .admin-dashboard .product-card img {
             max-width: 100%;
-            height: 160px;
+            height: 180px;
             object-fit: cover;
-            border-radius: 5px;
-            margin-bottom: 10px;
+            border-radius: var(--image-border-radius);
+            margin-bottom: 12px;
+            border: 1px solid var(--medium-gray);
         }
-        
-        .product-card h5 {
+
+        .admin-dashboard .product-card h5 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-color);
             margin: 0;
-            font-size: 18px;
-            color: #333;
         }
-        
-        .product-card .price {
-            color: #27ae60;
-            font-weight: bold;
-            margin: 5px 0;
+
+        .admin-dashboard .product-card .price {
+            color: var(--secondary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 6px 0;
         }
-        
-        .product-card p {
-            font-size: 14px;
-            color: #555;
+
+        .admin-dashboard .product-card p {
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+            margin: 0;
+            text-align: left;
+            line-height: 1.4;
         }
-        
-        .no-data {
-            color: #888;
+
+        .admin-dashboard .no-data {
+            font-size: 1rem;
+            color: var(--dark-gray);
             font-style: italic;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: var(--image-border-radius);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 1200px) {
+            .admin-dashboard h2 {
+                font-size: 2.8rem;
+            }
+            .admin-dashboard h3 {
+                font-size: 2.2rem;
+            }
+            .admin-dashboard .vendor-header h4 {
+                font-size: 1.6rem;
+            }
+            .admin-dashboard .product-card h5 {
+                font-size: 1.4rem;
+            }
+            .admin-dashboard .product-card img {
+                height: 200px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .admin-dashboard {
+                padding: 3rem;
+            }
+            .admin-dashboard .products-grid {
+                gap: 2rem;
+            }
+            .admin-dashboard .product-card {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .admin-dashboard .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 1rem;
+            }
+            .admin-dashboard .product-card img {
+                height: 160px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .admin-dashboard {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            .admin-dashboard h2 {
+                font-size: 2.2rem;
+            }
+            .admin-dashboard h3 {
+                font-size: 1.8rem;
+            }
+            .admin-dashboard .vendor-header h4 {
+                font-size: 1.3rem;
+            }
+            .admin-dashboard .product-card {
+                padding: 0.8rem;
+            }
+            .admin-dashboard .product-card img {
+                height: 140px;
+            }
+            .admin-dashboard .product-card h5 {
+                font-size: 1.2rem;
+            }
+            .admin-dashboard .product-card .price {
+                font-size: 1.1rem;
+            }
+            .admin-dashboard .product-card p {
+                font-size: 0.9rem;
+            }
+            .admin-dashboard .no-data {
+                font-size: 0.95rem;
+            }
+            .admin-dashboard .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
         }
     </style>
-</head>
 
-<body>
-    <div class="container">
-        <h2>Admin Dashboard</h2>
-        <p>Welcome, {{ user.username }}! Here you can manage vendors and their products.</p>
+    <h2>Admin Dashboard</h2>
+    <p>Welcome, {{ user.username }}! Here you can manage vendors and their products.</p>
 
-        <h3>All Vendors & Their Products</h3>
+    <h3>All Vendors & Their Products</h3>
 
-        {% if vendors_with_products %} {% for vendor in vendors_with_products %}
-        <div class="vendor-card">
-            <div class="vendor-header">
-                <h4>Vendor: {{ vendor.username }}</h4>
-                <p>Email: {{ vendor.email }}</p>
-            </div>
-
-            {% if vendor.products.all %}
-            <div class="products-grid">
-                {% for product in vendor.products.all %}
-                <div class="product-card">
-                    {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}"> {% endif %}
-                    <h5>{{ product.name }}</h5>
-                    <div class="price">${{ product.price }}</div>
-                    <p>{{ product.description }}</p>
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <p class="no-data">No products added yet.</p>
-            {% endif %}
+    {% if vendors_with_products %} {% for vendor in vendors_with_products %}
+    <div class="vendor-card">
+        <div class="vendor-header">
+            <h4>Vendor: {{ vendor.username }}</h4>
+            <p>Email: {{ vendor.email }}</p>
         </div>
-        {% endfor %} {% endif %} {% if unassociated_products %}
-        <h3>Products Without Associated Vendor</h3>
-        <div class="vendor-card">
-            <div class="products-grid">
-                {% for product in unassociated_products %}
-                <div class="product-card">
-                    {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}"> {% endif %}
-                    <h5>{{ product.name }}</h5>
-                    <div class="price">${{ product.price }}</div>
-                    <p>{{ product.description }}</p>
-                </div>
-                {% endfor %}
+
+        {% if vendor.products.all %}
+        <div class="products-grid">
+            {% for product in vendor.products.all %}
+            <div class="product-card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}"> {% endif %}
+                <h5>{{ product.name }}</h5>
+                <div class="price">${{ product.price }}</div>
+                <p>{{ product.description }}</p>
             </div>
+            {% endfor %}
         </div>
-        {% endif %} {% if not vendors_with_products and not unassociated_products %}
-        <div class="vendor-card">
-            <p class="no-data">No vendors associated. No products available.</p>
-        </div>
+        {% else %}
+        <p class="no-data">No products added yet.</p>
         {% endif %}
     </div>
-</body>
-
-</html>
+    {% endfor %} {% endif %} {% if unassociated_products %}
+    <h3>Products Without Associated Vendor</h3>
+    <div class="vendor-card">
+        <div class="products-grid">
+            {% for product in unassociated_products %}
+            <div class="product-card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}"> {% endif %}
+                <h5>{{ product.name }}</h5>
+                <div class="price">${{ product.price }}</div>
+                <p>{{ product.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %} {% if not vendors_with_products and not unassociated_products %}
+    <div class="vendor-card">
+        <p class="no-data">No vendors associated. No products available.</p>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

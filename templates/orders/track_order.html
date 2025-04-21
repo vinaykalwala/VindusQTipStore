@@ -1,8 +1,231 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container mt-4">
+<div class="order-tracking-page">
+    <!-- Styling -->
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #FF6B35;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-gray: #f1f5f9;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --card-border-radius: 16px;
+            --image-border-radius: 12px;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .order-tracking-page {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .order-tracking-page h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0 0 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .order-tracking-page h3::after {
+            content: '';
+            display: block;
+            width: 140px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 12px auto;
+            border-radius: 2px;
+        }
+
+        .order-tracking-page p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin: 0.75rem 0;
+        }
+
+        .order-tracking-page p strong {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .order-tracking-page p span.tracking-id {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .order-tracking-page .badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--image-border-radius);
+        }
+
+        .order-tracking-page .badge.bg-danger {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .order-tracking-page .badge.bg-warning {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .order-tracking-page .timeline {
+            margin-top: 2rem;
+        }
+
+        .order-tracking-page .timeline ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .order-tracking-page .timeline .list-group-item {
+            position: relative;
+            padding: 1.5rem 1.5rem 1.5rem 2.5rem;
+            margin-bottom: 1rem;
+            background: white;
+            border: none;
+            border-left: 3px solid var(--primary-color);
+            border-radius: var(--image-border-radius);
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .order-tracking-page .timeline .list-group-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover-shadow);
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .order-tracking-page .timeline .list-group-item::before {
+            content: "";
+            position: absolute;
+            left: -7.5px;
+            top: 1.5rem;
+            width: 15px;
+            height: 15px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+
+        .order-tracking-page .timeline .list-group-item h6 {
+            margin: 0 0 0.75rem;
+        }
+
+        .order-tracking-page .timeline .list-group-item p {
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .order-tracking-page .timeline .list-group-item .d-flex {
+            align-items: flex-start;
+        }
+
+        .order-tracking-page .no-updates {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: var(--image-border-radius);
+            border-left: 4px solid var(--accent-color);
+            margin: 2rem 0;
+            box-shadow: var(--card-shadow);
+        }
+
+        .order-tracking-page .btn-secondary {
+            background-color: var(--dark-gray);
+            border: none;
+            border-radius: var(--image-border-radius);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .order-tracking-page .btn-secondary:hover {
+            background-color: #475569;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 1200px) {
+            .order-tracking-page h3 {
+                font-size: 2.4rem;
+            }
+            .order-tracking-page p,
+            .order-tracking-page .timeline .list-group-item p {
+                font-size: 1.15rem;
+            }
+            .order-tracking-page .timeline .list-group-item {
+                padding: 2rem 2rem 2rem 3rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .order-tracking-page {
+                padding: 3rem;
+            }
+            .order-tracking-page .timeline .list-group-item {
+                padding: 1.75rem 1.75rem 1.75rem 2.75rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .order-tracking-page .timeline .list-group-item .d-flex {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .order-tracking-page {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            .order-tracking-page h3 {
+                font-size: 2rem;
+            }
+            .order-tracking-page p,
+            .order-tracking-page .timeline .list-group-item p,
+            .order-tracking-page .no-updates {
+                font-size: 0.95rem;
+            }
+            .order-tracking-page .timeline .list-group-item {
+                padding: 1.2rem 1.2rem 1.2rem 2rem;
+            }
+            .order-tracking-page .timeline .list-group-item::before {
+                left: -6.5px;
+                top: 1.2rem;
+                width: 13px;
+                height: 13px;
+            }
+            .order-tracking-page .badge {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+            .order-tracking-page .btn-secondary {
+                width: 100%;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+
     <h3 class="mb-3">Tracking for Order #{{ order_item.order.id }}</h3>
     <p><strong>Product:</strong> {{ order_item.product.name }}</p>
-    <p><strong>Tracking ID :</strong> {{order_item.tracking_number}}</p>
+    <p><strong>Tracking ID:</strong> <span class="tracking-id">{{ order_item.tracking_number }}</span></p>
     <p><strong>Current Status:</strong>
         <span class="badge bg-danger">{{ order_item.status }}</span>
     </p>
@@ -33,38 +256,15 @@
         </ul>
     </div>
     {% else %}
-    <p>No tracking updates yet.</p>
+    <p class="no-updates">No tracking updates yet.</p>
     {% endif %}
 
     <div class="mt-4">
         {% if user.role == 'Customer' %}
-        <a href="{% url 'order-summary' %}" class="btn btn-secondary">Back to Orders</a> {% elif user.role == 'vendor' or user.is_superuser %}
-        <a href="{% url 'orders_page' %}" class="btn btn-secondary">Back to Orders</a> {% endif %}
+        <a href="{% url 'order-summary' %}" class="btn btn-secondary">Back to Orders</a>
+        {% elif user.role == 'vendor' or user.is_superuser %}
+        <a href="{% url 'orders_page' %}" class="btn btn-secondary">Back to Orders</a>
+        {% endif %}
     </div>
-
 </div>
-
-<style>
-    .timeline ul {
-        list-style: none;
-        padding: 0;
-    }
-    
-    .timeline li {
-        position: relative;
-        padding-left: 25px;
-        border-left: 3px solid #5a2e05;
-    }
-    
-    .timeline li::before {
-        content: "";
-        position: absolute;
-        left: -8px;
-        top: 12px;
-        width: 16px;
-        height: 16px;
-        background-color: #fd0d2d;
-        border-radius: 50%;
-    }
-</style>
 {% endblock %}

@@ -1,7 +1,326 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container">
+<div class="delivery-assignment-dashboard">
+    <!-- Styling -->
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #FF6B35;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-gray: #f1f5f9;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --card-border-radius: 16px;
+            --image-border-radius: 12px;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .delivery-assignment-dashboard {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .delivery-assignment-dashboard h2 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0 0 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .delivery-assignment-dashboard h2::after {
+            content: '';
+            display: block;
+            width: 140px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 12px auto;
+            border-radius: 2px;
+        }
+
+        .delivery-assignment-dashboard p {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .delivery-assignment-dashboard p span {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .delivery-assignment-dashboard .input-group {
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .delivery-assignment-dashboard .form-control {
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--image-border-radius);
+            padding: 0.75rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .delivery-assignment-dashboard .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
+            outline: none;
+        }
+
+        .delivery-assignment-dashboard .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: white;
+            border-radius: var(--image-border-radius);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+        }
+
+        .delivery-assignment-dashboard .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .delivery-assignment-dashboard .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: var(--image-border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .delivery-assignment-dashboard th,
+        .delivery-assignment-dashboard td {
+            padding: 1rem;
+            font-size: 1rem;
+            text-align: left;
+            border: none;
+            border-bottom: 1px solid var(--medium-gray);
+            vertical-align: top;
+        }
+
+        .delivery-assignment-dashboard th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .delivery-assignment-dashboard tr:hover {
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .delivery-assignment-dashboard td:nth-child(2),
+        .delivery-assignment-dashboard td:nth-child(4) {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .delivery-assignment-dashboard td:nth-child(6) {
+            min-width: 300px;
+            padding: 1.2rem;
+        }
+
+        .delivery-assignment-dashboard td em {
+            color: var(--dark-gray);
+            font-style: italic;
+        }
+
+        .delivery-assignment-dashboard form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--image-border-radius);
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .delivery-assignment-dashboard form > * {
+            flex: 0 0 auto;
+            width: 100%;
+        }
+
+        .delivery-assignment-dashboard .form-select,
+        .delivery-assignment-dashboard .form-control-sm {
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--image-border-radius);
+            padding: 0.5rem;
+            font-size: 0.95rem;
+            width: 100%;
+            max-width: 250px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .delivery-assignment-dashboard .form-select:focus,
+        .delivery-assignment-dashboard .form-control-sm:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
+            outline: none;
+        }
+
+        .delivery-assignment-dashboard .form-select:disabled,
+        .delivery-assignment-dashboard .form-control-sm:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+        }
+
+        .delivery-assignment-dashboard label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .delivery-assignment-dashboard input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-left: 0.5rem;
+            accent-color: var(--primary-color);
+        }
+
+        .delivery-assignment-dashboard .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: var(--image-border-radius);
+            padding: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            width: 100%;
+            max-width: 250px;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .delivery-assignment-dashboard .btn-primary:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .delivery-assignment-dashboard .btn-primary:disabled {
+            background-color: var(--dark-gray);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .delivery-assignment-dashboard .otp-wrapper {
+            width: 100%;
+        }
+
+        .delivery-assignment-dashboard .no-items {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: var(--image-border-radius);
+            border-left: 4px solid var(--accent-color);
+            margin: 1rem 0;
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 1200px) {
+            .delivery-assignment-dashboard h2 {
+                font-size: 2.8rem;
+            }
+            .delivery-assignment-dashboard p {
+                font-size: 1.3rem;
+            }
+            .delivery-assignment-dashboard th,
+            .delivery-assignment-dashboard td {
+                font-size: 1.1rem;
+            }
+            .delivery-assignment-dashboard td:nth-child(6) {
+                min-width: 320px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .delivery-assignment-dashboard {
+                padding: 3rem;
+            }
+            .delivery-assignment-dashboard .table {
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .delivery-assignment-dashboard .table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            .delivery-assignment-dashboard td:nth-child(6) {
+                min-width: 280px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .delivery-assignment-dashboard {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            .delivery-assignment-dashboard h2 {
+                font-size: 2.2rem;
+            }
+            .delivery-assignment-dashboard p {
+                font-size: 1.1rem;
+            }
+            .delivery-assignment-dashboard .input-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .delivery-assignment-dashboard .form-control,
+            .delivery-assignment-dashboard .btn-outline-primary {
+                width: 100%;
+                font-size: 0.95rem;
+            }
+            .delivery-assignment-dashboard th,
+            .delivery-assignment-dashboard td {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+            .delivery-assignment-dashboard .no-items {
+                font-size: 1rem;
+                padding: 0.8rem;
+            }
+            .delivery-assignment-dashboard .form-select,
+            .delivery-assignment-dashboard .form-control-sm,
+            .delivery-assignment-dashboard .btn-primary {
+                max-width: 100%;
+                font-size: 0.9rem;
+            }
+            .delivery-assignment-dashboard td:nth-child(6) {
+                min-width: 100%;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+
     <h2>Welcome to the Dashboard</h2>
-    <p>Hello, {{ user.username }}!</p>
+    <p>Hello, <span>{{ user.username }}</span>!</p>
 
     <form method="get" class="mb-3">
         <div class="input-group">
@@ -11,7 +330,7 @@
     </form>
 
     {% if order_items %}
-    <table class="table table-bordered mt-4">
+    <table class="table mt-4">
         <thead>
             <tr>
                 <th>Order ID</th>
@@ -27,9 +346,9 @@
             {% if not item.delivery_person %}
             <tr>
                 <td>{{ item.order.id }}</td>
-                <td>{{item.tracking_number}}</td>
+                <td><span class="tracking-number">{{ item.tracking_number }}</span></td>
                 <td>{{ item.product.name }}</td>
-                <td>{{ item.status }}</td>
+                <td><span class="status">{{ item.status }}</span></td>
                 <td>
                     {% if item.delivery_person %} {{ item.delivery_person.username }} {% else %}
                     <em>Not Assigned</em> {% endif %}
@@ -75,12 +394,12 @@
         </tbody>
     </table>
     {% else %}
-    <p>No order items found.</p>
+    <p class="no-items">No order items found.</p>
     {% endif %}
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.status-select').forEach(select => {
+        document.querySelectorAll('.delivery-assignment-dashboard .status-select').forEach(select => {
             const form = select.closest('form');
             const locationInput = form.querySelector('.location-input');
             const locationLabel = form.querySelector('.location-label');
@@ -121,5 +440,4 @@
         });
     });
 </script>
-
 {% endblock %}

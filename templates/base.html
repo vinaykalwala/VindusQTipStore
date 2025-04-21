@@ -87,7 +87,7 @@
 
         .navbar-nav .nav-link:hover,
         .navbar-nav .nav-link:focus {
-            background-color: var(--secondary-color); /* Darker shade of --primary-color */
+            background-color: var(--secondary-color);
             color: var(--white);
             transform: translateY(-1px);
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -385,7 +385,7 @@
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="" id="productsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="productsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-box"></i> Products
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="productsDropdown">
@@ -394,20 +394,15 @@
                             <li><a class="dropdown-item" href="{% url 'Products:low_stock_products' %}">Low Stock</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'orders_page' %}">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="ordersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-clipboard-list"></i> Orders
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'assigned_order_items'%}">
-                            <i class="fas fa-truck"></i> Assigned Orders
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'delivered_order_items' %}">
-                            <i class="fas fa-history"></i> Delivery History
-                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
+                            <li><a class="dropdown-item" href="{% url 'orders_page' %}">Orders Summary</a></li>
+                            <li><a class="dropdown-item" href="{% url 'assigned_order_items' %}">Assigned Orders</a></li>
+                            <li><a class="dropdown-item" href="{% url 'delivered_order_items' %}">Delivery History</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'superuser_sales_report' %}">
@@ -511,7 +506,7 @@
                         </a>
                     </li>
                     {% elif user.role == "DeliveryAdmin" %}
-                    <!-- Delivery Personnel Navigation -->
+                    <!-- Delivery Admin Navigation -->
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'dashboard' %}">
                             <i class="fas fa-tachometer-alt"></i> Home
