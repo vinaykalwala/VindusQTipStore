@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <div class="container py-4">
     <!-- Product Section -->
@@ -13,18 +14,23 @@
                          alt="{{ product.name }}" 
                          class="img-fluid w-100 h-100 object-fit-contain p-4"
                          style="transition: transform 0.5s ease; cursor: zoom-in;"
-                         data-zoom-src="{{ product.image.url }}">
+                         data-zoom-src="{{ product.image.url }}"
+                         data-base-price="{{ product.price }}"
+                         data-discounted-price="{{ discounted_price }}">
                     <div class="image-overlay"></div>
                 </div>
 
                 <!-- Thumbnail Carousel -->
-                <div class="thumbnail-carousel mx-auto">
+                <div class="thumbnail-carousel mx-auto" role="region" aria-label="Product image thumbnails">
                     <div class="thumbnails-wrapper">
                         <!-- Default Image Thumbnail -->
                         <div class="thumbnail-item active" 
                              data-image="{{ product.image.url }}" 
-                             data-price="{{ discounted_price }}">
-                            <img src="{{ product.image.url }}" alt="Default" class="img-fluid rounded-3">
+                             data-price="{{ discounted_price }}"
+                             data-additional-price="0"
+                             role="button"
+                             aria-label="Select default product image">
+                            <img src="{{ product.image.url }}" alt="Default product image" class="img-fluid rounded-3" loading="lazy">
                             <div class="thumbnail-overlay"></div>
                         </div>
                         
@@ -33,14 +39,17 @@
                         <div class="thumbnail-item" 
                              data-image="{{ variant.image }}" 
                              data-price="{{ variant.final_price }}"
-                             data-variant-id="{{ variant.id }}">
-                            <img src="{{ variant.image }}" alt="{{ variant.color }}" class="img-fluid rounded-3">
+                             data-additional-price="{{ variant.additional_price }}"
+                             data-variant-id="{{ variant.id }}"
+                             role="button"
+                             aria-label="Select {{ variant.color }} variant">
+                            <img src="{{ variant.image }}" alt="{{ variant.color }} variant" class="img-fluid rounded-3" loading="lazy">
                             <div class="thumbnail-overlay"></div>
                         </div>
                         {% endfor %}
                     </div>
-                    <button class="thumb-nav thumb-prev"><i class="fas fa-chevron-left"></i></button>
-                    <button class="thumb-nav thumb-next"><i class="fas fa-chevron-right"></i></button>
+                    <button class="thumb-nav thumb-prev" aria-label="Previous thumbnail"><i class="fas fa-chevron-left"></i></button>
+                    <button class="thumb-nav thumb-next" aria-label="Next thumbnail"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
         </div>
@@ -69,7 +78,7 @@
                     {% if product.discount > 0 %}
                     <div class="original-price text-muted">
                         <span>Original Price:</span>
-                        <del>₹{{ product.price }}</del>
+                        <del>₹<span id="original-price">{{ product.price }}</span></del>
                     </div>
                     <div class="discounted-price">
                         <span>Discounted Price:</span>
@@ -103,7 +112,7 @@
                         </h2>
                         <div id="descriptionCollapse" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
                             <div class="accordion-body" style="max-height: 300px; overflow-y: auto;">
-                                {{ product.description }}
+                                {{ product.description | safe }}
                             </div>
                         </div>
                     </div>
@@ -114,24 +123,25 @@
                     <strong>Category:</strong> {{ product.category.name }}
                 </div>
 
-                <!-- Variant Selection -->
-                <!-- {% if variant_data %}
+                <!-- Variant Selection (Uncomment if needed) -->
+                {% if variant_data %}
                 <div class="variant-selection mb-4">
                     <label for="variant-select" class="form-label"><strong>Choose a Variant:</strong></label>
                     <select id="variant-select" name="variant_id" class="form-select">
-                        <option value="" data-price="{{ discounted_price }}" data-image="{{ product.image.url }}">
+                        <option value="" data-price="{{ discounted_price }}" data-image="{{ product.image.url }}" data-additional-price="0">
                             Default - ₹{{ discounted_price }}
                         </option>
                         {% for variant in variant_data %}
                         <option value="{{ variant.id }}" 
                                 data-price="{{ variant.final_price }}" 
-                                data-image="{{ variant.image }}">
+                                data-image="{{ variant.image }}"
+                                data-additional-price="{{ variant.additional_price }}">
                             {{ variant.color }} / {{ variant.size }} (+₹{{ variant.additional_price }})
                         </option>
                         {% endfor %}
                     </select>
                 </div>
-                {% endif %} -->
+                {% endif %}
 
                 <!-- Action Buttons -->
                 {% if product.stock > 0 %}
@@ -140,7 +150,8 @@
                         <form action="{% url 'add-to-cart' product.id %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="variant_id" id="selected-variant">
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <button type="submit" class="btn btn-primary btn-lg w-100" id="add-to-cart-btn">
+                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                                 <i class="fas fa-shopping-cart me-2"></i> Add to Cart
                             </button>
                         </form>
@@ -167,7 +178,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="card h-100">
                     <a href="{% url 'Products:product_detail' similar_product.slug %}">
-                        <img src="{{ similar_product.image.url }}" class="card-img-top" alt="{{ similar_product.name }}" style="height: 200px; object-fit: contain;">
+                        <img src="{{ similar_product.image.url }}" class="card-img-top" alt="{{ similar_product.name }}" style="height: 200px; object-fit: contain;" loading="lazy">
                     </a>
                     <div class="card-body">
                         <h6 class="card-title">
@@ -202,7 +213,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="card h-100">
                     <a href="{% url 'Products:product_detail' viewed_product.slug %}">
-                        <img src="{{ viewed_product.image.url }}" class="card-img-top" alt="{{ viewed_product.name }}" style="height: 200px; object-fit: contain;">
+                        <img src="{{ viewed_product.image.url }}" class="card-img-top" alt="{{ viewed_product.name }}" style="height: 200px; object-fit: contain;" loading="lazy">
                     </a>
                     <div class="card-body">
                         <h6 class="card-title">
@@ -256,7 +267,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Image (optional)</label>
-                                <input type="file" name="image" class="form-control">
+                                <input type="file" name="image" class="form-control" accept="image/jpeg,image/png">
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Submit Review</button>
                         </form>
@@ -286,7 +297,7 @@
                             </div>
                             <p>{{ review.comment }}</p>
                             {% if review.image %}
-                            <img src="{{ review.image.url }}" alt="Review image" class="img-thumbnail mt-2" style="max-height: 150px;">
+                            <img src="{{ review.image.url }}" alt="Review image" class="img-thumbnail mt-2" style="max-height: 150px;" loading="lazy">
                             {% endif %}
                         </div>
                     </div>
@@ -299,326 +310,365 @@
     </section>
 </div>
 
-<style>
+<!-- Load external CSS and JavaScript -->
+ <style>
     /* Base Styles */
-    * {
-        font-family: 'Poppins', sans-serif;
-        box-sizing: border-box;
-    }
+* {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
 
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-    .product-name {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #333;
-        margin-bottom: 1rem;
-    }
+.product-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1rem;
+}
 
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #333;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #f0f0f0;
-        margin-bottom: 1.5rem;
-    }
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+    margin-bottom: 1.5rem;
+}
 
-    /* Image Gallery Styles */
-    .image-gallery-container {
+/* Image Gallery Styles */
+.image-gallery-container {
+    width: 100%;
+}
+
+.main-image-container {
+    position: relative;
+    height: 400px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.main-image-container:hover {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(13,110,253,0.05) 0%, rgba(255,255,255,0) 100%);
+    pointer-events: none;
+}
+
+.thumbnail-carousel {
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.thumbnails-wrapper {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 5px 0;
+    scroll-behavior: smooth;
+    justify-content: center;
+}
+
+.thumbnails-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.thumbnail-item {
+    flex: 0 0 80px;
+    height: 80px;
+    position: relative;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.thumbnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail-item.active {
+    border-color: #0d6efd;
+    transform: translateY(-5px);
+}
+
+.thumbnail-item:hover:not(.active) {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.thumbnail-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0d6efd;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.thumb-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.thumb-prev {
+    left: -40px;
+}
+
+.thumb-next {
+    right: -40px;
+}
+
+.thumb-nav:hover {
+    background: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+/* Product Details Styles */
+.product-details-container {
+    width: 100%;
+    padding: 0 15px;
+}
+
+.price-section {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.original-price {
+    font-size: 1.1rem;
+}
+
+.discounted-price {
+    font-size: 1.5rem;
+}
+
+.current-price {
+    font-size: 1.5rem;
+}
+
+.rating {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+.action-buttons .btn {
+    padding: 0.75rem;
+    font-size: 1.1rem;
+}
+
+/* Reviews Section */
+.reviews-container {
+    scrollbar-width: thin;
+    scrollbar-color: #ddd #f9f9f9;
+    padding-right: 10px;
+}
+
+.reviews-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.reviews-container::-webkit-scrollbar-track {
+    background: #f9f9f9;
+}
+
+.reviews-container::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 6px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .col-lg-6 {
         width: 100%;
-    }
-
-    .main-image-container {
-        position: relative;
-        height: 400px;
-        background: #f8f9fa;
-        transition: all 0.3s ease;
-        border: none;
-    }
-
-    .main-image-container:hover {
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-
-    .image-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(13,110,253,0.05) 0%, rgba(255,255,255,0) 100%);
-        pointer-events: none;
     }
 
     .thumbnail-carousel {
-        position: relative;
-        width: 80%;
-        margin: 0 auto;
+        width: 90%;
     }
 
-    .thumbnails-wrapper {
-        display: flex;
-        gap: 10px;
-        overflow-x: auto;
-        scrollbar-width: none;
-        padding: 5px 0;
-        scroll-behavior: smooth;
-        justify-content: center;
+    .main-image-container {
+        height: 300px;
     }
 
-    .thumbnails-wrapper::-webkit-scrollbar {
-        display: none;
+    .product-name {
+        font-size: 1.75rem;
     }
+}
 
-    .thumbnail-item {
-        flex: 0 0 80px;
-        height: 80px;
-        position: relative;
-        cursor: pointer;
-        border-radius: 8px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .thumbnail-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .thumbnail-item.active {
-        border-color: #0d6efd;
-        transform: translateY(-5px);
-    }
-
-    .thumbnail-item:hover:not(.active) {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-    }
-
-    .thumbnail-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #0d6efd;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .thumb-nav {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: white;
-        border: 1px solid #dee2e6;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .thumb-prev {
-        left: -40px;
-    }
-
-    .thumb-next {
-        right: -40px;
-    }
-
-    .thumb-nav:hover {
-        background: #0d6efd;
-        color: white;
-        border-color: #0d6efd;
-    }
-
-    /* Product Details Styles */
-    .product-details-container {
-        width: 100%;
-        padding: 0 15px;
+@media (max-width: 768px) {
+    .product-name {
+        font-size: 1.5rem;
     }
 
     .price-section {
-        padding: 1rem;
-        background-color: #f9f9f9;
-        border-radius: 8px;
+        padding: 0.75rem;
     }
 
-    .original-price {
-        font-size: 1.1rem;
-    }
-
-    .discounted-price {
-        font-size: 1.5rem;
-    }
-
+    .discounted-price, 
     .current-price {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
 
-    .rating {
-        color: #ffc107;
-        font-size: 1.2rem;
+    .action-buttons .col-6 {
+        width: 50%;
+    }
+
+    .thumb-prev {
+        left: -30px;
+    }
+
+    .thumb-next {
+        right: -30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .thumbnail-item {
+        flex: 0 0 60px;
+        height: 60px;
+    }
+
+    .action-buttons .col-6 {
+        width: 100%;
     }
 
     .action-buttons .btn {
-        padding: 0.75rem;
-        font-size: 1.1rem;
+        margin-bottom: 10px;
     }
 
-    /* Reviews Section */
-    .reviews-container {
-        scrollbar-width: thin;
-        scrollbar-color: #ddd #f9f9f9;
-        padding-right: 10px;
+    .reviews .col-md-4,
+    .reviews .col-md-8 {
+        width: 100%;
     }
-
-    .reviews-container::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .reviews-container::-webkit-scrollbar-track {
-        background: #f9f9f9;
-    }
-
-    .reviews-container::-webkit-scrollbar-thumb {
-        background-color: #ddd;
-        border-radius: 6px;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 991px) {
-        .col-lg-6 {
-            width: 100%;
-        }
-
-        .thumbnail-carousel {
-            width: 90%;
-        }
-
-        .main-image-container {
-            height: 300px;
-        }
-
-        .product-name {
-            font-size: 1.75rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .product-name {
-            font-size: 1.5rem;
-        }
-
-        .price-section {
-            padding: 0.75rem;
-        }
-
-        .discounted-price, 
-        .current-price {
-            font-size: 1.3rem;
-        }
-
-        .action-buttons .col-6 {
-            width: 50%;
-        }
-
-        .thumb-prev {
-            left: -30px;
-        }
-
-        .thumb-next {
-            right: -30px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .thumbnail-item {
-            flex: 0 0 60px;
-            height: 60px;
-        }
-
-        .action-buttons .col-6 {
-            width: 100%;
-        }
-
-        .action-buttons .btn {
-            margin-bottom: 10px;
-        }
-
-        .reviews .col-md-4,
-        .reviews .col-md-8 {
-            width: 100%;
-        }
-    }
-</style>
-
+}
+ </style>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
     const mainImage = document.getElementById("main-product-image");
     const priceElement = document.getElementById("product-price");
-    const variantSelect = document.getElementById(" Variant-select");
+    const originalPriceElement = document.getElementById("original-price");
+    const variantSelect = document.getElementById("variant-select");
     const hiddenVariantInput = document.getElementById("selected-variant");
     const thumbnails = document.querySelectorAll(".thumbnail-item");
     const thumbnailsWrapper = document.querySelector('.thumbnails-wrapper');
     const prevButton = document.querySelector('.thumb-prev');
     const nextButton = document.querySelector('.thumb-next');
 
-    // Variant selection functionality
+    // Get base prices from main image data attributes
+    const basePrice = parseFloat(mainImage.getAttribute("data-base-price"));
+    const baseDiscountedPrice = parseFloat(mainImage.getAttribute("data-discounted-price"));
+
+    // Thumbnail click functionality
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener("click", function() {
+            const imageSrc = this.getAttribute("data-image");
+            const additionalPrice = parseFloat(this.getAttribute("data-additional-price"));
+            const variantId = this.getAttribute("data-variant-id");
+
+            // Update main image
+            mainImage.src = imageSrc;
+
+            // Calculate and update price (product.price + variant.additional_price)
+            const totalPrice = basePrice + additionalPrice;
+            const totalDiscountedPrice = baseDiscountedPrice + additionalPrice;
+            priceElement.textContent = totalDiscountedPrice.toFixed(2);
+            if (originalPriceElement) {
+                originalPriceElement.textContent = totalPrice.toFixed(2);
+            }
+
+            // Update hidden variant input
+            hiddenVariantInput.value = variantId || "";
+
+            // Sync with variant select (if present)
+            if (variantSelect) {
+                variantSelect.value = variantId || "";
+            }
+
+            // Update active thumbnail
+            thumbnails.forEach(t => t.classList.remove("active"));
+            this.classList.add("active");
+        });
+    });
+
+    // Variant selection functionality (for <select> if uncommented)
     if (variantSelect) {
         variantSelect.addEventListener("change", function() {
             const selectedOption = this.options[this.selectedIndex];
-            priceElement.textContent = selectedOption.getAttribute("data-price");
-            mainImage.src = selectedOption.getAttribute("data-image");
-            hiddenVariantInput.value = selectedOption.value;
+            const imageSrc = selectedOption.getAttribute("data-image");
+            const additionalPrice = parseFloat(selectedOption.getAttribute("data-additional-price"));
+            const variantId = selectedOption.value;
 
+            // Update main image
+            mainImage.src = imageSrc;
+
+            // Calculate and update price (product.price + variant.additional_price)
+            const totalPrice = basePrice + additionalPrice;
+            const totalDiscountedPrice = baseDiscountedPrice + additionalPrice;
+            priceElement.textContent = totalDiscountedPrice.toFixed(2);
+            if (originalPriceElement) {
+                originalPriceElement.textContent = totalPrice.toFixed(2);
+            }
+
+            // Update hidden variant input
+            hiddenVariantInput.value = variantId;
+
+            // Sync with thumbnails
             thumbnails.forEach(thumb => {
                 thumb.classList.remove("active");
-                if (thumb.getAttribute("data-variant-id") === selectedOption.value) {
+                if (thumb.getAttribute("data-variant-id") === variantId) {
                     thumb.classList.add("active");
                 }
             });
         });
     }
 
-    // Thumbnail click functionality
-    thumbnails.forEach(thumb => {
-        thumb.addEventListener("click", function() {
-            const imageSrc = this.getAttribute("data-image");
-            const price = this.getAttribute("data-price");
-            const variantId = this.getAttribute("data-variant-id");
-
-            mainImage.src = imageSrc;
-            priceElement.textContent = price;
-            hiddenVariantInput.value = variantId || "";
-
-            if (variantSelect) {
-                variantSelect.value = variantId || "";
-            }
-
-            thumbnails.forEach(t => t.classList.remove("active"));
-            this.classList.add("active");
-        });
-    });
-
-    // Image zoom effect
-    mainImage.addEventListener("click", function() {
-        if (this.style.transform === "scale(1.5)") {
-            this.style.transform = "scale(1)";
-            this.style.cursor = "zoom-in";
+    // Image zoom effect with keyboard support
+    mainImage.setAttribute("tabindex", "0");
+    function toggleZoom() {
+        if (mainImage.style.transform === "scale(1.5)") {
+            mainImage.style.transform = "scale(1)";
+            mainImage.style.cursor = "zoom-in";
         } else {
-            this.style.transform = "scale(1.5)";
-            this.style.cursor = "zoom-out";
+            mainImage.style.transform = "scale(1.5)";
+            mainImage.style.cursor = "zoom-out";
+        }
+    }
+    mainImage.addEventListener("click", toggleZoom);
+    mainImage.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            toggleZoom();
         }
     });
 
@@ -627,9 +677,19 @@ document.addEventListener("DOMContentLoaded", function() {
         prevButton.addEventListener('click', () => {
             thumbnailsWrapper.scrollLeft -= 100;
         });
-
         nextButton.addEventListener('click', () => {
             thumbnailsWrapper.scrollLeft += 100;
+        });
+    }
+
+    // Add loading state for add-to-cart button
+    const addToCartBtn = document.getElementById("add-to-cart-btn");
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener("click", function() {
+            const spinner = this.querySelector(".spinner-border");
+            if (spinner) {
+                spinner.classList.remove("d-none");
+            }
         });
     }
 });

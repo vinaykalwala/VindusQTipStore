@@ -455,3 +455,7 @@ def reset_password(request):
             messages.error(request, 'Failed to reset password.')
     
     return render(request, 'users/reset_password.html')
+
+
+def sellerpage(request):
+    return render(request, 'dashboard/sellerpage.html')
