@@ -23,6 +23,7 @@ urlpatterns = [
     path('delivered/', delivered_order_items_view, name='delivered_order_items'),
     path('ordershistory/', order_history, name='order_history'),
     
+    
 
     
 ]
