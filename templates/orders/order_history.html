@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h1>Orders History</h1>
+
+    {% if message %}
+        <div class="alert alert-info">{{ message }}</div>
+    {% endif %}
+
+    <!-- Toggle Buttons -->
+    <div class="mb-3">
+        <button class="btn btn-primary" onclick="showSection('ongoing')">Ongoing Orders</button>
+        <button class="btn btn-secondary" onclick="showSection('completed')">Completed Orders</button>
+    </div>
+
+    <!-- Ongoing Orders Section (default visible) -->
+    <div id="ongoing-orders-section">
+        <h2>Ongoing Orders</h2>
+        {% if ongoing_orders %}
+            {% for order in ongoing_orders %}
+                <div class="card mb-4 p-3">
+                    <h5>Order #{{ order.id }} - {{ order.created_at }}</h5>
+                    <ul>
+                        {% for item in order.items.all %}
+                            <li>
+                                <strong>{{ item.tracking_number }}</strong>
+                                <strong>{{ item.product.name }}</strong> -
+                                Qty: {{ item.quantity }} -
+                                ₹{{ item.product.discounted_price|floatformat:2 }} each -
+                                Status: {{ item.status }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No ongoing orders.</p>
+        {% endif %}
+    </div>
+
+    <!-- Completed Orders Section (initially hidden) -->
+    <div id="completed-orders-section" style="display: none;">
+        <h2>Completed Orders</h2>
+        {% if completed_orders %}
+            {% for order in completed_orders %}
+                <div class="card mb-4 p-3">
+                    <h5>Order #{{ order.id }} - {{ order.created_at }}</h5>
+                    <ul>
+                        {% for item in order.items.all %}
+                            <li>
+                                <strong>{{ item.tracking_number }}</strong> -
+                                <strong>{{ item.product.name }}</strong> -
+                                Qty: {{ item.quantity }} -
+                                ₹{{ item.product.discounted_price|floatformat:2 }} each -
+                                Delivered on: {{ item.delivered_date }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No completed orders.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function showSection(section) {
+    const ongoingSection = document.getElementById("ongoing-orders-section");
+    const completedSection = document.getElementById("completed-orders-section");
+
+    if (section === 'ongoing') {
+        ongoingSection.style.display = 'block';
+        completedSection.style.display = 'none';
+    } else {
+        ongoingSection.style.display = 'none';
+        completedSection.style.display = 'block';
+    }
+}
+</script>
+{% endblock %}

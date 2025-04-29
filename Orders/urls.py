@@ -21,6 +21,7 @@ urlpatterns = [
     path('track-order/',track_order_by_tracking_number, name='track_by_tracking_number'),
     path('assigned/', assigned_order_items_view, name='assigned_order_items'),
     path('delivered/', delivered_order_items_view, name='delivered_order_items'),
+    path('ordershistory/', order_history, name='order_history'),
     
 
     

@@ -724,3 +724,24 @@ def delivered_order_items_view(request):
         order_items = []
 
     return render(request, 'orders/delivered_order_items.html', {'order_items': order_items, 'user': user})
+
+
+
+
+@login_required
+def order_history(request):
+    user = request.user
+    message = None
+
+    # Only get orders placed by the logged-in user
+    orders = Order.objects.filter(user=user).order_by('-created_at')
+
+    # Categorize orders purely by their status
+    ongoing_orders = [order for order in orders if order.status != "delivered"]
+    completed_orders = [order for order in orders if order.status == "delivered"]
+
+    return render(request, 'orders/order_history.html', {
+        'ongoing_orders': ongoing_orders,
+        'completed_orders': completed_orders,
+        'message': message
+    })
