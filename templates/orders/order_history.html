@@ -2,16 +2,16 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
-    <h1>Orders History</h1>
+<div class="order-history-container">
+    <h1 class="order-history-title">Orders History</h1>
 
     {% if message %}
         <div class="alert alert-info">{{ message }}</div>
     {% endif %}
 
     <!-- Toggle Buttons -->
-    <div class="mb-3">
-        <button class="btn btn-primary" onclick="showSection('ongoing')">Ongoing Orders</button>
+    <div class="mb-3 d-flex justify-content-center">
+        <button class="btn btn-primary me-2" onclick="showSection('ongoing')">Ongoing Orders</button>
         <button class="btn btn-secondary" onclick="showSection('completed')">Completed Orders</button>
     </div>
 
@@ -25,6 +25,7 @@
                     <ul>
                         {% for item in order.items.all %}
                             <li>
+                                <i class="fas fa-box me-1"></i>
                                 <strong>{{ item.tracking_number }}</strong>
                                 <strong>{{ item.product.name }}</strong> -
                                 Qty: {{ item.quantity }} -
@@ -50,6 +51,7 @@
                     <ul>
                         {% for item in order.items.all %}
                             <li>
+                                <i class="fas fa-box me-1"></i>
                                 <strong>{{ item.tracking_number }}</strong> -
                                 <strong>{{ item.product.name }}</strong> -
                                 Qty: {{ item.quantity }} -
@@ -65,6 +67,233 @@
         {% endif %}
     </div>
 </div>
+
+<style>
+/* Scoped Container */
+.order-history-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Order History Title */
+.order-history-container .order-history-title {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    position: relative;
+}
+
+.order-history-container .order-history-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: #2874f0;
+    border-radius: 2px;
+}
+
+/* Toggle Buttons */
+.order-history-container .mb-3.d-flex.justify-content-center {
+    gap: 0.75rem;
+}
+
+.order-history-container .btn-primary,
+.order-history-container .btn-secondary {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.order-history-container .btn-primary {
+    background: #2874f0;
+    color: white;
+}
+
+.order-history-container .btn-primary:hover {
+    background: #1a5dc7;
+    transform: translateY(-1px);
+}
+
+.order-history-container .btn-secondary {
+    background: #fb641b;
+    color: white;
+}
+
+.order-history-container .btn-secondary:hover {
+    background: #e55a17;
+    transform: translateY(-1px);
+}
+
+/* Order Sections */
+.order-history-container .order-section h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+/* Order Cards */
+.order-history-container .card {
+    background: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    padding: 1.25rem;
+}
+
+.order-history-container .card:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+}
+
+.order-history-container .card h5 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.75rem;
+}
+
+.order-history-container .card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.order-history-container .card li {
+    font-size: 0.95rem;
+    color: #6c757d;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #6c757d;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.order-history-container .card li:last-child {
+    border-bottom: none;
+}
+
+.order-history-container .card li i {
+    color: #2874f0;
+    font-size: 0.9rem;
+}
+
+.order-history-container .card li strong {
+    color: #333;
+    font-weight: 600;
+    margin-right: 0.25rem;
+}
+
+/* Alert */
+.order-history-container .alert-info {
+    background: rgba(40, 116, 240, 0.05);
+    border: 1px solid rgba(40, 116, 240, 0.2);
+    border-radius: 8px;
+    color: #333;
+    font-size: 0.95rem;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Empty State */
+.order-history-container .order-section p {
+    font-size: 1rem;
+    color: #6c757d;
+    text-align: center;
+    padding: 0.75rem;
+    background: rgba(40, 116, 240, 0.03);
+    border-radius: 8px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .order-history-container .order-history-title {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .order-history-container .order-section h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .order-history-container .card h5 {
+        font-size: 1.1rem;
+    }
+
+    .order-history-container .card li {
+        font-size: 0.9rem;
+    }
+
+    .order-history-container .btn-primary,
+    .order-history-container .btn-secondary {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .order-history-container {
+        padding: 1rem;
+    }
+
+    .order-history-container .order-history-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .order-history-container .order-section h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .order-history-container .card {
+        padding: 1rem;
+    }
+
+    .order-history-container .card h5 {
+        font-size: 1rem;
+    }
+
+    .order-history-container .card li {
+        font-size: 0.85rem;
+        padding: 0.4rem 0;
+    }
+
+    .order-history-container .btn-primary,
+    .order-history-container .btn-secondary {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .order-history-container .mb-3.d-flex.justify-content-center {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .order-history-container .alert-info {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+    }
+
+    .order-history-container .order-section p {
+        font-size: 0.95rem;
+    }
+}
+</style>
 
 <script>
 function showSection(section) {
