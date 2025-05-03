@@ -1,0 +1,295 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}Affiliate Program - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Affiliate Page Specific Styles */
+    .affiliate-hero {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #2a6495 100%);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+    }
+    
+    .affiliate-hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .affiliate-hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .affiliate-hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .affiliate-container {
+        max-width: 1200px;
+        margin: 3rem auto;
+        padding: 0 2rem;
+    }
+    
+    .affiliate-section {
+        margin-bottom: 4rem;
+    }
+    
+    .section-header {
+        margin-bottom: 2rem;
+    }
+    
+    .section-header h2 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+    }
+    
+    .section-header h2:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--secondary-color);
+    }
+    
+    .section-content {
+        margin-top: 1.5rem;
+    }
+    
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+    
+    .benefit-card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+    }
+    
+    .benefit-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .benefit-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .benefit-card h3 i {
+        margin-right: 10px;
+        color: var(--secondary-color);
+    }
+    
+    .how-it-works-content ol {
+        counter-reset: step-counter;
+        padding-left: 0;
+    }
+    
+    .how-it-works-content li {
+        position: relative;
+        list-style: none;
+        padding-left: 3.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .how-it-works-content li:before {
+        counter-increment: step-counter;
+        content: counter(step-counter);
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: var(--secondary-color);
+        color: white;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    
+    .cta-section {
+        text-align: center;
+        padding: 3rem;
+        background: var(--background-color);
+        border-radius: 8px;
+        margin: 4rem 0;
+    }
+    
+    .cta-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .cta-content h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+    }
+    
+    .cta-button {
+        display: inline-block;
+        background: var(--secondary-color);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+    }
+    
+    .terms-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    @media (max-width: 768px) {
+        .affiliate-hero h1 {
+            font-size: 2rem;
+        }
+        
+        .affiliate-hero p {
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="affiliate-hero">
+    <!-- <div class="affiliate-hero-banner">
+        <img src="{% static 'images/qtipb2bbanner2.jpeg' %}" alt="affiliate-hero-baner">
+    </div> -->
+    <div class="affiliate-hero-content">
+        <h1>QTipStore Affiliate Program</h1>
+        <p>Earn generous commissions by promoting quality products to your audience. Join our growing network of affiliates today!</p>
+    </div>
+</section>
+
+<div class="affiliate-container">
+    <!-- Benefits Section -->
+    <section class="affiliate-section">
+        <div class="section-header">
+            <h2>Why Join Our Affiliate Program?</h2>
+        </div>
+        <div class="section-content">
+            <p>Partner with QTipStore and earn money by sharing products you love with your audience. Here's what makes our program great:</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h3><i class="fas fa-money-bill-wave"></i> High Commissions</h3>
+                    <p>Earn up to 10% commission on every sale you refer. The more you sell, the more you earn!</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3><i class="fas fa-chart-line"></i> Real-Time Tracking</h3>
+                    <p>Our dashboard shows your clicks, conversions, and earnings in real time so you can optimize your strategy.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3><i class="fas fa-gift"></i> Promotional Tools</h3>
+                    <p>Get access to banners, text links, and exclusive promo codes to make promoting easy.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3><i class="fas fa-clock"></i> Reliable Payouts</h3>
+                    <p>Get paid monthly via PayPal or direct bank transfer with a low $50 minimum payout.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3><i class="fas fa-users"></i> Dedicated Support</h3>
+                    <p>Our affiliate team is here to help you succeed with personalized support and tips.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3><i class="fas fa-tags"></i> Competitive Products</h3>
+                    <p>Promote high-quality products with great conversion rates and customer satisfaction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section class="affiliate-section">
+        <div class="section-header">
+            <h2>How It Works</h2>
+        </div>
+        <div class="section-content how-it-works-content">
+            <p>Getting started as a QTipStore affiliate is simple:</p>
+            
+            <ol>
+                <li>
+                    <strong>Sign Up</strong>
+                    <p>Complete our quick affiliate application form. Approval typically takes 1-2 business days.</p>
+                </li>
+                <li>
+                    <strong>Get Your Tools</strong>
+                    <p>Access your affiliate dashboard to get custom referral links, banners, and promotional materials.</p>
+                </li>
+                <li>
+                    <strong>Promote</strong>
+                    <p>Share your links on your website, blog, social media, email newsletters, or other channels.</p>
+                </li>
+                <li>
+                    <strong>Earn</strong>
+                    <p>Receive commissions when customers make purchases through your referral links.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Start Earning?</h2>
+            <p>Join our affiliate program today and start monetizing your audience with QTipStore products.</p>
+            <a href="#signup" class="cta-button">Sign Up Now</a>
+            <p>Have questions? Email us at <a href="mailto:affiliates@qtipstore.com">affiliates@qtipstore.com</a></p>
+        </div>
+    </section>
+    
+    <!-- Terms Section -->
+    <section class="affiliate-section">
+        <div class="section-header">
+            <h2>Terms & Conditions</h2>
+        </div>
+        <div class="section-content">
+            <div class="terms-content">
+                <ul>
+                    <li>Minimum payout amount is $50</li>
+                    <li>Commissions are paid monthly via PayPal or bank transfer</li>
+                    <li>Cookie duration: 30 days</li>
+                    <li>No self-referrals allowed</li>
+                    <li>Fraudulent traffic will result in account termination</li>
+                    <li>We reserve the right to modify program terms with 30 days notice</li>
+                    <li>Affiliates must comply with all applicable laws and regulations</li>
+                    <li>Promotion on coupon/deal sites requires prior approval</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends "main/index.html" %}
+
+{% block title %}Shipping Policy | QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    .shipping-container {
+        max-width: 900px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .shipping-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .shipping-header h1 {
+        color: var(--primary-color);
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .shipping-header p {
+        color: var(--text-color);
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .policy-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .policy-section h2 {
+        color: var(--primary-color);
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--background-color);
+    }
+
+    .policy-section h3 {
+        color: var(--secondary-color);
+        font-size: 1.3rem;
+        margin: 1.5rem 0 0.8rem;
+    }
+
+    .policy-section p, 
+    .policy-section ul {
+        color: var(--text-color);
+        line-height: 1.7;
+        margin-bottom: 1rem;
+    }
+
+    .policy-section ul {
+        padding-left: 1.5rem;
+    }
+
+    .policy-section li {
+        margin-bottom: 0.5rem;
+    }
+
+    .highlight-box {
+        background-color: rgba(74, 144, 226, 0.1);
+        border-left: 4px solid var(--primary-color);
+        padding: 1.5rem;
+        border-radius: 0 8px 8px 0;
+        margin: 1.5rem 0;
+    }
+
+    .highlight-box p {
+        margin: 0;
+    }
+
+    .contact-note {
+        font-style: italic;
+        color: #666;
+    }
+
+    @media (max-width: 768px) {
+        .shipping-container {
+            margin: 2rem 1rem;
+            padding: 1.5rem;
+        }
+        
+        .shipping-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .policy-section h2 {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="shipping-container">
+    <div class="shipping-header">
+        <h1>Shipping Policy</h1>
+        <p>We strive to deliver your orders quickly and efficiently. Below you'll find all the details about our shipping process, delivery times, and policies.</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>Shipping Methods & Delivery Times</h2>
+        
+        <h3>Standard Shipping</h3>
+        <ul>
+            <li>Delivery within 3-5 business days</li>
+            <li>Free for orders over ₹50</li>
+            <li>₹5.99 for orders under ₹50</li>
+            <li>Processed within 1-2 business days</li>
+        </ul>
+        
+        <h3>Express Shipping</h3>
+        <ul>
+            <li>Delivery within 1-2 business days</li>
+            <li>Flat rate of ₹12.99</li>
+            <li>Processed same day if ordered before 2pm local time</li>
+        </ul>
+        
+        <div class="highlight-box">
+            <p><strong>Note:</strong> Delivery times are estimates and begin when your order has shipped, not when it's placed. Processing times may be longer during peak seasons or promotions.</p>
+        </div>
+    </div>
+
+    <div class="policy-section">
+        <h2>Shipping Destinations</h2>
+        <p>We currently ship to all 50 indian states. International shipping is available to select countries. During checkout, you'll be able to see if we ship to your location.</p>
+        
+        <h3>International Shipping</h3>
+        <ul>
+            <li>Delivery within 7-14 business days</li>
+            <li>Customs and import taxes may apply</li>
+            <li>Shipping costs calculated at checkout</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>Order Processing</h2>
+        <p>Most orders are processed and shipped within 1-2 business days (excluding weekends and holidays). You'll receive a shipping confirmation email with tracking information once your order has shipped.</p>
+        
+        <h3>Processing Times May Vary For:</h3>
+        <ul>
+            <li>Custom or personalized items</li>
+            <li>Items requiring special packaging</li>
+            <li>Orders placed during holidays or sales events</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>Tracking Your Order</h2>
+        <p>Once your order has shipped, you'll receive an email with tracking information. You can track your package using the link provided or by visiting the carrier's website with your tracking number.</p>
+        
+        <h3>Carriers We Work With:</h3>
+        <ul>
+            <li>USPS</li>
+            <li>FedEx</li>
+            <li>UPS</li>
+            <li>DHL (for international orders)</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>Shipping Restrictions</h2>
+        <p>Some items may have shipping restrictions due to size, weight, or content regulations. These restrictions will be noted on the product page.</p>
+        
+        <h3>Common Restrictions:</h3>
+        <ul>
+            <li>Hazardous materials</li>
+            <li>Perishable goods</li>
+            <li>Oversized items (additional fees may apply)</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>Undeliverable Packages</h2>
+        <p>Occasionally, packages are returned to us as undeliverable. This typically happens when:</p>
+        <ul>
+            <li>The address was incorrect or incomplete</li>
+            <li>The package was unclaimed after multiple delivery attempts</li>
+            <li>Customs refused the shipment</li>
+        </ul>
+        <p class="contact-note">If your package is returned to us, we'll contact you to arrange reshipment (additional fees may apply) or issue a refund minus shipping costs.</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>Contact Us</h2>
+        <p>If you have any questions about our shipping policy, please contact our customer service team at <a href="mailto:shipping@qtipstore.com">shipping@qtipstore.com</a> or through our <a href="{% url 'contact' %}">contact form</a>.</p>
+    </div>
+</div>
+{% endblock %}

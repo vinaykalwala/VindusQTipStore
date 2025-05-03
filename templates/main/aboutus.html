@@ -1,0 +1,470 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}About Us 2{% endblock %}
+
+{% block content %}
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+    }
+    .about-us-hero {
+      width: 100%;
+      overflow: hidden;
+    }
+    .about-us-hero-banner {
+      width: 100%;
+    }
+    .about-us-banner {
+      width: 100%;
+      height: 60vh; /* 60% of viewport height */
+      display: block;
+      object-fit: cover;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .about-us-banner {
+        height: 40vh; /* Smaller height for tablets */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .about-us-banner {
+        height: 30vh; /* Smaller height for mobiles */
+      }
+    }
+
+    .first-section {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      gap: 30px;
+      background-color: #ffffff;
+      margin: 40px auto;
+      max-width: 1400px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .first-section-image {
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    .first-section-image img {
+      width: 100%;
+      max-width: 350px;
+      height: 350px; /* Adjusted height */
+      object-fit: cover; /* Important to make image fit nicely */
+      border-radius: 8px;
+    }
+
+    .first-section-content {
+      flex: 1 1 500px;
+      padding: 10px;
+    }
+
+    .first-section-content h3 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-align: center;
+      color: #222;
+    }
+
+    .first-section-content p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #555;
+      text-align: justify;
+      margin: 0;
+    }
+
+    /* Responsive for tablets and mobiles */
+    @media (max-width: 768px) {
+      .first-section {
+        padding: 25px 15px;
+        gap: 25px;
+      }
+
+      .first-section-image img {
+        max-width: 300px;
+        height: 200px;
+      }
+
+      .first-section-content h3 {
+        font-size: 26px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .first-section-content h3 {
+        font-size: 22px;
+      }
+
+      .first-section-content p {
+        font-size: 14px;
+      }
+
+      .first-section-image img {
+        max-width: 250px;
+        height: 180px;
+      }
+    }
+
+    .second-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  gap: 30px;
+  background-color: #ffffff;
+  margin: 40px auto;
+  max-width: 1400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.second-section-content {
+  flex: 1 1 500px;
+  padding: 10px;
+}
+
+.second-section-content h3 {
+  font-size: 30px;
+  font-weight: 700;
+  margin-top: -40px; /* Move heading slightly upward */
+  margin-bottom: 10px; /* Reduce space below heading */
+  text-align: center;
+  color: #222;
+}
+
+
+.second-section-content p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #555;
+  text-align: justify;
+  margin: 0;
+}
+
+.second-section-image {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.second-section-image img {
+  width: 100%;
+  max-width: 350px;
+  height: 350px; /* Adjusted height */
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Responsive for tablets and mobiles */
+@media (max-width: 768px) {
+  .second-section {
+    padding: 40px 15px;
+    gap: 20px;
+  }
+
+  .second-section-image img {
+    max-width: 300px;
+    height: 200px;
+  }
+
+  .second-section-content h3 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  .second-section-content h3 {
+    font-size: 22px;
+  }
+
+  .second-section-content p {
+    font-size: 14px;
+  }
+
+  .second-section-image img {
+    max-width: 250px;
+    height: 180px;
+  }
+}
+
+.third-section {
+  background-color: #f6f9fc;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.third-section h2 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 40px;
+}
+
+.values-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.value-card {
+  background-color: #ffffff;
+  padding: 30px 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 260px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.value-card i {
+  font-size: 48px;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+.value-card h4 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ff5e00;
+  margin-bottom: 15px;
+}
+
+.value-card p {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .value-card {
+    width: 45%;
+  }
+}
+
+@media (max-width: 600px) {
+  .value-card {
+    width: 100%;
+  }
+
+  .third-section h2 {
+    font-size: 28px;
+  }
+}
+
+
+.fourth-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  gap: 30px;
+  background-color: #ffffff;
+  margin: 40px auto;
+  max-width: 1400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.fourth-section-content {
+  flex: 1 1 500px;
+  padding: 10px;
+}
+
+.fourth-section-content h3 {
+  font-size: 30px;
+  font-weight: 700;
+  margin-top: -40px; /* Move heading slightly upward */
+  margin-bottom: 10px; /* Reduce space below heading */
+  text-align: center;
+  color: #222;
+}
+
+
+.fourth-section-content p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #555;
+  text-align: justify;
+  margin: 0;
+}
+
+.fourth-section-image {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.fourth-section-image img {
+  width: 100%;
+  max-width: 350px;
+  height: 350px; /* Adjusted height */
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Responsive for tablets and mobiles */
+@media (max-width: 768px) {
+  .fourth-section {
+   
+    padding: 40px 15px;
+    gap: 20px;
+  }
+
+  .fourth-section-image img {
+    max-width: 300px;
+    height: 200px;
+  }
+
+  .fourth-section-content h3 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fourth-section-content h3 {
+    font-size: 22px;
+  }
+
+  .fourth-section-content p {
+    font-size: 14px;
+  }
+
+  .fourth-section-image img {
+    max-width: 250px;
+    height: 180px;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+
+<section class="about-us-hero">
+  <div class="about-us-hero-banner">
+    <img src="{% static 'images/qtipaboutus.avif' %}" alt="qtip-about-us" class="about-us-banner" />
+  </div>
+</section>
+
+<section class="first-section">
+    <div class="first-section-image">
+        <img src="{% static 'images/qtiplogo.jpg' %}" alt="Our Story" />  
+    </div>
+    <div class="first-section-content">
+      <h3>Our Story</h3>
+      <p>Founded in 2023, QtipStore has quickly become one of the leading online marketplaces.
+          We offer a wide range of products including electronics, fashion, home goods, and beauty products,
+          all meticulously curated to meet the diverse needs of our customers. Our commitment to quality and
+          affordability sets us apart in the market, ensuring that every purchase made at QtipStore is a satisfying experience.
+          <br><br>
+          At QtipStore, we believe in innovation and customer satisfaction. Our team works tirelessly to bring
+          the latest trends and technological advancements to our platform, ensuring that our customers always
+          have access to the best products available.
+          <br><br>
+          We take pride in offering a user-friendly shopping experience, backed by secure payment systems and
+          reliable customer service. Our intuitive website design and smart search capabilities help customers
+          find exactly what they need quickly and easily.
+          <br><br>
+          As we continue to grow, we are also expanding our partnerships with top brands and small businesses alike,
+          empowering them to reach wider audiences through our platform. At QtipStore, we are not just a marketplace—
+          we are a community built on trust, convenience, and a shared passion for great products.
+      </p>
+    </div>
+</section>
+
+<section class="second-section">
+    <div class="second-section-content">
+      <h3>Our Vision</h3>
+      <p>
+        We aim to revolutionize the online shopping experience by leveraging the latest
+        technology and innovative solutions. At QtipStore, we believe in creating a platform
+        that is user-friendly, secure, and tailored to meet the needs of our customers.
+        <br><br>
+        Our vision is rooted in convenience, quality, and trust. We continuously analyze
+        market trends to adapt and offer products that align with evolving customer preferences.
+        With seamless navigation, advanced search filters, and reliable delivery  
+        systems, QtipStore empowers users to shop with ease and confidence.
+        <br><br>
+        Looking forward, we are committed to embracing sustainable practices, building 
+        strong relationships with sellers, and enhancing the overall customer journey. 
+        By integrating smart tools and AI-powered features, we ensure a personalized 
+        and futuristic shopping experience for everyone.
+      </p>
+    </div>
+    <div class="second-section-image">
+      <img src="{% static 'images/qtipsection.png' %}" alt="Our Vision" />  
+    </div>
+</section>
+
+<section class="third-section">
+    <h2>Our Values</h2>
+    <div class="values-container">
+        <div class="value-card">
+            <i class="fas fa-users"></i>
+            <h4>Customer Focus</h4>
+            <p>Putting our customers at the heart of everything we do.</p>
+        </div>
+        <div class="value-card">
+            <i class="fas fa-cogs"></i>
+            <h4>Quality</h4>
+            <p>Offering only high-quality products that meet our rigorous standards.</p>
+        </div>
+        <div class="value-card">
+            <i class="fas fa-lightbulb"></i>
+            <h4>Innovation</h4>
+            <p>Embracing innovation to improve our services and offerings.</p>
+        </div>
+        <div class="value-card">
+            <i class="fas fa-leaf"></i>
+            <h4>Sustainability</h4>
+            <p>Committing to eco-friendly practices and products.</p>
+        </div>
+    </div>
+</section>
+
+<section class="fourth-section">
+    <div class="fourth-section-content">
+        <h3>Our Mission</h3>
+        <p>
+            At QtipStore, our mission is to transform how people shop online by combining
+            innovation, integrity, and customer-first thinking. We are dedicated to making
+            shopping more convenient, affordable, and enjoyable for everyone.
+            <br><br>
+            By offering a curated selection of products and ensuring a seamless experience 
+            across devices, we strive to be a platform where quality meets trust. 
+            We believe in empowering customers with informed choices, fast service, and 
+            continuous improvement based on real feedback.
+            <br><br>
+            Our mission drives us to be a catalyst for positive change in e-commerce — 
+            setting new standards in customer satisfaction, seller success, and digital shopping excellence.
+        </p>
+    </div>
+
+    <div class="fourth-section-image">
+        <img src="{% static 'images/qtipsourmission.png' %}" alt="Our Story" />
+    </div>
+
+</section>
+  
+
+{% endblock %}

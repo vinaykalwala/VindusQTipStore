@@ -1,0 +1,717 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}Contact Us - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #F4F7FA;
+        color: #2D2D2D;
+    }
+    .contact-banner {
+        width: 100%;
+        height: 300px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+    }
+
+    .banner-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        width: 100%;
+        padding: 0 1rem;
+    }
+
+    .banner-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .banner-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .contact-section {
+        padding: 4rem 1rem;
+        background: #f8f9fa;
+    }
+    .contact-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+        z-index: 1100;
+        max-width: 400px;
+        width: 90%;
+    }
+    
+    .contact-popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1050;
+    }
+    
+    .contact-popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-popup-title {
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .close-popup {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #666;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .contact-info-item {
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .contact-info-icon {
+        color: #4A90E2;
+        font-size: 1.2rem;
+        width: 24px;
+    }
+    
+    .contact-info-content {
+        flex: 1;
+    }
+    
+    .contact-info-label {
+        font-weight: 500;
+        color: #2c3e50;
+        margin-bottom: 0.3rem;
+    }
+    
+    .contact-info-text {
+        color: #666;
+        line-height: 1.5;
+    }
+    .faq-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+        z-index: 1100;
+        max-width: 800px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .faq-popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1050;
+    }
+    
+    .faq-popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        position: sticky;
+        top: 0;
+        background: white;
+        padding: 1rem 0;
+    }
+    
+    .faq-popup-title {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .faq-section {
+        margin-bottom: 2rem;
+    }
+    
+    .faq-section-title {
+        color: #4A90E2;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #eee;
+    }
+    
+    .faq-item {
+        margin-bottom: 1.5rem;
+    }
+    
+    .faq-question {
+        font-weight: 500;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    
+    .faq-answer {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .support-cards {
+        max-width: 1200px;
+        margin: 0 auto 4rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+
+    .support-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .support-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .support-icon {
+        width: 60px;
+        height: 60px;
+        background: #4A90E2;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .support-title {
+        font-size: 1.3rem;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .support-text {
+        color: #666;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .support-link {
+        color: #4A90E2;
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .support-link:hover {
+        color: #357ABD;
+    }
+
+    .contact-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .contact-info {
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    .ai-chat-container {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1000;
+        display: none;
+        width: 350px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 5px 30px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    .ai-chat-box {
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+    }
+
+    .ai-chat-header {
+        background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .ai-assistant-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .ai-avatar {
+        width: 40px;
+        height: 40px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .ai-status h4 {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .typing-indicator {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        background: #f8f9fa;
+    }
+
+    .welcome-message {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .ai-suggestion-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .suggestion-chip {
+        background: white;
+        border: 1px solid #4A90E2;
+        color: #4A90E2;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .suggestion-chip:hover {
+        background: #4A90E2;
+        color: white;
+    }
+
+    .chat-input-container {
+        padding: 15px;
+        background: white;
+        border-top: 1px solid #eee;
+    }
+
+    .input-wrapper {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+
+    #chatInput {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 25px;
+        outline: none;
+        font-size: 0.9rem;
+    }
+
+    .voice-input, .send-message {
+        background: #4A90E2;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .voice-input:hover, .send-message:hover {
+        background: #357ABD;
+        transform: scale(1.05);
+    }
+
+    .close-chat {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1.2rem;
+    }
+
+    /* Message Styles */
+    .message {
+        margin-bottom: 15px;
+        max-width: 80%;
+    }
+
+    .message.user {
+        margin-left: auto;
+        text-align: right;
+    }
+
+    .message-content {
+        display: inline-block;
+        padding: 10px 15px;
+        border-radius: 15px;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .message.user .message-content {
+        background: #4A90E2;
+        color: white;
+    }
+
+    @media (max-width: 480px) {
+        .ai-chat-container {
+            width: 100%;
+            height: 100%;
+            bottom: 0;
+            right: 0;
+            border-radius: 0;
+        }
+
+        .ai-chat-box {
+            height: 100vh;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .contact-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .banner-title {
+            font-size: 2rem;
+        }
+        
+        .banner-subtitle {
+            font-size: 1rem;
+        }
+
+        .support-cards {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="contact-banner">
+    <div class="banner-content">
+        <h1 class="banner-title">How Can We Help You?</h1>
+        <p class="banner-subtitle">We're here to provide support and answer your questions</p>
+    </div>
+</section>
+
+<section class="contact-section">
+    <div class="support-cards">
+       
+<div class="support-card">
+    <div class="support-icon">
+        <i class="fas fa-headset"></i>
+    </div>
+    <h3 class="support-title">Customer Support</h3>
+    <p class="support-text">Need help with your order? Our support team is available 24/7 to assist you.</p>
+    <a href="#" class="support-link" id="contactSupportBtn">
+        Contact Support <i class="fas fa-arrow-right"></i>
+    </a>
+</div>
+
+<!-- Contact Popup -->
+<div class="contact-popup-overlay" id="contactPopupOverlay"></div>
+<div class="contact-popup" id="contactPopup">
+    <div class="contact-popup-header">
+        <h3 class="contact-popup-title">Contact Information</h3>
+        <button class="close-popup" id="closePopup">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="contact-info-item">
+        <i class="fas fa-map-marker-alt contact-info-icon"></i>
+        <div class="contact-info-content">
+            <div class="contact-info-label">Main Office</div>
+            <div class="contact-info-text">123 QTip Street, Tech Valley<br>Silicon City, CA 94025</div>
+        </div>
+    </div>
+    <div class="contact-info-item">
+        <i class="fas fa-phone contact-info-icon"></i>
+        <div class="contact-info-content">
+            <div class="contact-info-label">Contact Numbers</div>
+            <div class="contact-info-text">
+                Main: (555) 123-4567<br>
+                Support: 1-800-QTIP-HELP
+            </div>
+        </div>
+    </div>
+    <div class="contact-info-item">
+        <i class="fas fa-clock contact-info-icon"></i>
+        <div class="contact-info-content">
+            <div class="contact-info-label">Business Hours</div>
+            <div class="contact-info-text">
+                Monday - Friday: 9:00 AM - 8:00 PM EST<br>
+                Weekend Support: 10:00 AM - 6:00 PM EST
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <div class="support-card">
+            <div class="support-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h3 class="support-title">Knowledge Base</h3>
+            <p class="support-text">Find answers to common questions in our comprehensive help center.</p>
+            <a href="{% if faq %}{% url 'home' %}{% else %}{% url 'faq' %}{% endif %}" class="support-link">
+                Browse Articles <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="support-card">
+            <div class="support-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <h3 class="support-title">Live Chat</h3>
+            <p class="support-text">Get instant help from our team through our live chat support system.</p>
+            <a href="#" class="support-link" id="startChatBtn">
+                Start Chat <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        
+
+       
+        <div class="ai-chat-container" id="aiChatContainer">
+            <div class="ai-chat-box">
+                <div class="ai-chat-header">
+                    <div class="ai-assistant-info">
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="ai-status">
+                            <h4>QTip Assistant</h4>
+                            <span class="typing-indicator">Online</span>
+                        </div>
+                    </div>
+                    <button class="close-chat" id="closeChat">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <div class="ai-suggestion-chips">
+                            <button class="suggestion-chip" data-query="Track my order">Track my order</button>
+                            <button class="suggestion-chip" data-query="Return policy">Return policy</button>
+                            <button class="suggestion-chip" data-query="Shipping info">Shipping info</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <div class="input-wrapper">
+                        <input type="text" id="chatInput" placeholder="Type your message...">
+                        <button class="voice-input" id="voiceInput">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="send-message" id="sendMessage">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+            </div>
+        </div>
+
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startChatBtn = document.getElementById('startChatBtn');
+            const aiChatContainer = document.getElementById('aiChatContainer');
+            const closeChat = document.getElementById('closeChat');
+            const chatInput = document.getElementById('chatInput');
+            const sendMessage = document.getElementById('sendMessage');
+            const chatMessages = document.getElementById('chatMessages');
+            const voiceInput = document.getElementById('voiceInput');
+        
+            startChatBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                aiChatContainer.style.display = 'block';
+                addMessage("👋 Hi! I'm QTip Assistant. How can I help you today?", false);
+            });
+        
+            closeChat.addEventListener('click', function() {
+                aiChatContainer.style.display = 'none';
+            });
+        
+            function addMessage(text, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        ${text}
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        
+            // Voice Input Feature
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+        
+                voiceInput.addEventListener('click', function() {
+                    recognition.start();
+                    voiceInput.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                });
+        
+                recognition.onresult = function(event) {
+                    const text = event.results[0][0].transcript;
+                    chatInput.value = text;
+                    voiceInput.innerHTML = '<i class="fas fa-microphone"></i>';
+                };
+        
+                recognition.onerror = function() {
+                    voiceInput.innerHTML = '<i class="fas fa-microphone"></i>';
+                };
+            }
+        
+            // Suggestion Chips
+            document.querySelectorAll('.suggestion-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const query = this.dataset.query;
+                    addMessage(query, true);
+                    handleResponse(query);
+                });
+            });
+        
+            function handleResponse(message) {
+                const responses = {
+                    "Track my order": "To track your order, please provide your order number and I'll help you check its status.",
+                    "Return policy": "Our return policy allows returns within 30 days of purchase. Would you like to know more details?",
+                    "Shipping info": "We offer free shipping on orders over $50. Standard shipping takes 3-5 business days. Need more specific information?",
+                    "default": "I'll help you with that. Could you please provide more details?"
+                };
+        
+                setTimeout(() => {
+                    const response = responses[message] || responses.default;
+                    addMessage(response, false);
+                }, 1000);
+            }
+        
+            sendMessage.addEventListener('click', function() {
+                const message = chatInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    chatInput.value = '';
+                    handleResponse(message);
+                }
+            });
+        
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage.click();
+                }
+            });
+        });
+        </script>
+        
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ... existing code ...
+    
+        // Contact Popup Functionality
+        const contactSupportBtn = document.getElementById('contactSupportBtn');
+        const contactPopup = document.getElementById('contactPopup');
+        const contactPopupOverlay = document.getElementById('contactPopupOverlay');
+        const closePopup = document.getElementById('closePopup');
+    
+        contactSupportBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            contactPopup.style.display = 'block';
+            contactPopupOverlay.style.display = 'block';
+        });
+    
+        function closeContactPopup() {
+            contactPopup.style.display = 'none';
+            contactPopupOverlay.style.display = 'none';
+        }
+    
+        closePopup.addEventListener('click', closeContactPopup);
+        contactPopupOverlay.addEventListener('click', closeContactPopup);
+    });
+    </script>
+</section>
+{% endblock %}

@@ -549,8 +549,8 @@
                     {% else %}
                     <!-- If Not Logged In -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'sellerpage' %}">
-                            <i class="fas fa-shop"></i> Become a Merchant
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
@@ -596,37 +596,56 @@
                 <div class="col-md-3 col-sm-6 footer-column">
                     <h5>About QTipStore</h5>
                     <ul>
-                        <li><a href="{% url 'home' %}">About Us</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Image Courtesy</a></li>
+                        <li><a href="{% url 'about-us' %}">About Us</a></li>
+                        <li><a href="{% url 'privacy-policy' %}">Privacy Policy</a></li>
+                        <li><a href="{% url 'blog' %}">Blog</a></li>
+                        <li><a href="{% url 'image_courtesy' %}">Image courtesy</a></li>
                     </ul>
                 </div>
                 <!-- Customer Service -->
                 <div class="col-md-3 col-sm-6 footer-column">
                     <h5>Customer Service</h5>
                     <ul>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Shipping Policy</a></li>
-                        <li><a href="#">FAQs</a></li>
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        <li><a href="{% url 'shipping-policy' %}">Shipping Policy</a></li>
+                        <li><a href="{% url 'faq' %}">FAQs</a></li>
+                        <li><a href="{% url 'cookies' %}">Cookie Policy</a></li>
                     </ul>
                 </div>
                 <!-- Shopping -->
                 <div class="col-md-3 col-sm-6 footer-column">
                     <h5>Shopping</h5>
                     <ul>
+                        {% if user.is_authenticated %}
                         <li><a href="{% url 'Products:product_list' %}">Browse Categories</a></li>
-                        <li><a href="#">New Arrivals</a></li>
-                        <li><a href="#">Sale Items</a></li>
+                        {% else %}
+                        <li><a href="{% url 'user-login' %}">Browse Categories</a></li>
+                        {% endif %}
+
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'dashboard' %}">New Arrivals</a></li>
+                        {% else %}
+                        <li><a href="{% url 'user-login' %}">New Arrivals</a></li>
+                        {% endif %}
+
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'Products:product_list' %}">Sale Items</a></li>
+                        {% else %}
+                        <li><a href="{% url 'user-login' %}">Sale Items</a></li>
+                        {% endif %}
+
+                        <li><a href="{% url 'product_care' %}">Product Care & Size Guide</a></li>
                     </ul>
                 </div>
                 <!-- Connect With Us -->
                 <div class="col-md-3 col-sm-6 footer-column">
                     <h5>Connect With Us</h5>
                     <ul>
-                        <li><a href="#">Newsletter Signup</a></li>
+                        <li><a href="{% url 'newsletter-signup' %}">Newsletter Signup</a></li>
                         <li><a href="{% url 'sellerpage' %}">Become a Supplier</a></li>
-                        <li><a href="#">Affiliate Program</a></li>
+                        <li><a href="{% url 'delivery_admin' %}">Delivery Admin</a></li>
+                        <li><a href="{% url 'affiliate' %}">Affiliate Program</a></li>
+                        <li><a href="{% url 'sitemap' %}">Sitemap</a></li>
                     </ul>
                 </div>
             </div>

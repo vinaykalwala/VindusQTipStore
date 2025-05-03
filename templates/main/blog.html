@@ -1,0 +1,594 @@
+{% extends "main/index.html" %}
+{% load static %}
+{% block title %}Blog - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #F4F7FA;
+        color: #2D2D2D;
+    }
+    
+    .blog-section {
+        padding: 4rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .blog-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .blog-title {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .blog-subtitle {
+        color: #666;
+        font-size: 1.2rem;
+    }
+    /* Blog-specific styles */
+    .blog-container {
+        max-width: 1200px;
+        margin: 4rem auto;
+        padding: 0 2rem;
+    }
+    
+    .blog-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .blog-header h1 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .blog-header p {
+        font-size: 1.1rem;
+        color: var(--text-color);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .blog-posts {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+    
+    .blog-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+    
+    .blog-image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+    
+    .blog-content {
+        padding: 1.5rem;
+    }
+    
+    .blog-category {
+        display: inline-block;
+        background: var(--primary-color);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .blog-title {
+        font-size: 1.4rem;
+        margin-bottom: 0.8rem;
+        color: var(--text-color);
+    }
+    
+    .blog-excerpt {
+        color: #666;
+        margin-bottom: 1.2rem;
+        line-height: 1.6;
+    }
+    
+    .blog-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #888;
+    }
+    
+    .read-more {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .read-more i {
+        margin-left: 0.3rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .read-more:hover i {
+        transform: translateX(3px);
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 3rem;
+        gap: 0.5rem;
+    }
+    
+    .page-link {
+        padding: 0.6rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        text-decoration: none;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+    }
+    
+    .page-link:hover, .page-link.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .modal-content {
+        position: relative;
+        background-color: white;
+        margin: 5% auto;
+        padding: 0;
+        width: 90%;
+        max-width: 800px;
+        border-radius: 12px;
+        box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .modal.active .modal-content {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .modal-header {
+        padding: 2rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .modal-header .blog-category {
+        margin-bottom: 1rem;
+    }
+
+    .modal-header h2 {
+        font-size: 1.8rem;
+        color: var(--text-color);
+        margin-bottom: 1rem;
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .modal-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .modal-meta {
+        display: flex;
+        gap: 2rem;
+        margin: 1rem 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .modal-meta i {
+        margin-right: 0.5rem;
+    }
+
+    .modal-content p {
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        color: #444;
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: #666;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .close-modal:hover {
+        background: #f0f0f0;
+        transform: rotate(90deg);
+    }
+    
+    @media (max-width: 768px) {
+        .blog-posts {
+            grid-template-columns: 1fr;
+        }
+        
+        .blog-header h1 {
+            font-size: 2rem;
+        }
+        .modal-content {
+            margin: 10% auto;
+            width: 95%;
+        }
+
+        .modal-image {
+            height: 250px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="blog-section">
+    <div class="blog-header">
+        <h1 class="blog-title">Our Blog</h1>
+        <p>Stay updated with the latest trends, tips, and insights in online shopping and digital commerce.</p>
+    </div>
+    
+    <div class="blog-posts">
+        <!-- Blog Post 1 -->
+        <div class="blog-card">
+            <img src="{% static 'main/img1.png' %}" alt="Ecommerce Trends" class="blog-image">
+            <div class="blog-content">
+                <span class="blog-category">Trends</span>
+                <h3 class="blog-title">Top Ecommerce Trends to Watch in 2023</h3>
+                <p class="blog-excerpt">Discover the emerging trends that are shaping the future of online shopping and how they might affect your business.</p>
+                <div class="blog-meta">
+                    <span>June 15, 2023</span>
+                    <a href="#" class="read-more" onclick="openModal('modal1', event)">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 2 -->
+        <div class="blog-card">
+            <img src="{% static 'main/img2.jpeg' %}" alt="Product Photography" class="blog-image">
+            <div class="blog-content">
+                <span class="blog-category">Marketing</span>
+                <h3 class="blog-title">How to Take Professional Product Photos at Home</h3>
+                <p class="blog-excerpt">Learn simple techniques to showcase your products in the best light without expensive equipment.</p>
+                <div class="blog-meta">
+                    <span>May 28, 2023</span>
+                    <a href="#" class="read-more" onclick="openModal('modal2', event)">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 3 -->
+        <div class="blog-card">
+            <img src="{% static 'main/img3.jpeg' %}" alt="Shopping Tips" class="blog-image">
+            <div class="blog-content">
+                <span class="blog-category">Tips</span>
+                <h3 class="blog-title">10 Smart Online Shopping Tips to Save Money</h3>
+                <p class="blog-excerpt">Maximize your savings with these proven strategies for smarter online purchases.</p>
+                <div class="blog-meta">
+                    <span>May 10, 2023</span>
+                    <a href="#" class="read-more" onclick="openModal('modal3', event)">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 4 -->
+        <div class="blog-card">
+            <img src="{% static 'main/img4.jpeg' %}" alt="SEO Strategies" class="blog-image">
+            <div class="blog-content">
+                <span class="blog-category">SEO</span>
+                <h3 class="blog-title">Ecommerce SEO: How to Rank Higher in Search Results</h3>
+                <p class="blog-excerpt">Essential SEO strategies to help your online store get discovered by more potential customers.</p>
+                <div class="blog-meta">
+                    <span>April 22, 2023</span>
+                    <a href="#" class="read-more" onclick="openModal('modal4', event)">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 5 -->
+        <div class="blog-card">
+            <img src="{% static 'main/img5.png' %}" alt="Mobile Shopping" class="blog-image">
+            <div class="blog-content">
+                <span class="blog-category">Technology</span>
+                <h3 class="blog-title">The Rise of Mobile Shopping: What It Means for Retailers</h3>
+                <p class="blog-excerpt">How the shift to mobile commerce is changing consumer behavior and what businesses need to adapt.</p>
+                <div class="blog-meta">
+                    <span>April 5, 2023</span>
+                    <a href="#" class="read-more" onclick="openModal('modal5', event)">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 6 -->
+        <div class="blog-card">
+            <img src="{% static 'main/img6.jpeg' %}" alt="Social Commerce" class="blog-image">
+            <div class="blog-content">
+                <span class="blog-category">Social Media</span>
+                <h3 class="blog-title">How to Leverage Social Commerce for Your Business</h3>
+                <p class="blog-excerpt">Turn your social media followers into customers with these effective social commerce strategies.</p>
+                <div class="blog-meta">
+                    <span>March 18, 2023</span>
+                    <a href="#" class="read-more" onclick="openModal('modal6', event)">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="pagination">
+        <a href="#" class="page-link"><i class="fas fa-chevron-left"></i></a>
+        <a href="#" class="page-link active">1</a>
+        <a href="#" class="page-link">2</a>
+        <a href="#" class="page-link">3</a>
+        <a href="#" class="page-link"><i class="fas fa-chevron-right"></i></a>
+    </div>
+</div>
+
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('modal1')">
+            <i class="fas fa-times"></i>
+        </button>
+        <img src="{% static 'main/img1.png' %}" alt="Ecommerce Trends" class="modal-image">
+        <div class="modal-header">
+            <span class="blog-category">Trends</span>
+            <h2>Top Ecommerce Trends to Watch in 2023</h2>
+            <div class="modal-meta">
+                <span><i class="far fa-calendar"></i>June 15, 2023</span>
+                <span><i class="far fa-clock"></i>5 min read</span>
+                <span><i class="far fa-user"></i>By John Doe</span>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>The ecommerce landscape is constantly evolving, and staying ahead of the curve is crucial for business success. In this comprehensive guide, we'll explore the most significant trends that are shaping online retail in 2023.</p>
+            
+            <h3>1. AI-Powered Personalization</h3>
+            <p>Artificial Intelligence is revolutionizing how online stores interact with customers. From personalized product recommendations to dynamic pricing strategies, AI is helping businesses create more engaging and profitable shopping experiences.</p>
+            
+            <h3>2. Sustainable Commerce</h3>
+            <p>Consumers are increasingly conscious about environmental impact. Businesses are responding by implementing eco-friendly packaging, sustainable supply chains, and transparent practices that appeal to environmentally conscious shoppers.</p>
+            
+            <h3>3. Social Commerce Integration</h3>
+            <p>The line between social media and ecommerce continues to blur. Platforms like Instagram and TikTok are becoming powerful sales channels, offering seamless shopping experiences directly within social media apps.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Add the remaining modals -->
+<div id="modal2" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('modal2')">
+            <i class="fas fa-times"></i>
+        </button>
+        <img src="{% static 'main/img2.jpeg' %}" alt="Product Photography" class="modal-image">
+        <div class="modal-header">
+            <span class="blog-category">Marketing</span>
+            <h2>How to Take Professional Product Photos at Home</h2>
+            <div class="modal-meta">
+                <span><i class="far fa-calendar"></i>May 28, 2023</span>
+                <span><i class="far fa-clock"></i>4 min read</span>
+                <span><i class="far fa-user"></i>By Sarah Johnson</span>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>Quality product photography can make or break your online store. Learn how to create stunning product images without breaking the bank.</p>
+            
+            <h3>1. Setting Up Your Space</h3>
+            <p>Create a makeshift studio using natural light from windows and a simple white backdrop. A clean, well-lit environment is essential for professional-looking photos.</p>
+            
+            <h3>2. Camera Settings</h3>
+            <p>Even with a smartphone, you can achieve great results. Focus on proper lighting, stable positioning, and using features like portrait mode for detail shots.</p>
+            
+            <h3>3. Post-Processing Tips</h3>
+            <p>Learn basic editing techniques using free tools to enhance your photos. Adjust brightness, contrast, and white balance to make your products shine.</p>
+        </div>
+    </div>
+</div>
+
+<div id="modal3" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('modal3')">
+            <i class="fas fa-times"></i>
+        </button>
+        <img src="{% static 'main/img3.jpeg' %}" alt="Shopping Tips" class="modal-image">
+        <div class="modal-header">
+            <span class="blog-category">Tips</span>
+            <h2>10 Smart Online Shopping Tips to Save Money</h2>
+            <div class="modal-meta">
+                <span><i class="far fa-calendar"></i>May 10, 2023</span>
+                <span><i class="far fa-clock"></i>6 min read</span>
+                <span><i class="far fa-user"></i>By Mike Thompson</span>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>Smart shopping isn't just about finding the lowest price - it's about maximizing value and avoiding common pitfalls.</p>
+            
+            <h3>1. Timing is Everything</h3>
+            <p>Learn the best times to shop online, including seasonal sales, holiday discounts, and lesser-known shopping events that can save you money.</p>
+            
+            <h3>2. Price Tracking Tools</h3>
+            <p>Discover the most effective price comparison tools and browser extensions that can alert you when prices drop on your favorite items.</p>
+            
+            <h3>3. Loyalty Programs Worth Joining</h3>
+            <p>Not all loyalty programs are created equal. We'll show you which ones offer the best value for your shopping habits.</p>
+        </div>
+    </div>
+</div>
+
+<div id="modal4" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('modal4')">
+            <i class="fas fa-times"></i>
+        </button>
+        <img src="{% static 'main/img4.jpeg' %}" alt="SEO Strategies" class="modal-image">
+        <div class="modal-header">
+            <span class="blog-category">SEO</span>
+            <h2>Ecommerce SEO: How to Rank Higher in Search Results</h2>
+            <div class="modal-meta">
+                <span><i class="far fa-calendar"></i>April 22, 2023</span>
+                <span><i class="far fa-clock"></i>7 min read</span>
+                <span><i class="far fa-user"></i>By Alex Chen</span>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>Effective SEO can dramatically increase your store's visibility and drive organic traffic. Here's how to optimize your ecommerce site.</p>
+            
+            <h3>1. Keyword Research</h3>
+            <p>Learn how to identify and target the right keywords for your products, including long-tail keywords that convert better.</p>
+            
+            <h3>2. Product Page Optimization</h3>
+            <p>Discover the essential elements of a well-optimized product page, from titles and descriptions to image alt text and schema markup.</p>
+            
+            <h3>3. Technical SEO</h3>
+            <p>Understand the technical aspects that affect your store's ranking, including site speed, mobile optimization, and URL structure.</p>
+        </div>
+    </div>
+</div>
+
+<div id="modal5" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('modal5')">
+            <i class="fas fa-times"></i>
+        </button>
+        <img src="{% static 'main/img5.png' %}" alt="Mobile Shopping" class="modal-image">
+        <div class="modal-header">
+            <span class="blog-category">Technology</span>
+            <h2>The Rise of Mobile Shopping: What It Means for Retailers</h2>
+            <div class="modal-meta">
+                <span><i class="far fa-calendar"></i>April 5, 2023</span>
+                <span><i class="far fa-clock"></i>5 min read</span>
+                <span><i class="far fa-user"></i>By Emma Davis</span>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>Mobile commerce is no longer the future - it's the present. Learn how to adapt your business to meet mobile shoppers' needs.</p>
+            
+            <h3>1. Mobile-First Design</h3>
+            <p>Understand the principles of mobile-first design and how to create an engaging shopping experience on smaller screens.</p>
+            
+            <h3>2. Mobile Payment Solutions</h3>
+            <p>Explore the latest mobile payment technologies and how to implement them securely in your online store.</p>
+            
+            <h3>3. App vs. Mobile Web</h3>
+            <p>Weigh the pros and cons of developing a dedicated mobile app versus optimizing your mobile website.</p>
+        </div>
+    </div>
+</div>
+
+<div id="modal6" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('modal6')">
+            <i class="fas fa-times"></i>
+        </button>
+        <img src="{% static 'main/img6.jpeg' %}" alt="Social Commerce" class="modal-image">
+        <div class="modal-header">
+            <span class="blog-category">Social Media</span>
+            <h2>How to Leverage Social Commerce for Your Business</h2>
+            <div class="modal-meta">
+                <span><i class="far fa-calendar"></i>March 18, 2023</span>
+                <span><i class="far fa-clock"></i>6 min read</span>
+                <span><i class="far fa-user"></i>By Rachel Kim</span>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>Social commerce is revolutionizing how people discover and buy products. Learn how to tap into this growing trend.</p>
+            
+            <h3>1. Platform Selection</h3>
+            <p>Identify which social media platforms are best suited for your products and target audience, from Instagram Shopping to Pinterest Catalogs.</p>
+            
+            <h3>2. Content Strategy</h3>
+            <p>Create engaging social content that drives sales while building brand awareness and customer loyalty.</p>
+            
+            <h3>3. Influencer Partnerships</h3>
+            <p>Learn how to identify and work with influencers who can authentically promote your products to their followers.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(modalId, event) {
+    event.preventDefault();
+    const modal = document.getElementById(modalId);
+    modal.style.display = 'block';
+    setTimeout(() => modal.classList.add('active'), 10);
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('active');
+    setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }, 300);
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        closeModal(event.target.id);
+    }
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const openModal = document.querySelector('.modal[style="display: block"]');
+        if (openModal) {
+            closeModal(openModal.id);
+        }
+    }
+});
+</script>
+{% endblock %}

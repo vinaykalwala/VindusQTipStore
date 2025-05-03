@@ -1,0 +1,1030 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}Seller Page{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    body {
+margin: 0;
+font-family: 'Segoe UI', sans-serif;
+background-color: #F4F7FA;
+color: #2D2D2D;
+}
+
+.hero-section {
+display: flex;
+align-items: center;
+justify-content: space-around;
+{% comment %} padding: 60px 80px; {% endcomment %}
+background-color: #F4F7FA;
+{% comment %} flex-wrap: wrap; {% endcomment %}
+}
+
+.hero-text {
+max-width: 600px;
+width: 100%;
+padding: 0 20px;
+box-sizing: border-box;
+}
+
+.hero-text h1 {
+font-size: 40px;
+color: #2D2D2D;
+margin-bottom: 20px;
+line-height: 1.2;
+word-wrap: break-word;
+}
+
+.hero-text h1 span {
+color: #FF6B35;
+font-weight: bold;
+}
+
+.hero-text p {
+font-size: 18px;
+margin: 10px 0;
+line-height: 1.5;
+}
+
+.hero-text .badge {
+background-color: #FF6B35;
+color: white;
+font-size: 12px;
+padding: 4px 10px;
+border-radius: 20px;
+margin-right: 10px;
+vertical-align: middle;
+font-weight: bold;
+display: inline-block;
+margin-bottom: 5px;
+}
+
+.hero-text badge {
+color: #4A90E2;
+text-decoration: none;
+font-weight: bold;
+text-decoration: none;
+
+}
+
+.cta-btn {
+margin-top: 20px;
+background-color: #4A90E2;
+color: white;
+padding: 14px 28px;
+border: none;
+border-radius: 8px;
+font-size: 16px;
+cursor: pointer;
+font-weight: bold;
+transition: background-color 0.3s ease;
+display: inline-block;
+}
+
+.cta-btn:hover {
+background-color: #FF6B35;
+}
+
+.hero-image img {
+width: 950px;
+max-width: 100%;
+height: 500px;
+width: auto;
+display: block;
+margin: 0 auto;
+}
+
+.cards {
+padding: 60px 80px;
+background-color: #ffffff;
+}
+
+/* Responsive media queries */
+@media screen and (max-width: 1024px) {
+.hero-text h1 {
+    font-size: 36px;
+    text-align: center;
+}
+.hero-text p {
+    font-size: 17px;
+    text-align: center;
+}
+}
+
+@media screen and (max-width: 768px) {
+.hero-section {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.hero-text h1 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.hero-text p {
+    font-size: 16px;
+}
+
+.hero-image img {
+    width: 90%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.cta-btn {
+    width: 80%; /* Ensure it's not too wide on mobile */
+    padding: 12px 0;
+    margin: 20px auto; /* Center the button */
+}
+}
+
+@media screen and (max-width: 480px) {
+.hero-text h1 {
+    font-size: 28px;
+}
+
+.hero-text p {
+    font-size: 15px;
+}
+
+.cta-btn {
+    width: 80%; /* Full width with margin */
+    padding: 10px 20px;
+    font-size: 14px;
+    margin: 20px auto; /* Center button */
+}
+
+.hero-text .badge {
+    font-size: 11px;
+}
+}
+
+@media screen and (max-width: 320px) {
+.hero-text h1 {
+    font-size: 24px;
+}
+
+.hero-text p {
+    font-size: 14px;
+}
+
+.cta-btn {
+    width: 80%; /* Full width with margin */
+    text-align: center;
+    margin: 20px auto; /* Center button */
+}
+}
+
+.seller-cards {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Slightly larger min size */
+gap: 30px;
+}
+
+@media (max-width: 1024px) {
+.seller-cards {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Slightly reduce size on tablets */
+    gap: 20px;
+}
+}
+
+/* Mobile View (max-width: 768px) */
+@media (max-width: 768px) {
+.seller-cards {
+    grid-template-columns: 1fr; /* One card per row (stack vertically) */
+    gap: 15px; /* Reduce gap between cards */
+}
+}
+.card i {
+font-size: 40px; /* Increase icon size */
+color: #4A90E2;  /* Icon color (blue, similar to the button) */
+margin-bottom: 15px; /* Space between icon and heading */
+display: block;    /* Ensures the icon is centered inside the card */
+margin-left: auto;
+margin-right: auto; /* Centers the icon horizontally */
+transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect only on the icon */
+.card i:hover {
+transform: scale(1.2); 
+color: #FF6B35;  /* Change icon color on hover */
+}
+
+.card {
+background-color: #F4F7FA;
+border-radius: 12px;
+padding: 24px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+transition: transform 0.3s ease;
+height: 280px; /* Fixed height */
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+text-align: center; /* Centers text inside the card */
+}
+
+.card h3 {
+font-size: 20px;
+margin-bottom: 10px;
+color: #2D2D2D;
+}
+
+.card p {
+font-size: 16px;
+margin-bottom: 15px;
+color: #555;
+flex-grow: 1;
+}
+
+.card button {
+background-color: #4A90E2;
+color: white;
+padding: 10px 20px;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+font-weight: bold;
+transition: background-color 0.3s ease;
+}
+
+.card button:hover {
+background-color: #FF6B35 ;
+}
+
+
+/* Responsive Padding for Smaller Screens */
+@media (max-width: 768px) {
+.cards {
+    padding: 40px 20px;
+}
+
+.card {
+    height: auto; /* Let height be flexible on smaller screens */
+}
+}
+
+
+/* Container layout */
+.why-choose-container {
+display: flex;
+flex-direction: column;
+gap: 30px;
+padding: 40px 20px;
+}
+
+/* Left content */
+.why-left {
+text-align: center;
+max-width: 800px;
+margin: 0 auto;
+}
+
+.why-left h2 {
+font-size: 2rem;
+color: #333;
+margin-bottom: 15px;
+}
+
+.why-left p {
+font-size: 1.1rem;
+line-height: 1.6;
+color: #555;
+}
+
+.primary {
+color: #4A90E2;
+font-weight: 600;
+}
+
+.secondary {
+color: #FF6B35;
+font-weight: 600;
+}
+
+.complementary {
+color: #00A86B;
+font-weight: 600;
+}
+
+/* Cards grid */
+.why-cards {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 30px;
+max-width: 1200px;
+margin: 0 auto;
+}
+
+/* Individual card styling */
+.why-card {
+background-color: #fff;
+border-radius: 12px;
+padding: 20px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+text-align: left;
+transition: transform 0.3s ease;
+display: flex;
+gap: 15px;
+}
+
+.why-card:hover {
+transform: translateY(-5px);
+}
+
+.why-card img {
+width: 50px;
+height: 50px;
+object-fit: contain;
+}
+
+.why-card h3 {
+font-size: 1.2rem;
+margin-bottom: 10px;
+color: #4A90E2;
+}
+
+.why-card p,
+.why-card ul {
+font-size: 1rem;
+color: #666;
+margin: 0;
+padding: 0;
+}
+
+.why-card ul {
+list-style: none;
+}
+
+.why-card ul li {
+margin-bottom: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+.why-cards {
+    grid-template-columns: repeat(2, 1fr);
+}
+}
+
+@media (max-width: 600px) {
+.why-cards {
+    grid-template-columns: 1fr;
+}
+
+.why-card {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+.why-card img {
+    margin-bottom: 10px;
+}
+}
+
+
+.qtip-selling-process {
+/* background-color: #ffffff; */
+padding: 40px 20px;
+}
+
+.process-title {
+text-align: center;
+font-size: 2rem;
+margin-bottom: 30px;
+}
+
+.process-steps {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 30px;
+max-width: 1500px;
+margin: 0 auto;
+background-color: #ffffff;
+border-radius: 12px; /* You can adjust this value for more or less rounding */
+padding: 20px; /* Optional: adds spacing inside the rounded edges */
+}
+
+
+.step-box {
+background-color: #ffffff;
+padding: 20px;
+display: flex; /* Flexbox layout */
+align-items: center; /* Vertically center image */
+gap: 20px; /* Space between image and content */
+text-align: left;
+}
+
+.step-image {
+flex-shrink: 0;
+width: 100px;
+height: 100px;
+border-radius: 50%;
+overflow: hidden;
+background-color: #ddd;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.step-image:hover {
+transform: scale(1.2); /* Slight zoom */
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Optional shadow */
+}
+
+.step-image img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+
+}
+.step-content {
+display: flex;
+flex-direction: column; /* Stack title and description */
+}
+
+.step-title {
+font-size: 1.2rem;
+margin-bottom: 10px;
+}
+
+.step-description {
+font-size: 1.0rem;
+color: #555;
+}
+
+/* Responsive view */
+@media (max-width: 768px) {
+.process-steps {
+    grid-template-columns: 1fr; /* Stack into 1 column */
+}
+}
+
+.why {
+padding: 50px 20px;
+background-color: #f8f9fa;
+}
+
+.why-become-seller-container {
+max-width: 1200px;
+margin: 0 auto;
+text-align: center;
+}
+
+.why-heading {
+font-size: 2rem;
+margin-bottom: 40px;
+color: var(--primary-color);
+}
+
+.why-become-seller {
+display: flex;
+grid-template-columns: repeat(3, 1fr);
+gap: 30px;
+flex-wrap: wrap;
+}
+
+.why-seller-card {
+background-color: #ffffff;
+border-radius: 12px;
+padding: 30px 20px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+transition: transform 0.3s ease;
+/* Responsive additions */
+width: 100%;
+max-width: 400px; /* Adjust based on your layout */
+margin: 0 auto;
+box-sizing: border-box;
+}
+
+.why-seller-card:hover {
+transform: translateY(-5px);
+}
+
+.why-seller-card h2 {
+font-size: 1.4rem;
+margin-bottom: 15px;
+color: #4A90E2;
+text-decoration: underline;
+/* Responsive additions */
+word-wrap: break-word;
+}
+
+.why-seller-card p {
+font-size: 1rem;
+color: #666;
+/* Responsive additions */
+line-height: 1.5;
+word-wrap: break-word;
+}
+
+/* Responsive media queries */
+@media screen and (max-width: 768px) {
+.why-seller-card {
+    padding: 25px 15px;
+}
+
+.why-seller-card h2 {
+    font-size: 1.3rem;
+}
+
+.why-seller-card p {
+    font-size: 0.95rem;
+}
+}
+
+@media screen and (max-width: 480px) {
+.why-seller-card {
+    padding: 20px 12px;
+    border-radius: 10px;
+}
+
+.why-seller-card h2 {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+}
+
+.why-seller-card p {
+    font-size: 0.9rem;
+}
+}
+
+@media screen and (max-width: 320px) {
+.why-seller-card {
+    padding: 15px 10px;
+}
+
+.why-seller-card h2 {
+    font-size: 1.1rem;
+}
+
+.why-seller-card p {
+    font-size: 0.85rem;
+}
+}
+
+/* Wrapper container for the section */
+.start-selling-container {
+background-color: #fff; /* White background */
+padding: 30px 0; /* Add some top and bottom padding */
+border-radius: 10px; /* Smooth rounded corners */
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+margin: 50px 0; /* Space between sections */
+width: 100%; /* Occupy full width */
+box-sizing: border-box; /* Ensures padding doesn't affect width */
+text-align: center;
+display: flex;
+justify-content: center;
+align-items: center; /* Vertically and horizontally center content */
+}
+
+/* Styling for the Start Selling section */
+.start-selling {
+display: inline-block;
+margin: 0 auto; /* Center the button within the container */
+}
+
+.start-selling-btn {
+background-color: #4A90E2; /* Custom brand color */
+color: #fff;
+padding: 14px 32px;
+font-size: 1.1rem;
+font-weight: 600;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.start-selling-btn:hover {
+background-color: #FF6B35;
+transform: translateY(-3px);
+}
+
+
+.final-section {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 20px;  /* Reduced gap between image and content */
+padding: 40px;
+background-color: #f9f9f9;
+border-radius: 8px;
+margin-bottom: 20px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+flex-direction: row-reverse;
+}
+
+.final-image {
+flex: 0 0 20%; 
+margin-right: 60px;
+display: flex;
+/* justify-content: flex-end; */
+}
+
+.final-image img {
+width: auto;
+height: 400px;
+object-fit: cover;
+border-radius: 15px;
+}
+
+.final-content {
+flex: 0 0 60%;
+margin-left: 40px; /* No extra margin */
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+
+.final-content h2 {
+font-size: 2rem;
+color: #222;
+margin-bottom: 15px;
+font-weight: 700;
+text-align: left;
+}
+
+.final-content p {
+line-height: 1.6;
+color: #333;
+font-size: 1rem;
+margin-bottom: 20px;
+text-align: left;
+}
+
+.button-wrapper {
+display: flex;
+justify-content: flex-start;
+}
+
+.Reach-us-btn {
+padding: 12px 30px;
+background-color: #4A90E2;
+color: #fff;
+font-size: 16px;
+font-weight: 600;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+transition: background-color 0.3s ease, transform 0.2s ease;
+display: inline-flex;
+align-items: center;
+}
+
+.Reach-us-btn::after {
+content: '→';
+font-size: 1rem;
+margin-left: 10px;
+border: 2px solid white;
+border-radius: 50%;
+padding: 2px 6px;
+transition: transform 0.3s ease;
+}
+
+.Reach-us-btn:hover {
+background-color: #FF6B35;
+transform: translateY(-2px);
+}
+
+.Reach-us-btn:hover::after {
+transform: translateX(5px);
+}
+
+/* Responsive for Tablets and Mobiles */
+@media (max-width: 992px) {
+.final-section {
+flex-direction: column-reverse;
+padding: 30px 20px;
+gap: 15px; /* Reduced gap */
+align-items: center;
+text-align: center;
+}
+
+.final-image {
+flex: none;
+width: 100%;
+justify-content: center;
+margin: 0;
+}
+
+.final-image img {
+max-width: 80%;
+height: auto;
+border-radius: 12px;
+object-fit: contain;
+}
+
+.final-content {
+flex: none;
+width: 90%;
+margin: 0 auto;
+text-align: center;
+word-wrap: break-word;        /* Ensures long words break */
+word-break: break-word;       /* Breaks words if necessary */
+hyphens: auto;                /* Adds hyphenation if supported */
+}
+
+.final-content h2 {
+font-size: 1.5rem;
+}
+
+.final-content p {
+font-size: 1rem;
+word-wrap: break-word;
+word-break: break-word;
+hyphens: auto;
+}
+
+.button-wrapper {
+justify-content: center;
+margin-top: 15px;
+}
+
+.Reach-us-btn {
+font-size: 16px;
+padding: 12px 24px;
+}
+}
+.register-btn {
+    display: inline-block;
+    background-color:  #4A90E2;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+}
+
+.register-btn:hover {
+    background-color: #ff8557;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 107, 53, 0.3);
+}
+
+@media screen and (max-width: 768px) {
+    .register-btn {
+        display: block;
+        text-align: center;
+        width: 80%;
+        margin: 20px auto 0;
+    }
+}
+
+
+</style>
+
+    {% endblock %}
+
+{% block content %}
+
+</head>
+
+<body>
+    <div class="hero-section">
+        <div class="hero-text">
+            <h1>Sell online to 100's of customers</h1>
+            <p>Join QTip as a seller and grow your business across India effortlessly!</p>
+            <p><span class="badge">NEW</span> Don’t have a GSTIN? You can still sell on QTib. <a href="{% if user.is_authenticated %}{% url 'home' %}{% else %}{% url 'sellerpage' %}{% endif %}" >Know more</a></p>
+            <a href="{% url 'register' %}" class="register-btn">Register as Seller</a>
+        </div>
+        <div class="hero-image">
+            <img src="{% static 'images/sellerpagebanner.png' %}" alt="Seller Banner">
+        </div>
+    </div>
+
+    <section class="cards">
+        <div class="seller-cards">
+            <div class="card">
+                <i class="fas fa-user-plus"></i> <!-- Icon for Easy Registration -->
+                <h3>Easy Registration</h3>
+                <p>Start selling in just a few steps without any hassle.Get your products live and start reaching millions of customers instantly.</p>
+                <button>Reach-us</button>
+            </div>
+            <div class="card">
+                <i class="fas fa-users"></i> <!-- Icon for QTipStore customers -->
+                <h3>QTipStore customers</h3>
+                <p>Reach a growing base of QTipStore customers and boost your sales.Expand your business across India with no hidden fees.</p>
+
+                <button>Reach-us</button>
+            </div>
+            <div class="card">
+                <i class="fas fa-credit-card"></i> <!-- Icon for 7* days secure payments -->
+                <h3>7* days secure & regular payments</h3>
+                <p>Receive reliable and timely payments every 7* days, ensuring smooth cash flow for your business.</p>
+                <button>Reach-us</button>
+            </div>
+            <div class="card">
+                <i class="fas fa-dollar-sign"></i> <!-- Icon for Low cost of doing business -->
+                <h3>Low cost of doing business</h3>
+                <p>Minimize overhead costs and grow your business with affordable solutions and expert guidance.</p>
+                <button>Reach-us</button>
+            </div>
+            <div class="card">
+                <i class="fas fa-headset"></i> <!-- Icon for One-click Seller Support -->
+                <h3>One-click Seller Support</h3>
+                <p>Get instant assistance and start selling effortlessly with just one click, anytime you need help.</p>
+                <button>Reach-us</button>
+            </div> 
+            <div class="card">
+                <i class="fas fa-truck"></i> <!-- Icon for Fast Logistics -->
+                <h3>Fast & Reliable Logistics</h3>
+                <p>Benefit from quick pick-up and delivery services across India with our trusted logistics partners.</p>
+                <button>Reach-us</button>
+            </div>
+            <div class="card">
+                <i class="fas fa-bullhorn"></i> <!-- Icon for Marketing Support -->
+                <h3>Powerful Marketing Tools</h3>
+                <p>Promote your products with ads, deals, and seasonal promotions managed by our marketing experts.</p>
+                <button>Reach-us</button>
+            </div>
+            <div class="card">
+                <i class="fas fa-chart-line"></i> <!-- Icon for Business Insights -->
+                <h3>Insights & Analytics</h3>
+                <p>Track your growth with real-time analytics and personalized insights to help you sell smarter and faster.</p>
+                <button>Reach-us</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-qtib">
+        <div class="why-choose-container">
+            <!-- Left Content -->
+            <div class="why-left">
+                <h2>Why Suppliers Love QTip</h2>
+                <p>
+                    All the benefits that come with selling on 
+                    <span class="primary">QTip</span> are designed to help you sell more and grow your business with ease.
+                    <br><br>
+                    With our <span class="secondary">easy onboarding process</span>, 
+                    <span class="complementary">secure payments</span>, and 
+                    <span class="primary">dedicated seller support</span>, we ensure a seamless experience tailored for your success.
+                  </p>
+                  
+            </div>
+
+    
+            <!-- Right Cards -->
+            <div class="why-cards">
+    
+                <div class="why-card">
+                    <img src="{% static 'images/penalty.png' %}" alt="Penalty Icon">
+                    <div>
+                        <h3>0 Penalty Charges</h3>
+                        <p>Sell online worry-free with no charges for late dispatch or cancellations.</p>
+                    </div>
+                </div>
+    
+                <div class="why-card">
+                    <img src="{% static 'images/growth.png' %}" alt="Growth Icon">
+                    <div>
+                        <h3>Growth for Every Supplier</h3>
+                        <p>QTip helps small and large sellers grow—even without a GSTIN.</p>
+                    </div>
+                </div>
+    
+                <div class="why-card">
+                    <img src="{% static 'images/easeofbusiness.png' %}" alt="Ease Icon">
+                    <div>
+                        <h3>Ease of Doing Business</h3>
+                        <ul>
+                            <li>✓ Easy Product Listing</li>
+                            <li>✓ Lowest Cost Shipping</li>
+                            <li>✓ 7-Day Payment Cycle</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="why-card">
+                    <img src="{% static 'images/catalogvisibility.png' %}" alt="Catalog Visibility Icon">
+                    <div>
+                        <h3>Free Catalog Visibility</h3>
+                        <p>Get your products noticed without any additional costs—boost your catalog's visibility for free on QTip.</p>
+                    </div>
+                </div>
+
+                <div class="why-card">
+                    <img src="{% static 'images/ordercancellation.png' %}" alt="No Order Cancellation Fee Icon">
+                    <div>
+                        <h3>No Order Cancellation Fee</h3>
+                        <p>Enjoy the flexibility of cancelling orders without worrying about any extra charges.</p>
+                    </div>
+                </div>
+                
+                <div class="why-card">
+                    <img src="{% static 'images/securepayment.png' %}" alt="Secure Payments Icon">
+                    <div>
+                        <h3>Secure Payments</h3>
+                        <p>QTip ensures secure and timely payments, so you can focus on growing your business with peace of mind.</p>
+                    </div>
+                </div>     
+            </div>
+        </div>
+    </section>
+    
+    <section class="qtip-selling-process">
+        <div class="container">
+            <h1 class="process-title">How to sell on QTip?</h1>
+    
+            <div class="process-steps">
+                <div class="step-box">
+                    <div class="step-image">
+                        <img src="{% static 'images/geminiregistration.jpeg' %}" alt="Step 1">
+                    </div>
+                    <div class="step-content">
+                        <h2 class="step-title">STEP 1: Register your account</h2>
+                        <p class="step-description">Register on QTip with GST/PAN details and an active bank account</p>
+                    </div>
+                </div>
+    
+                <div class="step-box">
+                    <div class="step-image">
+                        <img src="{% static 'images/geminishipping.png' %}" alt="Step 2">
+                    </div>
+                    <div class="step-content">
+                        <h2 class="step-title">STEP 2: Choose storage & shipping</h2>
+                        <p class="step-description">Choose storage, packaging, and delivery options</p>
+                    </div>
+                </div>
+    
+                <div class="step-box">
+                    <div class="step-image">
+                        <img src="{% static 'images/geminiproductslist.png' %}" alt="Step 3">
+                    </div>
+                    <div class="step-content">
+                        <h2 class="step-title">STEP 3: List your products</h2>
+                        <p class="step-description">List your products by providing product and brand details</p>
+                    </div>
+                </div>
+    
+                <div class="step-box">
+                    <div class="step-image">
+                        <img src="{% static 'images/geminipayment.png' %}" alt="Step 4">
+                    </div>
+                    <div class="step-content">
+                        <h2 class="step-title">STEP 4: Complete orders & get paid</h2>
+                        <p class="step-description">Deliver orders to customers on time and get paid within 7 days of delivery</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="why" style="background-image: url('{% static "main/why.png" %}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <div class="why-become-seller-container">
+            <h1 class="why-heading">Why Become a Seller on QTip?</h1>
+    
+            <div class="why-become-seller">
+                <div class="why-seller-card">
+                    <h2>Reach Millions</h2>
+                    <p>Join QTip and showcase your products to a wide customer base across India.</p>
+                </div>
+    
+                <div class="why-seller-card">
+                    <h2>Quick Payments</h2>
+                    <p>Get paid directly to your bank account within 7 days of delivery.</p>
+                </div>
+    
+                <div class="why-seller-card">
+                    <h2>Easy Logistics</h2>
+                    <p>QTip helps you handle storage, packaging, and shipping effortlessly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+     
+    <section class="start-selling-container">
+        <div class="start-selling">
+            <button class="start-selling-btn">Start Selling</button>
+        </div>
+    </section>
+    
+    <section class="final-section">
+        <div class="final-image">
+            <img src="{% static 'images/qtipsAI.webp' %}" alt="final">
+        </div>
+        <div class="final-content">
+            <h2>Grow Your Business With Us</h2>
+            <p>At QTip’s, we empower your business with data-driven insights and in-depth market analysis to help you understand emerging trends and consumer behavior. This knowledge allows you to refine your strategies for sustainable growth. Our next-day dispatch program ensures prompt order processing and fast delivery, significantly improving customer satisfaction. Additionally, our affordable shipping solutions save you money while ensuring swift and reliable product delivery. To further accelerate your growth, we offer powerful, targeted advertising campaigns designed to maximize visibility, boost engagement, and drive higher conversions—helping you scale your business with confidence</p>
+            <br><br>
+            <div class="button-wrapper">
+                <button class="Reach-us-btn">Reach-us</button>
+            </div>
+
+        </div>
+    </section>
+</body>
+</html>
+{% endblock %}

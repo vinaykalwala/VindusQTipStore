@@ -1,0 +1,380 @@
+{% extends "main/index.html" %}
+{% load static %}
+
+{% block title %}Terms & Conditions - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    .terms-container {
+        max-width: 1000px;
+        margin: 4rem auto;
+        padding: 0 2rem;
+    }
+    
+    .terms-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .terms-header h1 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .terms-header h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--secondary-color);
+        border-radius: 2px;
+    }
+    
+    .terms-header p {
+        font-size: 1.1rem;
+        color: var(--text-color);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .terms-content {
+        background: white;
+        border-radius: 12px;
+        padding: 3rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    
+    .terms-section {
+        margin-bottom: 2.5rem;
+    }
+    
+    .terms-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.2rem;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .terms-section h2 i {
+        font-size: 1.3rem;
+        color: var(--secondary-color);
+    }
+    
+    .terms-section p, 
+    .terms-section ul {
+        color: var(--text-color);
+        line-height: 1.7;
+        margin-bottom: 1rem;
+    }
+    
+    .terms-section ul {
+        padding-left: 1.5rem;
+    }
+    
+    .terms-section li {
+        margin-bottom: 0.8rem;
+        position: relative;
+    }
+    
+    .terms-section li::before {
+        content: '•';
+        color: var(--secondary-color);
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+    }
+    
+    .highlight-box {
+        background: #f8f9fa;
+        border-left: 4px solid var(--primary-color);
+        padding: 1.5rem;
+        border-radius: 0 8px 8px 0;
+        margin: 1.5rem 0;
+    }
+    
+    .highlight-box p {
+        margin: 0;
+        font-style: italic;
+        color: #555;
+    }
+    
+    .terms-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+    }
+    
+    .terms-breadcrumb a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    
+    .terms-breadcrumb span {
+        color: #888;
+    }
+    
+    .last-updated {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #888;
+        margin-top: 3rem;
+        font-style: italic;
+    }
+    
+    .acceptance-box {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-top: 2rem;
+        position: sticky;
+        bottom: 20px;
+        background-color: #fff;
+        border: 1px solid #eee;
+    }
+    
+    .acceptance-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-grow: 1;
+    }
+    
+    .checkbox-container input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--primary-color);
+        cursor: pointer;
+    }
+    
+    .checkbox-container label {
+        font-weight: 500;
+        color: var(--text-color);
+        cursor: pointer;
+    }
+    
+    .accept-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.8rem 2rem;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .accept-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    
+    .accept-btn:hover:not(:disabled) {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .terms-header h1 {
+            font-size: 2rem;
+        }
+        
+        .terms-content {
+            padding: 2rem 1.5rem;
+            max-height: 500px;
+        }
+        
+        .terms-section h2 {
+            font-size: 1.3rem;
+        }
+        
+        .acceptance-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .checkbox-container {
+            margin-bottom: 1rem;
+        }
+        
+        .accept-btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="terms-container">
+    <div class="terms-breadcrumb">
+        <a href="{% url 'home' %}">Home</a>
+        <span>/</span>
+        <span>Terms & Conditions</span>
+    </div>
+    
+    <div class="terms-header">
+        <h1>Terms & Conditions</h1>
+        <p>Please read these terms carefully before using our website or purchasing our products</p>
+    </div>
+    
+    <div class="terms-content">
+        <div class="terms-section">
+            <h2><i class="fas fa-file-contract"></i> Introduction</h2>
+            <p>Welcome to QTipStore. These Terms and Conditions govern your use of our website and the purchase of products from us. By accessing or using our website, you agree to be bound by these terms.</p>
+            
+            <div class="highlight-box">
+                <p>If you do not agree with any part of these terms, you must not use our website or purchase our products.</p>
+            </div>
+        </div>
+        
+        <div class="terms-section">
+            <h2><i class="fas fa-shopping-bag"></i> Ordering & Purchases</h2>
+            <ul>
+                <li>All orders are subject to product availability and acceptance by QTipStore.</li>
+                <li>We reserve the right to refuse or cancel any order for any reason at our discretion.</li>
+                <li>Prices are subject to change without notice, but changes will not affect orders already placed.</li>
+                <li>All products are subject to the return policy stated on our website.</li>
+                <li>You agree to provide current, complete, and accurate purchase information for all purchases.</li>
+            </ul>
+        </div>
+        
+        <div class="terms-section">
+            <h2><i class="fas fa-undo"></i> Returns & Refunds</h2>
+            <p>Our return policy forms part of these terms:</p>
+            <ul>
+                <li>Items must be returned within 30 days of receipt.</li>
+                <li>Products must be unused, in original packaging with tags attached.</li>
+                <li>Certain items (e.g., personal care products) may not be returnable for hygiene reasons.</li>
+                <li>Refunds will be issued to the original payment method within 7-10 business days.</li>
+            </ul>
+        </div>
+        
+        <div class="terms-section">
+            <h2><i class="fas fa-lock"></i> Privacy & Data Protection</h2>
+            <p>Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect your personal information.</p>
+            <ul>
+                <li>We collect personal information to process your orders and improve our services.</li>
+                <li>We implement security measures to protect your information.</li>
+                <li>We do not sell your personal information to third parties.</li>
+            </ul>
+        </div>
+        
+        <div class="terms-section">
+            <h2><i class="fas fa-exclamation-triangle"></i> Intellectual Property</h2>
+            <p>All content on this website, including text, graphics, logos, and images, is our property or the property of our licensors and is protected by copyright laws.</p>
+            <ul>
+                <li>You may not reproduce, distribute, or create derivative works without our permission.</li>
+                <li>QTipStore trademarks may not be used without written consent.</li>
+            </ul>
+        </div>
+        
+        <div class="terms-section">
+            <h2><i class="fas fa-ban"></i> Prohibited Uses</h2>
+            <p>You may not use our website:</p>
+            <ul>
+                <li>For any unlawful purpose or to solicit others to perform unlawful acts.</li>
+                <li>To harass, abuse, or harm others.</li>
+                <li>To submit false or misleading information.</li>
+                <li>To upload or transmit viruses or malicious code.</li>
+                <li>To collect or track personal information of others.</li>
+            </ul>
+        </div>
+        
+        <div class="terms-section">
+            <h2><i class="fas fa-gavel"></i> Limitation of Liability</h2>
+            <p>QTipStore shall not be liable for any indirect, incidental, or consequential damages arising from:</p>
+            <ul>
+                <li>Your use or inability to use our website or products.</li>
+                <li>Unauthorized access to or alteration of your transmissions.</li>
+                <li>Any third-party conduct or content on our website.</li>
+            </ul>
+        </div>
+        
+        <div class="terms-section">
+            <h2><i class="fas fa-exchange-alt"></i> Changes to Terms</h2>
+            <p>We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting on the website.</p>
+            <ul>
+                <li>Your continued use of the website after changes constitutes acceptance.</li>
+                <li>We will notify users of significant changes via email or website notice.</li>
+            </ul>
+        </div>
+        
+        <div class="terms-section">
+            <h2><i class="fas fa-balance-scale"></i> Governing Law</h2>
+            <p>These terms shall be governed by and construed in accordance with the laws of [Your Country/State], without regard to its conflict of law provisions.</p>
+        </div>
+        
+        <div class="last-updated">
+            <p>Last updated: {% now "F j, Y" %}</p>
+        </div>
+    </div>
+    
+    <form method="post" action="{% url 'accept_terms' %}" class="acceptance-box">
+        {% csrf_token %}
+        <div class="acceptance-container">
+            <div class="checkbox-container">
+                <input type="checkbox" id="accept-terms" name="accept_terms" required>
+                <label for="accept-terms">I have read and agree to the Terms & Conditions</label>
+            </div>
+            <button type="submit" class="accept-btn" id="accept-button" disabled>Accept & Continue</button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const acceptCheckbox = document.getElementById('accept-terms');
+    const acceptButton = document.getElementById('accept-button');
+    
+    // Enable/disable button based on checkbox
+    acceptCheckbox.addEventListener('change', function() {
+        acceptButton.disabled = !this.checked;
+    });
+    
+    // Scroll to bottom if coming from a page that requires acceptance
+    if (window.location.hash === '#require-acceptance') {
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+    
+    // Store scroll position in session storage when checkbox is clicked
+    acceptCheckbox.addEventListener('click', function() {
+        sessionStorage.setItem('termsScrollPos', window.scrollY);
+    });
+    
+    // Restore scroll position if returning to page
+    const savedScrollPos = sessionStorage.getItem('termsScrollPos');
+    if (savedScrollPos) {
+        window.scrollTo(0, savedScrollPos);
+        sessionStorage.removeItem('termsScrollPos');
+    }
+});
+</script>
+{% endblock %}

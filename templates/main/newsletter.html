@@ -1,0 +1,244 @@
+{% extends "main/index.html" %}
+
+{% block title %}Newsletter Signup | QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    .newsletter-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .newsletter-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .newsletter-header h1 {
+        color: var(--primary-color);
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .newsletter-header p {
+        color: var(--text-color);
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .newsletter-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .form-group input {
+        padding: 0.8rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Fixed select dropdown styling */
+    .form-group select {
+        width: 100%;
+        max-width: 400px;
+        padding: 0.8rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: white;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1rem;
+        padding-right: 2.5rem;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin: 1rem 0;
+    }
+
+    .checkbox-group input {
+        margin-top: 0.2rem;
+        flex-shrink: 0;
+    }
+
+    .checkbox-group label {
+        font-weight: normal;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    .submit-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .submit-btn:hover {
+        background-color: #3a7bc8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+
+    .benefits-list {
+        margin: 2rem 0;
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .benefits-list li {
+        margin-bottom: 0.8rem;
+        color: var(--text-color);
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    .benefits-list li:before {
+        content: "•";
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        position: absolute;
+        left: 0;
+        top: -0.2rem;
+    }
+
+    .success-message {
+        background-color: var(--accent-color);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .newsletter-container {
+            margin: 2rem 1rem;
+            padding: 1.5rem;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .form-group select {
+            padding: 0.7rem 1rem;
+            background-position: right 0.8rem center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="newsletter-container">
+    {% if success %}
+    <div class="success-message">
+        <h2>Thank you for subscribing!</h2>
+        <p>You'll receive our latest updates and offers in your inbox soon.</p>
+    </div>
+    {% endif %}
+
+    <div class="newsletter-header">
+        <h1>Join Our Newsletter</h1>
+        <p>Subscribe to receive updates on new arrivals, special offers, and exclusive deals. Plus, get 10% off your first order!</p>
+    </div>
+
+    <form method="post" class="newsletter-form">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" required>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+      
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">I agree to receive marketing communications from QTipStore. I can unsubscribe at any time by clicking the link in the footer of our emails.</label>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="privacy" name="privacy" required>
+            <label for="privacy">I have read and agree to the <a href="{% url 'privacy-policy' %}" target="_blank">Privacy Policy</a>.</label>
+        </div>
+        
+        <button type="submit" class="submit-btn">Subscribe Now</button>
+    </form>
+    
+    <div class="benefits">
+        <h3>Why subscribe?</h3>
+        <ul class="benefits-list">
+            <li>Exclusive access to sales and promotions</li>
+            <li>First look at new arrivals</li>
+            <li>Style tips and fashion inspiration</li>
+            <li>Special discounts for subscribers only</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

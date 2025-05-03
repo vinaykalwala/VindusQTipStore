@@ -1,0 +1,941 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}Bulk Orders & B2B Solutions - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    
+}
+
+/* For body */
+body {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 65vh; /* Adjust height as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    overflow: hidden;
+    margin-top: 0; /* Remove any top margin */
+    padding: 0; /* Ensure no padding inside the hero */
+}
+
+/* Hero image styling */
+.hero-image,
+.hero-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* Hero content */
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 20px; /* Adjust padding inside content */
+}
+
+.hero-content h1 {
+    font-size: 3rem; /* Adjust font size for the main heading */
+    margin-bottom: 10px;
+}
+
+.hero-content p {
+    font-size: 1.5rem; /* Adjust font size for the paragraph */
+    margin-bottom: 10px;
+}
+
+.hero-content .cta-button {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* Remove any margin from .banner-carousel if it affects spacing */
+.banner-carousel {
+    position: relative;
+    width: 100%;
+    margin: 0; /* Ensure no margin is applied to the carousel */
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+/* Carousel container */
+.carousel-container {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 100%;
+}
+
+/* Carousel slides */
+.carousel-slide {
+    min-width: 100%;
+    position: relative;
+}
+
+/* Carousel arrows */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.3);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.carousel-prev {
+    left: 20px;
+}
+
+.carousel-next {
+    right: 20px;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5rem; /* Adjust font size on mobile */
+    }
+
+    .hero-content p {
+        font-size: 1.2rem; /* Adjust font size on mobile */
+    }
+
+    .hero-content .cta-button {
+        font-size: 1rem; /* Adjust button size on mobile */
+    }
+
+    .b2b-hero h1 {
+        font-size: 2.2rem;
+    }
+
+    .b2b-hero p {
+        font-size: 1.1rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .category-card {
+        height: 250px;
+    }
+}
+
+.sale-section-categeory{
+    padding: 20px;
+}
+
+.sale-section-categeory p{
+    text-align: center;
+}
+.sale-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 cards per row */
+    gap: 2rem;
+    margin: 4rem 0;
+}
+
+/* Sale Category Cards */
+.sale-category-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    height: 320px; /* Adjust the height */
+}
+
+.sale-category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.sale-category-image {
+    width: 100%;
+    /* height: 100%; */
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.sale-category-card:hover .sale-category-image {
+    transform: scale(1.05);
+}
+
+.sale-category-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    padding: 1.5rem;
+    color: white;
+}
+
+.sale-category-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Ensure layout remains the same on 1440px screen */
+@media (max-width: 1440px) {
+    /* For larger screens (1440px and below) */
+    .benefits-grid {
+        grid-template-columns: repeat(5, 1fr); /* 5 cards per row for benefits */
+    }
+
+    .sale-categories-grid {
+        grid-template-columns: repeat(6, 1fr); /* 6 cards per row for sale categories */
+    }
+
+    .sale-category-card {
+        height: 320px; /* Ensure consistent height */
+    }
+}
+
+@media (max-width: 768px) {
+    /* For mobile devices */
+    .benefits-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+    }
+
+    .sale-categories-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+    }
+
+    .sale-category-card {
+        height: 250px; /* Adjust for mobile screens */
+    }
+}
+
+
+.b2b-container2{
+    padding: 30px;
+}
+    .section-title {
+        color: var(--primary-color);
+        text-align: center;
+        font-size: 2rem;
+        position: relative;
+        padding: 20px;
+    }
+
+    .section-categeory{
+        padding: 10px;
+    }
+
+    .section-categeory p{
+        text-align: center;
+    }
+    
+    .why-order{
+        padding: 20px;
+    }
+    .why-order p{
+        text-align: center;
+    }
+    .section-title:after {
+        content: '';
+        display: block;
+        width: 80px;
+        height: 4px;
+        background: var(--secondary-color);
+        margin: 1rem auto 0;
+    }
+    
+    /* Benefits Grid */
+    /* Benefits Grid */
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 cards per row */
+    gap: 2rem;
+    margin: 3rem 0;
+}
+
+/* Benefit Cards */
+.benefit-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+    text-align: center;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.benefit-icon {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+/* Product Categories Grid */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 cards per row */
+    gap: 2rem;
+    margin: 4rem 0;
+}
+
+/* Category Cards */
+.category-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    height: 320px; /* Adjust the height */
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.category-image {
+    width: 100%;
+    /* height: 100%; */
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.category-card:hover .category-image {
+    transform: scale(1.05);
+}
+
+.category-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    padding: 1.5rem;
+    color: white;
+}
+
+.category-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Ensure layout remains the same on 1440px screen */
+@media (max-width: 1440px) {
+    /* For larger screens (1440px and below) */
+    .benefits-grid {
+        grid-template-columns: repeat(5, 1fr); /* 5 cards per row for benefits */
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(6, 1fr); /* 6 cards per row for categories */
+    }
+
+    .category-card {
+        height: 320px; /* Ensure consistent height */
+    }
+}
+
+@media (max-width: 768px) {
+    /* For mobile devices */
+    .benefits-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid on smaller screens */
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid on smaller screens */
+    }
+
+    .category-card {
+        height: 250px; /* Adjust for mobile screens */
+    }
+}
+
+    
+    /* Client Types Section */
+    .client-types {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 3rem 0;
+    }
+    
+    .client-type {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+    
+    .client-icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        background: var(--background-color);
+        padding: 2rem 2rem;
+        text-align: center;
+        border-radius: 8px;
+        /* margin: 4rem 0; */
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-title {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .cta-content {
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .cta-button {
+        padding: 0.8rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .primary-btn {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .primary-btn:hover {
+        background: #3a7bc8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+    
+    .secondary-btn {
+        background: white;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+    
+    .secondary-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .b2b-hero h1 {
+            font-size: 2.2rem;
+        }
+        
+        .b2b-hero p {
+            font-size: 1.1rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+        }
+        
+        .category-card {
+            height: 250px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="b2b-container">
+    <!-- Banner Carousel Section -->
+    <div class="banner-carousel">
+        <div class="carousel-container" id="carousel">
+            <!-- Slide 1 -->
+            <div class="carousel-slide hero">
+                <div class="hero-image">
+                    <img src="{% static 'images/banner.jpg' %}" alt="Featured Suppliers">
+                </div>
+                <div class="hero-content">
+                    <h1>Featured Suppliers LIVE</h1>
+                    <p>Join to discover new and trending products</p>
+                    <a href="#" class="cta-button primary-btn">View More</a>
+                </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="carousel-slide hero">
+                <div class="hero-image">
+                    <img src="{% static 'images/qtipb2bbanner2.jpeg' %}" alt="Bulk Order Discounts">
+                </div>
+                <div class="hero-content">
+                    <h1>Special Bulk Discounts</h1>
+                    <p>Save up to 40% on large quantity orders</p>
+                    <a href="#" class="cta-button primary-btn">Get Quote</a>
+                </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-slide hero">
+                <div class="hero-image">
+                    <img src="{% static 'images/qtipb2bbanner3.jpeg' %}" alt="Custom Branding">
+                </div>
+                <div class="hero-content">
+                    <h1>Custom Branding Solutions</h1>
+                    <p>Personalize products with your logo and design</p>
+                    <a href="#" class="cta-button primary-btn">Learn More</a>
+                </div>
+            </div>
+            <!-- Slide 4 -->
+            <div class="carousel-slide hero">
+                <div class="hero-image">
+                    <img src="{% static 'images/qtipsb2bbanner4.png' %}" alt="Custom Branding">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Arrows -->
+        <button class="carousel-arrow carousel-prev">❮</button>
+        <button class="carousel-arrow carousel-next">❯</button>
+    </div>
+</div>
+
+<section class="sale-section-categeory">
+    <h2 class="section-title">Product Categories Available for Sale</h2>
+    <p>Discover a wide range of exciting categories available for direct purchase</p>
+
+    <div class="sale-categories-grid">
+            <div class="sale-category-card">
+            <img src="{% static 'images/qtipstoysale.jpeg' %}" alt="Toys & Games" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Toys & Games</h3>
+                <p>Fun and educational toys for all ages</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipsmenswearsale.jpeg' %}" alt="Men's Fashion" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Men's Fashion</h3>
+                <p>Stylish wear for work, play, and fitness</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipswomenswearsale.jpeg' %}" alt="Women's Fashion" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Women's Fashion</h3>
+                <p>Chic outfits for every occasion</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipsfootwearsale.jpeg' %}" alt="Footwear" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Footwear</h3>
+                <p>Trendy shoes, sandals, and sneakers</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipselectrnoicssale.jpeg' %}" alt="Electronics" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Electronics</h3>
+                <p>Smart devices and home tech essentials</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipsmensgrooming.jpeg' %}" alt="Beauty & Personal Care" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Men's Grooming</h3>
+                <p>Top skincare, haircare, and cosmetics</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipsfurnituresale.jpeg' %}" alt="Home Decor" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Home Decor</h3>
+                <p>Elegant furnishings and accessories</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipskitchensale.jpeg' %}" alt="Kitchenware" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Kitchenware</h3>
+                <p>Essential cookware and utensils</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipsgamingsale.jpeg' %}" alt="Kids' Fashion" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Gaming</h3>
+                <p>Gaming consoles,mouse,keyboards,gamepads</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipssportssale.jpeg' %}" alt="Sports & Outdoors" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Sports & Outdoors</h3>
+                <p>Gear up for adventure and fitness</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipstoolssale.jpeg' %}" alt="Gift Collections" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">Tools&Utility</h3>
+                <p>Curated festive, corporate, and personal gifts</p>
+            </div>
+        </div>
+
+        <div class="sale-category-card">
+            <img src="{% static 'images/qtipsbooksale.jpeg' %}" alt="Green Products" class="sale-category-image">
+            <div class="sale-category-overlay">
+                <h3 class="sale-category-title">stationery&office-supplies</h3>
+                <p>pens,noteboks,calculators for everyday living</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
+<section class="b2b-container2">
+    <section>
+        <h2 class="section-title">Who Can Benefit?</h2>
+        <!-- <p>Our B2B services are ideal for a wide range of sectors and business needs:</p> -->
+        
+        <div class="client-types">
+            <div class="client-type">
+                <div class="client-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h3>Retailers & Resellers</h3>
+                <p>Fast-moving, in-demand products for your shelves</p>
+            </div>
+            <div class="client-type">
+                <div class="client-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3>Event Planners</h3>
+                <p>Large quantities for weddings, conferences, and more</p>
+            </div>
+            <div class="client-type">
+                <div class="client-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3>Corporate Gifting</h3>
+                <p>Employee recognition and client appreciation</p>
+            </div>
+            <div class="client-type">
+                <div class="client-icon">
+                    <i class="fas fa-school"></i>
+                </div>
+                <h3>Educational Institutions</h3>
+                <p>Bulk supply for schools and university events</p>
+            </div>
+        </div>
+    </section>
+</section>
+
+    <section class="section-categeory">
+        <h2 class="section-title">Product Categories Available for Bulk</h2>
+        <p>We offer bulk order capabilities across all major categories in our catalog</p>
+        
+        <div class="categories-grid">
+            <div class="category-card">
+                <img src="{% static 'images/gift.jpg' %}" alt="Gifting Items" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Gifting Items</h3>
+                    <p>Festive, seasonal, and personalized sets</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="{% static 'images/ecofriendly.jpg' %}" alt="Eco-Friendly Products" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Eco-Friendly Products</h3>
+                    <p>Sustainable bags, bottles, and stationery</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="{% static 'images/household.jpg' %}" alt="Kitchen & Home Essentials" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Home Essentials</h3>
+                    <p>Popular household products for daily use</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="{% static 'images/menswear.jpg' %}" alt="Office Supplies" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Men's Wear</h3>
+                    <p>shirts,T-shirts,Trousers,office-wear</p>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <img src="{% static 'images/qtipswomenswear.jpeg' %}" alt="Office Supplies" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Women's Wear</h3>
+                    <p>lehangas,sports-wear,Traditionals</p>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <img src="{% static 'images/qtipbags.jpeg' %}" alt="Bags & Accessories" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Bags</h3>
+                    <p>Laptop bags, totes, and travel kits</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="{% static 'images/qtipstshirts.jpeg' %}" alt="Customized Apparel" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Custom Apparel</h3>
+                    <p>T-shirts, caps with your brand logo</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <img src="{% static 'images/qtipsmenaccesories.jpeg' %}" alt="Customized Apparel" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Men-Accesories</h3>
+                    <p>caps,coolingglasses,rings</p>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <img src="{% static 'images/qtipswomenaccesories.jpeg' %}" alt="Customized Apparel" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Women-Accesories</h3>
+                    <p>caps,coolingglasses,rings</p>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <img src="{% static 'images/qtipscooking.jpeg' %}" alt="Customized Apparel" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Cooking-Essentials</h3>
+                    <p>Pans,Knives,Jars Etc</p>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <img src="{% static 'images/qtipskidswear.jpeg' %}" alt="Customized Apparel" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Kids-Wear</h3>
+                    <p>skirts,kurtas</p>
+                </div>
+            </div>
+
+            <div class="category-card">
+                <img src="{% static 'images/qtipselectronics.jpeg' %}" alt="Customized Apparel" class="category-image">
+                <div class="category-overlay">
+                    <h3 class="category-title">Electronics</h3>
+                    <p>Laptops,T.V,Mobiles,A.C E.T.C</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-order">
+        <h2 class="section-title">Why Order in Bulk with QTip?</h2>
+        <p>
+            We go beyond just fulfilling large orders — we offer an elevated B2B experience
+        </p>
+        
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h3>Bulk Pricing</h3>
+                <p>Significant savings with our tiered discount structure</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <h3>Custom Packaging</h3>
+                <p>White-labeling and branded packaging options</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <h3>End-to-End Fulfillment</h3>
+                <p>Comprehensive packing and delivery solutions</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Priority Processing</h3>
+                <p>Dedicated handling for business orders</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3>Account Manager</h3>
+                <p>Personalized support for your business</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <h3>Flexible Reordering</h3>
+                <p>Subscription plans and automated replenishment</p>
+            </div>
+    
+            <!-- New 4 cards below -->
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-cubes"></i>
+                </div>
+                <h3>Wide Product Range</h3>
+                <p>Access to thousands of SKUs tailored for every business need</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3>24/7 Support</h3>
+                <p>Round-the-clock assistance for urgent business needs</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Secure Transactions</h3>
+                <p>Safe and encrypted payments to protect your data</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Order Analytics</h3>
+                <p>Insights into your purchase history and trends</p>
+            </div>
+        </div>
+    </section>
+    
+
+    <section class="cta-section" id="contact">
+        <h2 class="cta-title">Ready to Streamline Your Business Purchasing?</h2>
+        <div class="cta-content">
+            <p>From corporate onboarding kits to large-scale event merchandise, we've worked with businesses of all sizes to deliver quality products on time and on brand.</p>
+            <p><strong>Minimum Order Quantity:</strong> 25 units (may vary by product)<br>
+            <strong>Lead Time:</strong> 5-10 business days (depending on customization)</p>
+        </div>
+        <div class="cta-buttons">
+            <a href="mailto:bulk@qtipstore.com" class="cta-button primary-btn">
+                <i class="fas fa-envelope"></i> Email Our Team
+            </a>
+            <a href="tel:+18005551234" class="cta-button secondary-btn">
+                <i class="fas fa-phone"></i> Call Us Now
+            </a>
+        </div>
+    </section>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const carousel = document.getElementById('carousel');
+        const prevBtn = document.querySelector('.carousel-prev');
+        const nextBtn = document.querySelector('.carousel-next');
+        const slides = document.querySelectorAll('.carousel-slide');
+        let currentIndex = 0;
+        const slideCount = slides.length;
+        let autoSlideInterval;
+
+        function updateCarousel() {
+            carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slideCount;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+            updateCarousel();
+        }
+
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+
+        // Optional: Auto-rotate every 5 seconds
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+        }
+        startAutoSlide();
+
+        // Pause on hover
+        document.querySelector('.banner-carousel').addEventListener('mouseenter', () => {
+            clearInterval(autoSlideInterval);
+        });
+
+        document.querySelector('.banner-carousel').addEventListener('mouseleave', () => {
+            startAutoSlide();
+        });
+    });
+</script>
+{% endblock %}

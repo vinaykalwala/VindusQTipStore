@@ -1,0 +1,1019 @@
+{% extends "main/index.html" %}
+
+{% block title %}Product Care & Size Guide - QTipStore{% endblock %}
+{% load static %}
+{% block extra_head %}
+<style>
+    /* Product Care & Size Guide Styles */
+    .guide-container {
+        max-width: 1200px;
+        margin: 4rem auto;
+        padding: 0 2rem;
+    }
+    
+    .guide-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .guide-header h1 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .guide-header p {
+        font-size: 1.1rem;
+        color: var(--text-color);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .guide-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+    }
+    
+    .guide-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 0.5rem;
+    }
+    
+    .size-guide {
+        width: 100%;
+        overflow-x: auto;
+        margin-bottom: 2rem;
+    }
+    
+    .size-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+    }
+    
+    .size-table th, .size-table td {
+        padding: 1rem;
+        text-align: center;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .size-table th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 500;
+    }
+    
+    .size-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    .measurement-guide {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .measurement-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1.5rem;
+        background: #f9f9f9;
+        border-radius: 8px;
+    }
+    
+    .measurement-icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .care-instructions {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .care-item {
+        padding: 1.5rem;
+        background: #f9f9f9;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .care-item h3 {
+        color: var(--primary-color);
+        margin-bottom: 0.8rem;
+    }
+    
+    .care-item ul {
+        padding-left: 1.2rem;
+        margin: 0;
+    }
+    
+    .care-item li {
+        margin-bottom: 0.5rem;
+        line-height: 1.5;
+    }
+    
+    .general-tips {
+        background: #f0f7ff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-top: 2rem;
+    }
+    
+    .general-tips h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    /* Enhanced Size Chart Styles */
+    .size-chart-container {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .size-tabs {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 1rem;
+    }
+
+    .size-tab {
+        padding: 0.8rem 1.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        background-color: #f2f2f2;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    .size-tab.active {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .size-content {
+        display: none;
+    }
+
+    .size-content.active {
+        display: block;
+    }
+
+    .enhanced-size-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .enhanced-size-table th,
+.enhanced-size-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+
+    .enhanced-size-table th {
+        background: var(--primary-color);
+        color: white;
+        padding: 1.2rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+
+    .enhanced-size-table td {
+        padding: 1.2rem;
+        border-bottom: 1px solid #eee;
+        transition: background 0.3s ease;
+    }
+
+    .enhanced-size-table tr:hover td {
+        background: #f5f9ff;
+    }
+
+    .size-visual {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        margin-top: 2rem;
+        padding: 2rem;
+        background: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .size-image {
+        flex: 1;
+        text-align: center;
+    }
+
+    .size-image img {
+        max-width: 300px;
+        height: auto;
+    }
+
+    .size-tips {
+        flex: 1;
+    }
+
+    .size-tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .tip-icon {
+        width: 24px;
+        height: 24px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .product-care-banner {
+        width: 100%;
+        max-width: 1200px;
+        height: auto;
+        max-height: 250px;
+        margin: 20px auto;
+        display: block;
+        object-fit: cover;
+    }
+    
+    @media (max-width: 768px) {
+        .guide-header h1 {
+            font-size: 2rem;
+        }
+        
+        .measurement-guide, .care-instructions {
+            grid-template-columns: 1fr;
+        }
+        
+        .size-visual {
+            flex-direction: column;
+        }
+        
+        .size-tabs {
+            flex-wrap: wrap;
+        }
+        .product-care-banner {
+            max-height: 200px;
+        }
+    }
+    @media screen and (max-width: 480px) {
+        .product-care-banner {
+            max-height: 150px;
+        }
+    }
+    @media (max-width: 768px) {
+        .size-tabs {
+          flex-direction: column;
+        }
+      
+        .size-tab {
+          font-size: 0.95rem;
+        }
+      
+        .enhanced-size-table th,
+        .enhanced-size-table td {
+          font-size: 0.9rem;
+          padding: 6px;
+        }
+      }
+      
+      /* For mobile phones (480px and smaller) */
+      @media (max-width: 480px) {
+        .size-tab {
+          font-size: 0.85rem;
+          padding: 8px;
+        }
+      
+        .enhanced-size-table {
+          font-size: 0.8rem;
+        }
+      
+        .enhanced-size-table th,
+        .enhanced-size-table td {
+          padding: 4px;
+        }
+      
+        /* Optional: Make table scrollable on small screens */
+        .enhanced-size-table {
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+      }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="guide-container">
+    <div class="guide-header">
+        <h1>Take Care of Your Style</h1>
+        <p>Product Care & Size Guide to help you find the perfect fit and keep your items looking their best.</p>
+    </div>
+    
+    <div class="guide-section">
+        <h2>Size Guide</h2>
+        <p>Find your perfect fit with our comprehensive size guide.</p>
+        
+        <div class="size-chart-container">
+            <div class="size-tabs">
+                <div class="size-tab active" onclick="showSizeChart('womens')">Women's Sizes</div>
+                <div class="size-tab" onclick="showSizeChart('mens')">Men's Sizes</div>
+                <div class="size-tab" onclick="showSizeChart('kids')">Kids' Sizes</div>
+                <div class="size-tab" onclick="showSizeChart('womens-shoe')">Women's Shoe Sizes</div>
+                <div class="size-tab" onclick="showSizeChart('mens-shoe')">Men's Shoe Sizes</div>
+                <div class="size-tab" onclick="showSizeChart('kids-shoe')">Kids' Shoe Sizes</div>                
+            </div>
+
+            <div id="womens-sizes" class="size-content active">
+                <table class="enhanced-size-table">
+                    <thead>
+                        <tr>
+                            <th>US Size</th>
+                            <th>Bust (in)</th>
+                            <th>Waist (in)</th>
+                            <th>Hips (in)</th>
+                            <th>EU Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>XS (0-2)</td>
+                            <td>31-33</td>
+                            <td>23-25</td>
+                            <td>33-35</td>
+                            <td>32-34</td>
+                        </tr>
+                        <tr>
+                            <td>S (4-6)</td>
+                            <td>34-36</td>
+                            <td>26-28</td>
+                            <td>36-38</td>
+                            <td>36-38</td>
+                        </tr>
+                        <tr>
+                            <td>M (8-10)</td>
+                            <td>37-39</td>
+                            <td>29-31</td>
+                            <td>39-41</td>
+                            <td>40-42</td>
+                        </tr>
+                        <tr>
+                            <td>L (12-14)</td>
+                            <td>40-42</td>
+                            <td>32-34</td>
+                            <td>42-44</td>
+                            <td>44-46</td>
+                        </tr>
+                        <tr>
+                            <td>XL (16-18)</td>
+                            <td>43-45</td>
+                            <td>35-37</td>
+                            <td>45-47</td>
+                            <td>48-50</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="mens-sizes" class="size-content">
+                <table class="enhanced-size-table">
+                    <thead>
+                        <tr>
+                            <th>US Size</th>
+                            <th>Chest (in)</th>
+                            <th>Waist (in)</th>
+                            <th>Hips (in)</th>
+                            <th>EU Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>S</td>
+                            <td>34-36</td>
+                            <td>28-30</td>
+                            <td>35-37</td>
+                            <td>46-48</td>
+                        </tr>
+                        <tr>
+                            <td>M</td>
+                            <td>37-39</td>
+                            <td>31-33</td>
+                            <td>38-40</td>
+                            <td>50-52</td>
+                        </tr>
+                        <tr>
+                            <td>L</td>
+                            <td>40-42</td>
+                            <td>34-36</td>
+                            <td>41-43</td>
+                            <td>54-56</td>
+                        </tr>
+                        <tr>
+                            <td>XL</td>
+                            <td>43-45</td>
+                            <td>37-39</td>
+                            <td>44-46</td>
+                            <td>58-60</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="kids-sizes" class="size-content">
+                <table class="enhanced-size-table">
+                    <thead>
+                        <tr>
+                            <th>Age</th>
+                            <th>Height (in)</th>
+                            <th>Chest (in)</th>
+                            <th>Waist (in)</th>
+                            <th>EU Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2-3Y</td>
+                            <td>32-36</td>
+                            <td>21-22</td>
+                            <td>20-21</td>
+                            <td>92-98</td>
+                        </tr>
+                        <tr>
+                            <td>4-5Y</td>
+                            <td>37-41</td>
+                            <td>22-23</td>
+                            <td>21-22</td>
+                            <td>104-110</td>
+                        </tr>
+                        <tr>
+                            <td>6-7Y</td>
+                            <td>42-46</td>
+                            <td>24-25</td>
+                            <td>22-23</td>
+                            <td>116-122</td>
+                        </tr>
+                        <tr>
+                            <td>8-9Y</td>
+                            <td>47-51</td>
+                            <td>26-27</td>
+                            <td>23-24</td>
+                            <td>128-134</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="womens-shoe-sizes" class="size-content">
+                <table class="enhanced-size-table">
+                    <thead>
+                        <tr>
+                            <th>US Size</th>
+                            <th>Foot Length (in)</th>
+                            <th>Foot Length (cm)</th>
+                            <th>EU Size</th>
+                            <th>UK Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>5</td>
+                            <td>8.5</td>
+                            <td>21.6</td>
+                            <td>35-36</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>8.875</td>
+                            <td>22.5</td>
+                            <td>36-37</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>9.25</td>
+                            <td>23.5</td>
+                            <td>37-38</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>9.5</td>
+                            <td>24.1</td>
+                            <td>38-39</td>
+                            <td>6</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>9.875</td>
+                            <td>25.1</td>
+                            <td>39-40</td>
+                            <td>7</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>10.1875</td>
+                            <td>25.9</td>
+                            <td>40-41</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>10.5</td>
+                            <td>26.7</td>
+                            <td>41-42</td>
+                            <td>9</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="mens-shoe-sizes" class="size-content">
+                <table class="enhanced-size-table">
+                    <thead>
+                        <tr>
+                            <th>US Size</th>
+                            <th>Foot Length (in)</th>
+                            <th>Foot Length (cm)</th>
+                            <th>EU Size</th>
+                            <th>UK Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>6</td>
+                            <td>9.25</td>
+                            <td>23.5</td>
+                            <td>39</td>
+                            <td>5.5</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>9.625</td>
+                            <td>24.4</td>
+                            <td>40</td>
+                            <td>6.5</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>9.9375</td>
+                            <td>25.4</td>
+                            <td>41</td>
+                            <td>7.5</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>10.25</td>
+                            <td>26.0</td>
+                            <td>42</td>
+                            <td>8.5</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>10.5625</td>
+                            <td>27.0</td>
+                            <td>43</td>
+                            <td>9.5</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>10.9375</td>
+                            <td>27.9</td>
+                            <td>44</td>
+                            <td>10.5</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>11.25</td>
+                            <td>28.6</td>
+                            <td>45</td>
+                            <td>11.5</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="kids-shoe-sizes" class="size-content">
+                <table class="enhanced-size-table">
+                    <thead>
+                        <tr>
+                            <th>Age</th>
+                            <th>US Size</th>
+                            <th>Foot Length (in)</th>
+                            <th>Foot Length (cm)</th>
+                            <th>EU Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1-2Y</td>
+                            <td>5</td>
+                            <td>4.75</td>
+                            <td>12.1</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>2-3Y</td>
+                            <td>6-7</td>
+                            <td>5.125 - 5.5</td>
+                            <td>13 - 14</td>
+                            <td>22-23</td>
+                        </tr>
+                        <tr>
+                            <td>4-5Y</td>
+                            <td>8-9</td>
+                            <td>5.75 - 6.125</td>
+                            <td>14.6 - 15.6</td>
+                            <td>24-25</td>
+                        </tr>
+                        <tr>
+                            <td>6-7Y</td>
+                            <td>10-11</td>
+                            <td>6.5 - 6.75</td>
+                            <td>16.5 - 17.1</td>
+                            <td>27-28</td>
+                        </tr>
+                        <tr>
+                            <td>8-9Y</td>
+                            <td>12-13</td>
+                            <td>7.125 - 7.5</td>
+                            <td>18 - 19.1</td>
+                            <td>30-31</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            
+            
+
+            <div class="size-visual">
+                <div class="size-image">
+                    <img src="{% static 'main/measure.jpeg' %}" alt="How to measure">
+                </div>
+                <div class="size-tips">
+                    <h3>Measurement Tips</h3>
+                    <div class="size-tip-item">
+                        <div class="tip-icon">1</div>
+                        <p>Use a soft measuring tape for accurate measurements</p>
+                    </div>
+                    <div class="size-tip-item">
+                        <div class="tip-icon">2</div>
+                        <p>Measure over undergarments, not over clothes</p>
+                    </div>
+                    <div class="size-tip-item">
+                        <div class="tip-icon">3</div>
+                        <p>Keep the tape snug but not tight</p>
+                    </div>
+                    <div class="size-tip-item">
+                        <div class="tip-icon">4</div>
+                        <p>Stand straight and relaxed while measuring</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="guide-section">
+        <h2>Product Care</h2>
+        <p>Follow these care instructions to extend the life of your items.</p>
+        <img src="{% static 'main/3.jpg' %}" alt="Product Care Tips" class="product-care-banner">
+        <div class="care-instructions">
+            <div class="care-item">
+                <h3>Cotton</h3>
+                <ul>
+                    <li>Machine wash cold</li>
+                    <li>Tumble dry low</li>
+                    <li>Iron on medium heat if needed</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Silk</h3>
+                <ul>
+                    <li>Hand wash or dry clean only</li>
+                    <li>Use mild detergent</li>
+                    <li>Lay flat to dry</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Leather</h3>
+                <ul>
+                    <li>Wipe with a damp cloth</li>
+                    <li>Avoid water exposure</li>
+                    <li>Use leather conditioner periodically</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Denim</h3>
+                <ul>
+                    <li>Wash inside out with like colors</li>
+                    <li>Air dry for best results</li>
+                    <li>Wash less frequently to maintain color</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Wool</h3>
+                <ul>
+                    <li>Hand wash in cold water</li>
+                    <li>Use a wool-friendly detergent</li>
+                    <li>Lay flat to dry to prevent stretching</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Synthetic Fabrics</h3>
+                <ul>
+                    <li>Machine wash warm or cold</li>
+                    <li>Avoid high heat when drying</li>
+                    <li>Use fabric softener to reduce static</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="general-tips">
+            <h3>General Care Tips</h3>
+            <ul>
+                <li>Always check the care label on each product</li>
+                <li>Avoid harsh detergents and bleach</li>
+                <li>Store items in cool, dry places</li>
+                <li>Fold knitwear to maintain shape</li>
+                <li>Use padded hangers for delicate items</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="guide-section">
+        <h2>Makeup Products Care</h2>
+        <p>Proper storage and usage guidelines for your cosmetics.</p>
+        <img src="{% static 'main/4.jpg' %}" alt="Product Care Tips" class="product-care-banner">
+        <div class="care-instructions">
+            <div class="care-item">
+                <h3>Foundation & Concealer</h3>
+                <ul>
+                    <li>Use: 1-2 pumps for full face coverage</li>
+                    <li>Store in cool, dry place away from sunlight</li>
+                    <li>Replace every 12-18 months</li>
+                    <li>Clean applicators weekly</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Lipsticks & Glosses</h3>
+                <ul>
+                    <li>Use: Single swipe per application</li>
+                    <li>Store upright in original packaging</li>
+                    <li>Replace every 12-24 months</li>
+                    <li>Avoid extreme temperatures</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Eye Products</h3>
+                <ul>
+                    <li>Mascara: Replace every 3 months</li>
+                    <li>Eyeshadow: Clean brushes monthly</li>
+                    <li>Never share eye products</li>
+                    <li>Close tightly after each use</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="guide-section">
+        <h2>Watch Care Guide</h2>
+        <p>Keep your timepieces running perfectly with these care instructions.</p>
+        <img src="{% static 'main/5.jpg' %}" alt="Product Care Tips" class="product-care-banner">
+        <div class="care-instructions">
+            <div class="care-item">
+                <h3>Daily Care</h3>
+                <ul>
+                    <li>Wipe with soft cloth daily</li>
+                    <li>Keep away from magnets</li>
+                    <li>Avoid extreme temperatures</li>
+                    <li>Store in watch box when not wearing</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Maintenance</h3>
+                <ul>
+                    <li>Service mechanical watches every 3-5 years</li>
+                    <li>Replace battery by professional only</li>
+                    <li>Check water resistance annually</li>
+                    <li>Clean bracelet/strap monthly</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Storage Tips</h3>
+                <ul>
+                    <li>Use a dedicated watch box or pouch</li>
+                    <li>Store watches flat to prevent strap wear</li>
+                    <li>Keep silica gel packs to absorb moisture</li>
+                    <li>Avoid storing near electronics</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="guide-section">
+        <h2>Furniture Care - Sofas</h2>
+        <p>Maintain the beauty and comfort of your sofa with proper care.</p>
+        <img src="{% static 'main/7.png' %}" alt="Product Care Tips" class="product-care-banner">
+        <div class="care-instructions">
+            <div class="care-item">
+                <h3>Fabric Sofas</h3>
+                <ul>
+                    <li>Vacuum weekly with soft brush attachment</li>
+                    <li>Rotate cushions monthly</li>
+                    <li>Professional cleaning every 12-18 months</li>
+                    <li>Blot spills immediately - never rub</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Leather Sofas</h3>
+                <ul>
+                    <li>Dust weekly with dry cloth</li>
+                    <li>Condition leather every 6-12 months</li>
+                    <li>Keep away from direct sunlight</li>
+                    <li>Clean spills with leather-specific products</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Velvet Sofas</h3>
+                <ul>
+                    <li>Brush gently with a soft clothes brush</li>
+                    <li>Vacuum using a low-suction setting</li>
+                    <li>Avoid placing heavy objects on the fabric</li>
+                    <li>Professional steam cleaning once a year</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="guide-section">
+        <h2>Bag Care Guide</h2>
+        <p>Preserve the quality of your bags with these care tips.</p>
+        <img src="{% static 'main/9.jpg' %}" alt="Product Care Tips" class="product-care-banner">
+        <div class="care-instructions">
+            <div class="care-item">
+                <h3>Leather Bags</h3>
+                <ul>
+                    <li>Store in dust bag when not in use</li>
+                    <li>Condition leather every 3-6 months</li>
+                    <li>Stuff with paper to maintain shape</li>
+                    <li>Avoid rain exposure</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Canvas & Fabric Bags</h3>
+                <ul>
+                    <li>Spot clean with mild soap</li>
+                    <li>Air dry completely</li>
+                    <li>Store in cool, dry place</li>
+                    <li>Avoid overloading</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Suede Bags</h3>
+                <ul>
+                    <li>Brush gently with a suede brush</li>
+                    <li>Use suede protector spray regularly</li>
+                    <li>Keep away from water and oil</li>
+                    <li>Store in breathable dust bag</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="guide-section">
+        <h2>Traditional Wear Care - Sarees</h2>
+        <p>Preserve the beauty of your sarees with proper care and storage.</p>
+        <img src="{% static 'main/11.jpg' %}" alt="Product Care Tips" class="product-care-banner">
+        <div class="care-instructions">
+            <div class="care-item">
+                <h3>Silk Sarees</h3>
+                <ul>
+                    <li>Dry clean only</li>
+                    <li>Store in muslin cloth</li>
+                    <li>Avoid direct sunlight</li>
+                    <li>Refold every 3 months</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Cotton Sarees</h3>
+                <ul>
+                    <li>Hand wash in cold water</li>
+                    <li>Air dry in shade</li>
+                    <li>Iron on medium heat</li>
+                    <li>Store rolled instead of folded</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Georgette Sarees</h3>
+                <ul>
+                    <li>Dry clean recommended</li>
+                    <li>Store flat or hung on padded hangers</li>
+                    <li>Keep away from sharp jewelry</li>
+                    <li>Avoid heavy ironing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="guide-section">
+        <h2>Dress Care Guide</h2>
+        <p>Keep your dresses looking fresh and beautiful with these care instructions.</p>
+        <img src="{% static 'main/13.jpg' %}" alt="Product Care Tips" class="product-care-banner">
+        <div class="care-instructions">
+            <div class="care-item">
+                <h3>Evening Wear</h3>
+                <ul>
+                    <li>Dry clean after each wear</li>
+                    <li>Store in garment bag</li>
+                    <li>Use padded hangers</li>
+                    <li>Keep beaded dresses flat</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Casual Dresses</h3>
+                <ul>
+                    <li>Follow care label instructions</li>
+                    <li>Wash similar colors together</li>
+                    <li>Air dry when possible</li>
+                    <li>Store on proper hangers</li>
+                </ul>
+            </div>
+            <div class="care-item">
+                <h3>Summer Dresses</h3>
+                <ul>
+                    <li>Machine wash on gentle cycle</li>
+                    <li>Use a mild detergent</li>
+                    <li>Air dry or tumble dry on low</li>
+                    <li>Store in a cool, dry place</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showSizeChart(type) {
+    // Hide all size contents
+    document.querySelectorAll('.size-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.size-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected content and activate tab
+    document.getElementById(type + '-sizes').classList.add('active');
+    document.querySelector(`[onclick="showSizeChart('${type}')"]`).classList.add('active');
+}
+
+</script>
+<script>
+    function showSizeChart(type) {
+        // Hide all size contents
+        document.querySelectorAll('.size-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Remove active class from all tabs
+        document.querySelectorAll('.size-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Show selected content and activate tab
+        document.getElementById(type + '-sizes').classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+    </script>
+{% endblock %}

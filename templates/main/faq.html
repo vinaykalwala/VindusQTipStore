@@ -1,0 +1,840 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}FAQ - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #F4F7FA;
+        color: #2D2D2D;
+    }
+
+    .faq-banner {
+        width: 100%;
+        background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+        padding: 3rem 0;
+        margin-bottom: 0;
+    }
+
+    .banner-content {
+        text-align: center;
+        color: white;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .banner-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .banner-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .faq-wrapper {
+        display: flex;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        gap: 2rem;
+        min-height: calc(100vh - 400px);
+    }
+
+    .faq-sidenav {
+        width: 280px;
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+    }
+
+    .nav-category {
+        margin-bottom: 1.5rem;
+    }
+
+    .nav-category-title {
+        color: #4A90E2;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #eee;
+    }
+
+    .nav-subcategory {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-subcategory li {
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-subcategory a {
+        color: #666;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: block;
+        padding: 0.5rem;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .nav-subcategory a:hover,
+    .nav-subcategory a.active {
+        background: #f0f7ff;
+        color: #4A90E2;
+    }
+
+    .faq-content {
+        flex: 1;
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .faq-section {
+        margin-bottom: 2rem;
+        scroll-margin-top: 100px;
+    }
+
+    .faq-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .faq-section-title {
+        color: #4A90E2;
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px solid #eee;
+    }
+
+    .faq-item {
+        margin-bottom: 1rem;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .faq-question {
+        font-weight: 500;
+        color: #2c3e50;
+        padding: 1rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+        background: #f0f7ff;
+    }
+
+    .faq-answer {
+        color: #666;
+        line-height: 1.6;
+        padding: 0 1rem;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+        padding: 1rem;
+        max-height: 500px;
+        border-top: 1px solid #eee;
+    }
+
+    /* Mobile Nav Toggle */
+    .mobile-nav-toggle {
+        display: none;
+        background: #4A90E2;
+        color: white;
+        border: none;
+        padding: 0.8rem 1rem;
+        border-radius: 5px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        width: 100%;
+        cursor: pointer;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mobile-nav-toggle i {
+        transition: transform 0.3s ease;
+    }
+
+    .mobile-nav-toggle.active i {
+        transform: rotate(180deg);
+    }
+
+    @media (max-width: 768px) {
+        .faq-wrapper {
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .faq-sidenav {
+            
+            position: relative;
+            top: 0;
+            margin-bottom: 1rem;
+            display: none; /* Hidden by default on mobile */
+        }
+
+        .faq-sidenav.active {
+            display: block; /* Show when active */
+        }
+
+        .mobile-nav-toggle {
+            display: flex;
+        }
+
+        .banner-title {
+            font-size: 2rem;
+        }
+        
+        .banner-subtitle {
+            font-size: 1rem;
+        }
+
+        .faq-content {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="faq-banner">
+    <div class="banner-content">
+        <h1 class="banner-title">Frequently Asked Questions</h1>
+        <p class="banner-subtitle">Find answers to common questions about QTipStore</p>
+    </div>
+</section>
+
+<div class="faq-wrapper">
+    <button class="mobile-nav-toggle" id="mobileNavToggle">
+        Browse FAQ Categories
+        <i class="fas fa-chevron-down"></i>
+    </button>
+    
+    <aside class="faq-sidenav" id="faqSidenav">
+        <div class="nav-category">
+            <h3 class="nav-category-title">Orders & Shipping</h3>
+            <ul class="nav-subcategory">
+                <li><a href="#tracking" class="active">Order Tracking</a></li>
+                <li><a href="#shipping-costs">Shipping Costs</a></li>
+                <li><a href="#delivery-time">Delivery Time</a></li>
+                <li><a href="#international">International Orders</a></li>
+                <li><a href="#order-changes">Order Changes</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-category">
+            <h3 class="nav-category-title">Returns & Refunds</h3>
+            <ul class="nav-subcategory">
+                <li><a href="#return-policy">Return Policy</a></li>
+                <li><a href="#return-process">Return Process</a></li>
+                <li><a href="#refund-timing">Refund Timing</a></li>
+                <li><a href="#damaged-items">Damaged Items</a></li>
+                <li><a href="#return-shipping">Return Shipping</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-category">
+            <h3 class="nav-category-title">Account & Security</h3>
+            <ul class="nav-subcategory">
+                <li><a href="#password-reset">Password Reset</a></li>
+                <li><a href="#payment-security">Payment Security</a></li>
+                <li><a href="#account-settings">Account Settings</a></li>
+                <li><a href="#privacy">Privacy & Data</a></li>
+                <li><a href="#two-factor">Two-Factor Auth</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-category">
+            <h3 class="nav-category-title">Products & Inventory</h3>
+            <ul class="nav-subcategory">
+                <li><a href="#price-match">Price Matching</a></li>
+                <li><a href="#stock-status">Stock Status</a></li>
+                <li><a href="#product-quality">Product Quality</a></li>
+                <li><a href="#warranties">Warranties</a></li>
+                <li><a href="#product-info">Product Information</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-category">
+            <h3 class="nav-category-title">Payment Methods</h3>
+            <ul class="nav-subcategory">
+                <li><a href="#payment-options">Payment Options</a></li>
+                <li><a href="#credit-cards">Credit Cards</a></li>
+                <li><a href="#paypal">PayPal</a></li>
+                <li><a href="#gift-cards">Gift Cards</a></li>
+                <li><a href="#installments">Installment Plans</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main class="faq-content">
+        <!-- Orders & Shipping -->
+        <div id="tracking" class="faq-section">
+            <h4 class="faq-section-title">Order Tracking</h4>
+            <div class="faq-item">
+                <div class="faq-question">
+                    How can I track my order?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Once your order is shipped, you'll receive a tracking number via email. You can track your order by:</p>
+                    <ol>
+                        <li>Logging into your account and visiting "Order History"</li>
+                        <li>Clicking the tracking link in your shipping confirmation email</li>
+                        <li>Entering your tracking number on our website's tracking page</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div id="shipping-costs" class="faq-item">
+                <div class="faq-question">
+                    What are the shipping costs?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Our shipping options and costs:</p>
+                    <ul>
+                        <li><strong>Free Shipping:</strong> On all orders over $50</li>
+                        <li><strong>Standard Shipping:</strong> $5.99 (3-5 business days)</li>
+                        <li><strong>Express Shipping:</strong> $12.99 (1-2 business days)</li>
+                        <li><strong>Overnight Shipping:</strong> $24.99 (next business day)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="delivery-time" class="faq-item">
+                <div class="faq-question">
+                    How long will delivery take?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Delivery times vary based on shipping method and location:</p>
+                    <table>
+                        <tr>
+                            <th>Shipping Method</th>
+                            <th>Domestic</th>
+                            <th>International</th>
+                        </tr>
+                        <tr>
+                            <td>Standard</td>
+                            <td>3-5 business days</td>
+                            <td>7-14 business days</td>
+                        </tr>
+                        <tr>
+                            <td>Express</td>
+                            <td>1-2 business days</td>
+                            <td>3-5 business days</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="international" class="faq-item">
+                <div class="faq-question">
+                    Do you ship internationally?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, we ship to over 100 countries worldwide. International orders may be subject to:</p>
+                    <ul>
+                        <li>Customs duties and taxes (customer's responsibility)</li>
+                        <li>Additional shipping fees</li>
+                        <li>Longer delivery times</li>
+                    </ul>
+                    <p>Check our international shipping page for country-specific information.</p>
+                </div>
+            </div>
+            
+            <div id="order-changes" class="faq-item">
+                <div class="faq-question">
+                    Can I change or cancel my order?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Order changes are possible if your order hasn't been processed for shipping:</p>
+                    <ul>
+                        <li>Contact customer service immediately</li>
+                        <li>Provide your order number and requested changes</li>
+                        <li>Changes may result in price adjustments</li>
+                    </ul>
+                    <p>Once shipped, you'll need to wait for delivery and initiate a return if needed.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Returns & Refunds -->
+        <div id="return-policy" class="faq-section">
+            <h4 class="faq-section-title">Returns & Refunds</h4>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    What is your return policy?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Our return policy includes:</p>
+                    <ul>
+                        <li>30-day return window from delivery date</li>
+                        <li>Items must be unused and in original packaging</li>
+                        <li>Original tags and labels must be attached</li>
+                        <li>Proof of purchase required</li>
+                    </ul>
+                    <p>Some items are final sale (underwear, swimwear, personalized items).</p>
+                </div>
+            </div>
+            
+            <div id="return-process" class="faq-item">
+                <div class="faq-question">
+                    How do I return an item?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Follow these steps to return an item:</p>
+                    <ol>
+                        <li>Log into your account</li>
+                        <li>Go to "Order History"</li>
+                        <li>Select the item(s) to return</li>
+                        <li>Print the prepaid return label</li>
+                        <li>Package items securely</li>
+                        <li>Drop off at carrier location</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div id="refund-timing" class="faq-item">
+                <div class="faq-question">
+                    When will I get my refund?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Refund processing times:</p>
+                    <ul>
+                        <li>Credit/Debit Cards: 3-5 business days after we receive return</li>
+                        <li>PayPal: 1-3 business days</li>
+                        <li>Store Credit: Immediately processed</li>
+                    </ul>
+                    <p>Your bank may take additional 2-5 days to post the refund.</p>
+                </div>
+            </div>
+            
+            <div id="damaged-items" class="faq-item">
+                <div class="faq-question">
+                    What if my item arrives damaged?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>For damaged items:</p>
+                    <ol>
+                        <li>Contact us within 48 hours of delivery</li>
+                        <li>Provide photos of damaged item and packaging</li>
+                        <li>We'll arrange for replacement or refund</li>
+                        <li>Free return shipping for damaged items</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div id="return-shipping" class="faq-item">
+                <div class="faq-question">
+                    Who pays for return shipping?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Return shipping costs depend on return reason:</p>
+                    <ul>
+                        <li><strong>Our mistake:</strong> Free return shipping</li>
+                        <li><strong>Damaged/Defective:</strong> Free return shipping</li>
+                        <li><strong>Wrong item sent:</strong> Free return shipping</li>
+                        <li><strong>Change of mind:</strong> Customer pays return shipping</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account & Security -->
+        <div id="password-reset" class="faq-section">
+            <h4 class="faq-section-title">Account & Security</h4>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    How do I reset my password?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>To reset your password:</p>
+                    <ol>
+                        <li>Go to the login page</li>
+                        <li>Click "Forgot Password"</li>
+                        <li>Enter your email address</li>
+                        <li>Check your email for reset link</li>
+                        <li>Create a new password</li>
+                    </ol>
+                    <p>If you don't receive the email, check your spam folder.</p>
+                </div>
+            </div>
+            
+            <div id="payment-security" class="faq-item">
+                <div class="faq-question">
+                    Is my payment information secure?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We take security seriously:</p>
+                    <ul>
+                        <li>256-bit SSL encryption for all transactions</li>
+                        <li>PCI-DSS compliant payment processing</li>
+                        <li>We never store full credit card numbers</li>
+                        <li>Tokenized payments for recurring charges</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="account-settings" class="faq-item">
+                <div class="faq-question">
+                    How do I update my account information?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>To update your account:</p>
+                    <ol>
+                        <li>Log into your account</li>
+                        <li>Go to "Account Settings"</li>
+                        <li>Update your information</li>
+                        <li>Click "Save Changes"</li>
+                    </ol>
+                    <p>Some changes may require verification for security purposes.</p>
+                </div>
+            </div>
+            
+            <div id="privacy" class="faq-item">
+                <div class="faq-question">
+                    How is my personal data protected?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We protect your data by:</p>
+                    <ul>
+                        <li>Complying with GDPR and CCPA regulations</li>
+                        <li>Using encrypted databases</li>
+                        <li>Regular security audits</li>
+                        <li>Limited employee access to sensitive data</li>
+                    </ul>
+                    <p>Review our Privacy Policy for full details.</p>
+                </div>
+            </div>
+            
+            <div id="two-factor" class="faq-item">
+                <div class="faq-question">
+                    Do you offer two-factor authentication?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, we offer 2FA for enhanced security:</p>
+                    <ol>
+                        <li>Go to "Account Security" in settings</li>
+                        <li>Enable Two-Factor Authentication</li>
+                        <li>Choose SMS or Authenticator app</li>
+                        <li>Follow setup instructions</li>
+                    </ol>
+                    <p>We recommend enabling 2FA for all accounts.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products & Inventory -->
+        <div id="price-match" class="faq-section">
+            <h4 class="faq-section-title">Products & Inventory</h4>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    Do you price match competitors?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Our price match policy:</p>
+                    <ul>
+                        <li>We match prices from authorized retailers</li>
+                        <li>Item must be identical (same model, color, size)</li>
+                        <li>Must be in stock at competitor</li>
+                        <li>Submit request within 14 days of purchase</li>
+                    </ul>
+                    <p>Contact customer service with competitor's details.</p>
+                </div>
+            </div>
+            
+            <div id="stock-status" class="faq-item">
+                <div class="faq-question">
+                    How can I check item availability?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Check stock status by:</p>
+                    <ol>
+                        <li>Viewing product page for real-time inventory</li>
+                        <li>Signing up for back-in-stock notifications</li>
+                        <li>Contacting customer service</li>
+                    </ol>
+                    <p>Inventory updates every 15 minutes.</p>
+                </div>
+            </div>
+            
+            <div id="product-quality" class="faq-item">
+                <div class="faq-question">
+                    What is your product quality guarantee?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We stand behind our products:</p>
+                    <ul>
+                        <li>100% satisfaction guarantee</li>
+                        <li>Quality inspections before shipping</li>
+                        <li>Manufacturer warranties apply</li>
+                        <li>Extended warranties available for purchase</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="warranties" class="faq-item">
+                <div class="faq-question">
+                    What warranties do you offer?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Warranty coverage includes:</p>
+                    <ul>
+                        <li><strong>Manufacturer Warranty:</strong> Varies by product (typically 1 year)</li>
+                        <li><strong>Extended Warranty:</strong> Available for electronics/appliances</li>
+                        <li><strong>Satisfaction Guarantee:</strong> 30 days for most items</li>
+                    </ul>
+                    <p>Review product page for specific warranty details.</p>
+                </div>
+            </div>
+            
+            <div id="product-info" class="faq-item">
+                <div class="faq-question">
+                    Where can I find product specifications?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Product details are available:</p>
+                    <ol>
+                        <li>On the product page under "Specifications"</li>
+                        <li>In downloadable PDF manuals</li>
+                        <li>By contacting our product specialists</li>
+                    </ol>
+                    <p>We're happy to provide additional information upon request.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div id="payment-options" class="faq-section">
+            <h4 class="faq-section-title">Payment Methods</h4>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    What payment methods do you accept?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We accept:</p>
+                    <ul>
+                        <li>Visa, Mastercard, American Express, Discover</li>
+                        <li>PayPal</li>
+                        <li>Apple Pay, Google Pay</li>
+                        <li>QTipStore Gift Cards</li>
+                        <li>Affirm financing (qualifying purchases)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="credit-cards" class="faq-item">
+                <div class="faq-question">
+                    Can I save multiple credit cards?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, you can save payment methods:</p>
+                    <ol>
+                        <li>Go to "Payment Methods" in your account</li>
+                        <li>Click "Add New Payment Method"</li>
+                        <li>Enter card details</li>
+                        <li>Save for future purchases</li>
+                    </ol>
+                    <p>You can set a default payment method for faster checkout.</p>
+                </div>
+            </div>
+            
+            <div id="paypal" class="faq-item">
+                <div class="faq-question">
+                    How does PayPal checkout work?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Using PayPal:</p>
+                    <ol>
+                        <li>Select PayPal at checkout</li>
+                        <li>You'll be redirected to PayPal to log in</li>
+                        <li>Choose your PayPal funding source</li>
+                        <li>Confirm payment</li>
+                        <li>You'll return to our site to complete order</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div id="gift-cards" class="faq-item">
+                <div class="faq-question">
+                    How do I use a gift card?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>To redeem a gift card:</p>
+                    <ol>
+                        <li>Add items to your cart</li>
+                        <li>Proceed to checkout</li>
+                        <li>Enter gift card code in "Payment Method" section</li>
+                        <li>Apply to your order</li>
+                    </ol>
+                    <p>Gift cards never expire and can be combined with other payment methods.</p>
+                </div>
+            </div>
+            
+            <div id="installments" class="faq-item">
+                <div class="faq-question">
+                    Do you offer installment plans?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We offer installment options through Affirm:</p>
+                    <ul>
+                        <li>Available for purchases over $50</li>
+                        <li>3, 6, or 12 month payment plans</li>
+                        <li>Soft credit check required</li>
+                        <li>Select at checkout</li>
+                    </ul>
+                    <p>Interest rates vary based on creditworthiness.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        const navLinks = document.querySelectorAll('.nav-subcategory a');
+        const mobileNavToggle = document.getElementById('mobileNavToggle');
+        const faqSidenav = document.getElementById('faqSidenav');
+        
+        // Set first nav link as active by default
+        if (navLinks.length > 0) {
+            navLinks[0].classList.add('active');
+        }
+    
+        // FAQ Toggle functionality - All questions start closed
+        faqQuestions.forEach(question => {
+            const answer = question.nextElementSibling;
+            const icon = question.querySelector('i');
+            
+            // Ensure all answers start closed
+            answer.classList.remove('active');
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+            
+            question.addEventListener('click', () => {
+                // Close other answers in same section
+                const parentSection = question.closest('.faq-section');
+                parentSection.querySelectorAll('.faq-answer.active').forEach(item => {
+                    if (item !== answer) {
+                        item.classList.remove('active');
+                        item.previousElementSibling.querySelector('i').classList.replace('fa-chevron-up', 'fa-chevron-down');
+                    }
+                });
+                
+                // Toggle current answer
+                answer.classList.toggle('active');
+                if (answer.classList.contains('active')) {
+                    icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                } else {
+                    icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                }
+            });
+        });
+    
+        // Mobile nav toggle functionality
+        if (mobileNavToggle && faqSidenav) {
+            mobileNavToggle.addEventListener('click', () => {
+                faqSidenav.classList.toggle('active');
+                mobileNavToggle.classList.toggle('active');
+            });
+        }
+    
+        // Navigation link functionality
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+
+                    // Close mobile nav after selection
+                    if (window.innerWidth <= 768) {
+                        faqSidenav.classList.remove('active');
+                        mobileNavToggle.classList.remove('active');
+                    }
+                }
+            });
+        });
+    
+        // Highlight active section in sidenav while scrolling
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY + 150;
+            
+            document.querySelectorAll('.faq-section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.id;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    const matchingLink = document.querySelector(`.nav-subcategory a[href="#${sectionId}"]`);
+                    if (matchingLink && !matchingLink.classList.contains('active')) {
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        matchingLink.classList.add('active');
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

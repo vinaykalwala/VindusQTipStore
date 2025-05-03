@@ -1,0 +1,682 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}Delivery Admin - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+        padding: 4rem 2rem;
+        color: white;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+    }
+
+    .hero-content {
+        max-width: 700px;
+        margin: 6px;
+    }
+
+    .hero-image {
+        flex-shrink: 0;
+        max-width: 400px;
+        height: auto;
+        animation: float 3s ease-in-out infinite;
+    }
+    .hero-content {
+        flex: 1.5;
+    }
+    .hero-image {
+        flex: 1.5;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .features-section {
+        padding: 4rem 2rem;
+        background: #f8f9fa;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+        color: #666;
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        transition: transform 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: #4A90E2;
+        margin-bottom: 1rem;
+    }
+    .feature-icon:hover {
+        font-size: 2.5rem;
+        color:#FF6B35;
+        margin-bottom: 1rem;
+    }
+
+    .feature-title {
+        font-size: 1.3rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .feature-description {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .cta-section {
+        padding: 4rem 2rem;
+        text-align: center;
+        position: relative;
+        background:  #F4F7FA;
+        {% comment %} background: url('{% static "main/agent.jpeg" %}') center center/cover no-repeat; {% endcomment %}
+        color: white;
+        isolation: isolate;
+    }
+    
+
+    .cta-content {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .cta-title {
+        font-size: 2rem;
+        color: #2D2D2D;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        
+    }
+
+    .cta-btn {
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background:white;
+        color:  #4A90E2;
+    }
+
+    .btn-secondary {
+        background:white;
+        color:  #4A90E2;
+        border: 2px solid #4A90E2;
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .stats-section {
+        padding: 4rem 2rem;
+        background: #f8f9fa;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .stat-item {
+        padding: 1.5rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        color: #4A90E2;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .stat-value.animate {
+        animation: countUp 2s ease-out forwards;
+    }
+    @keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .testimonials-section {
+        padding: 4rem 2rem;
+        background: white;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .testimonial-card {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .testimonial-text {
+        font-style: italic;
+        color: #555;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .testimonial-author {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .testimonial-role {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .how-it-works {
+        padding: 4rem 2rem;
+        background: #f8f9fa;
+    }
+
+    .steps-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .steps-row {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .steps-row:last-child {
+        margin-bottom: 0;
+    }
+
+    
+    .step {
+        flex: 1;
+        min-width: 280px; /* Minimum card width on small screens */
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+    .step:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .step-number {
+        background: #4A90E2;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        flex-shrink: 0;
+    }
+
+    .step-content {
+        flex: 1;
+    }
+
+    .step-title {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .step-description {
+        color: #666;
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+        }
+
+        .feature-card {
+            padding: 1.5rem;
+        }
+
+        .steps-row {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+    
+       
+        .step-number {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+    
+        .step-title {
+            font-size: 1.2rem;
+        }
+    
+        .step-description {
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .hero-section {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-content {
+            margin: 0 auto;
+        }
+
+        .hero-image {
+            width: 300px;
+            margin-top: 2rem;
+        }
+    }
+    
+@media (max-width: 480px) {
+    .how-it-works {
+        padding: 2rem 1rem;
+    }
+
+    .step {
+        padding: 1.2rem;
+    }
+
+    .step-title {
+        font-size: 1.1rem;
+    }
+
+    .step-description {
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Welcome to QTipStore Delivery Admin</h1>
+        <p class="hero-subtitle">
+            Manage deliveries, track performance, and ensure customer satisfaction all in one place.<br>
+            Streamline your logistics with real-time insights and automated updates.<br>
+            Empower your delivery team with efficient tools and easy-to-use dashboards.<br>
+            Stay ahead with proactive alerts, delivery analytics, and seamless communication.
+        </p>
+        <div class="cta-buttons" style="justify-content: flex-start; margin-top: 2rem;">
+            <a href="{% url 'home' %}" class="cta-btn btn-primary">Register as Delivery Agency</a>
+            <a href="#features" class="cta-btn btn-secondary">Register as Delivery Agent</a>
+        </div>
+    </div>
+    <img src="{% static 'main/delivery.png' %}" alt="Delivery Admin Dashboard" class="hero-image">
+</section>
+
+<section class="features-section" id="features">
+    <div class="section-header">
+        <h2 class="section-title">Powerful Delivery Management Features</h2>
+        <p class="section-subtitle">Everything you need to optimize your delivery operations and provide exceptional service</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <h3 class="feature-title">Delivery Management</h3>
+            <p class="feature-description">
+                Track deliveries in real-time with GPS integration and automated status updates.
+                Manage multiple delivery channels from a single dashboard with customizable workflows.
+                Get instant notifications for delays or exceptions to take proactive action.
+            </p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3 class="feature-title">Partner Network</h3>
+            <p class="feature-description">
+                Onboard and manage delivery partners with comprehensive profiles and performance metrics.
+                Automatically assign deliveries based on location, capacity, and performance ratings.
+                Provide partners with mobile apps for seamless order management and communication.
+            </p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="feature-title">Performance Analytics</h3>
+            <p class="feature-description">
+                Detailed reports on delivery times, success rates, and customer satisfaction.
+                Identify bottlenecks and optimize routes with historical data analysis.
+                Customizable dashboards to track KPIs that matter most to your business.
+            </p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <h3 class="feature-title">Route Optimization</h3>
+            <p class="feature-description">
+                AI-powered route planning that considers traffic, weather, and delivery windows.
+                Dynamic rerouting for unexpected delays or last-minute order additions.
+                Fuel efficiency reports to help reduce operational costs.
+            </p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h3 class="feature-title">Real-time Alerts</h3>
+            <p class="feature-description">
+                Instant notifications for delivery status changes, delays, or exceptions.
+                Customizable alert thresholds for different types of deliveries.
+                Multi-channel notifications (email, SMS, in-app) for critical updates.
+            </p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-cog"></i>
+            </div>
+            <h3 class="feature-title">Custom Workflows</h3>
+            <p class="feature-description">
+                Tailor the system to match your unique delivery processes and business rules.
+                Configure approval workflows, special handling instructions, and delivery windows.
+                Integrate with your existing systems via our comprehensive API.
+            </p>
+        </div>
+    </div>
+</section>
+
+
+<section class="stats-section">
+    <div class="section-header">
+        <h2 class="section-title">Our Delivery Network By The Numbers</h2>
+        <p class="section-subtitle">Trusted by businesses across multiple industries to power their delivery operations</p>
+    </div>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-value" data-value="5000">0+</div>
+            <div class="stat-label">Daily Deliveries Processed</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" data-value="98">0</div>
+            <div class="stat-label">On-Time Delivery Rate</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" data-value="200">0</div>
+            <div class="stat-label">Verified Delivery Partners</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" data-value="4.8">0</div>
+            <div class="stat-label">Average Customer Rating</div>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works">
+    <div class="section-header">
+        <h2 class="section-title">How Our Delivery System Works</h2>
+        <p class="section-subtitle">Simple integration, powerful results</p>
+    </div>
+    <div class="steps-container">
+        <div class="steps-row">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3 class="step-title">Connect Your Orders</h3>
+                    <p class="step-description">
+                        Integrate with your e-commerce platform, POS system, or upload orders manually.
+                        Our system supports all major platforms with pre-built connectors, or use our API
+                        for custom integrations.
+                    </p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3 class="step-title">Assign & Dispatch</h3>
+                    <p class="step-description">
+                        Orders are automatically assigned to the best available delivery partner based on
+                        location, capacity, and performance ratings. Manual assignment options available.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="steps-row">
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3 class="step-title">Track in Real-Time</h3>
+                    <p class="step-description">
+                        Monitor all active deliveries with live GPS tracking. Customers receive automatic
+                        updates with ETAs and delivery confirmation. Get alerts for any delays or issues.
+                    </p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3 class="step-title">Analyze & Improve</h3>
+                    <p class="step-description">
+                        Review detailed performance reports to identify opportunities for improvement.
+                        Track key metrics like delivery times, success rates, and customer satisfaction.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials-section">
+    <div class="section-header">
+        <h2 class="section-title">What Our Partners Say</h2>
+        <p class="section-subtitle">Hear from businesses that transformed their delivery operations</p>
+    </div>
+    <div class="testimonials-grid">
+        <div class="testimonial-card">
+            <p class="testimonial-text">
+                "Since implementing QTipStore Delivery Admin, our on-time delivery rate improved by 32%.
+                The real-time tracking and automated notifications have significantly reduced customer
+                service inquiries about order status."
+            </p>
+            <div class="testimonial-author">Rahul Sharma</div>
+            <div class="testimonial-role">Operations Manager, UrbanMart</div>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">
+                "The route optimization features alone have saved us 18% in fuel costs. Our delivery
+                partners love the mobile app interface, and we've seen a noticeable improvement in
+                partner retention since switching to this system."
+            </p>
+            <div class="testimonial-author">Priya Patel</div>
+            <div class="testimonial-role">CEO, QuickDeliver</div>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">
+                "The analytics dashboard gives us insights we never had before. We can now pinpoint
+                exactly where delays occur and take corrective action. Customer satisfaction with our
+                delivery service has never been higher."
+            </p>
+            <div class="testimonial-author">Arjun Mehta</div>
+            <div class="testimonial-role">Logistics Director, SuperGrocery</div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="cta-overlay">
+    <div class="cta-content">
+        <h2 class="cta-title">Ready to Transform Your Delivery Operations?</h2>
+        <p style="color:  #2D2D2D; margin-bottom: 2rem; line-height: 1.6;">
+            Join hundreds of businesses that trust QTipStore Delivery Admin to power their logistics.
+            Whether you're delivering 10 orders a day or 10,000, we have a solution that fits your needs.
+        </p>
+        <div class="cta-buttons">
+            <a href="{% url 'home' %}" class="cta-btn btn-primary">Start Free Trial</a>
+            <a href="{% url 'home' %}" class="cta-btn btn-secondary">Schedule Demo</a>
+            <a href="{% url 'home' %}" class="cta-btn btn-secondary">Contact Sales</a>
+        </div>
+    </div>
+</div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const stats = document.querySelectorAll('.stat-value');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateValue(entry.target);
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        stats.forEach(stat => observer.observe(stat));
+
+        function animateValue(element) {
+            const finalValue = parseFloat(element.getAttribute('data-value'));
+            const duration = 2000;
+            const startTime = performance.now();
+            let isPercentage = element.textContent.includes('%');
+            let isPlus = element.textContent.includes('+');
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function for smooth animation
+                const easeOutQuad = progress * (2 - progress);
+                
+                let currentValue = finalValue * easeOutQuad;
+                
+                // Format the number based on its type
+                let displayValue;
+                if (Number.isInteger(finalValue)) {
+                    displayValue = Math.floor(currentValue);
+                } else {
+                    displayValue = currentValue.toFixed(1);
+                }
+                
+                element.textContent = displayValue + (isPlus ? '+' : '') + (isPercentage ? '%' : '');
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+    });
+</script>
+{% endblock %}

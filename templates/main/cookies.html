@@ -1,0 +1,464 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}Cookie Settings - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(rgba(74, 144, 226, 0.8), rgba(74, 144, 226, 0.8)), 
+                    url('{% static "images/cookies-banner.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 6rem 2rem;
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-section p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    /* Cookie Settings Content */
+    .cookie-settings-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem 4rem;
+    }
+    
+    .cookie-settings-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .cookie-settings-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+    }
+    
+    .cookie-settings-section h3 {
+        color: var(--secondary-color);
+        margin: 1.5rem 0 1rem;
+        font-size: 1.3rem;
+    }
+    
+    .cookie-settings-section p {
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    
+    .cookie-settings-section ul {
+        padding-left: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .cookie-settings-section li {
+        margin-bottom: 0.5rem;
+        line-height: 1.5;
+    }
+    
+    /* Cookie Preferences Form */
+    .cookie-preferences {
+        background: var(--background-color);
+        padding: 2rem;
+        border-radius: 8px;
+    }
+    
+    .cookie-option {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .cookie-option:last-child {
+        border-bottom: none;
+    }
+    
+    .cookie-option-info {
+        flex: 1;
+    }
+    
+    .cookie-option-info h4 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text-color);
+    }
+    
+    .cookie-option-info p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        margin-left: 1rem;
+    }
+    
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        position: absolute;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+        background-color: var(--accent-color);
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+    
+    .toggle-switch input:disabled + .slider {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+    
+    .save-preferences {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-top: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .save-preferences:hover {
+        background-color: #3a7bc8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 4rem 1.5rem;
+        }
+        
+        .hero-section h1 {
+            font-size: 2rem;
+        }
+        
+        .cookie-settings-container {
+            padding: 0 1.5rem 3rem;
+        }
+        
+        .cookie-option {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .toggle-switch {
+            margin: 1rem 0 0 0;
+        }
+    }
+
+    .cookie-consent {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 20px;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 9999;
+        display: none;
+    }
+    
+    .cookie-consent-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+    
+    .cookie-consent-text {
+        flex: 1;
+        min-width: 300px;
+        font-size: 14px;
+        color: #444;
+    }
+    
+    .cookie-consent-text a {
+        color: var(--primary-color);
+        text-decoration: underline;
+    }
+    
+    .cookie-consent-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .cookie-consent-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .cookie-consent-accept {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+    }
+    
+    .cookie-consent-decline {
+        background-color: white;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+    
+    .cookie-consent-accept:hover {
+        background-color:  #FF6B35;
+        transform: translateY(-2px);
+    }
+    
+    .cookie-consent-decline:hover {
+        background-color: #f4f7fa;
+    }
+    
+    @media (max-width: 768px) {
+        .cookie-consent-container {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .cookie-consent-buttons {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <h1>Cookie Settings</h1>
+    <p>Manage your cookie preferences to control how QTipStore uses cookies to enhance your shopping experience</p>
+</section>
+
+<!-- Main Content -->
+<div class="cookie-settings-container">
+    <section class="cookie-settings-section">
+        <h2>Our Use of Cookies</h2>
+        <p>At QTipStore, we use cookies to make our website work efficiently and to provide you with the best possible shopping experience. This policy explains what cookies are, how we use them, and how you can manage your preferences.</p>
+        
+        <h3>What Are Cookies?</h3>
+        <p>Cookies are small text files that are stored on your computer or mobile device when you visit a website. They help the website remember information about your visit, which can make it easier to visit the site again and make the site more useful to you.</p>
+        
+        <h3>Types of Cookies We Use</h3>
+        <ul>
+            <li><strong>Necessary Cookies:</strong> These are essential for the website to function properly and cannot be switched off.</li>
+            <li><strong>Functional Cookies:</strong> These remember your preferences to enhance your experience.</li>
+            <li><strong>Analytics Cookies:</strong> These help us understand how visitors interact with our website.</li>
+            <li><strong>Marketing Cookies:</strong> These track visitors across websites to display relevant ads.</li>
+        </ul>
+    </section>
+    
+    <section class="cookie-settings-section cookie-preferences">
+        <h2>Your Cookie Preferences</h2>
+        <p>You can change your cookie preferences at any time using the options below. Please note that disabling certain types of cookies may impact your experience of the website.</p>
+        
+        <div class="cookie-option">
+            <div class="cookie-option-info">
+                <h4>Necessary Cookies</h4>
+                <p>Essential for the website to function. These cannot be disabled.</p>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" checked disabled>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="cookie-option">
+            <div class="cookie-option-info">
+                <h4>Functional Cookies</h4>
+                <p>Remember your preferences to enhance your experience.</p>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="functional-cookies" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="cookie-option">
+            <div class="cookie-option-info">
+                <h4>Analytics Cookies</h4>
+                <p>Help us understand how visitors use our website.</p>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="analytics-cookies" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="cookie-option">
+            <div class="cookie-option-info">
+                <h4>Marketing Cookies</h4>
+                <p>Used to track visitors across websites for advertising purposes.</p>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="marketing-cookies" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <button type="button" class="save-preferences">Save Preferences</button>
+    </section>
+    
+    <section class="cookie-settings-section">
+        <h2>Managing Cookies in Your Browser</h2>
+        <p>Most web browsers allow some control of most cookies through the browser settings. To find out more about cookies, including how to see what cookies have been set and how to manage and delete them, visit <a href="https://www.allaboutcookies.org" target="_blank">www.allaboutcookies.org</a>.</p>
+        
+        <h3>Browser-Specific Instructions</h3>
+        <ul>
+            <li><a href="https://support.google.com/accounts/answer/32050" target="_blank">Google Chrome</a></li>
+            <li><a href="http://support.microsoft.com/kb/278835" target="_blank">Internet Explorer</a></li>
+            <li><a href="https://support.mozilla.org/en-US/kb/delete-cookies-remove-info-websites-stored" target="_blank">Mozilla Firefox</a></li>
+            <li><a href="https://support.apple.com/guide/safari/manage-cookies-and-website-data-sfri11471/mac" target="_blank">Safari</a></li>
+        </ul>
+    </section>
+    
+    <section class="cookie-settings-section">
+        <h2>Contact Us</h2>
+        <p>If you have any questions about our use of cookies, please contact us:</p>
+        <ul>
+            <li>Email: qtipstore@gmail.com</li>
+            <li>Phone: 0884-222-111</li>
+        </ul>
+        <p>This cookie policy was last updated on April 26, 2025.</p>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if cookie consent was already given
+        if (!document.cookie.includes('cookie_consent=')) {
+            const consentBanner = document.createElement('div');
+            consentBanner.className = 'cookie-consent';
+            consentBanner.innerHTML = `
+                <div class="cookie-consent-container">
+                    <div class="cookie-consent-text">
+                        We use cookies to enhance your experience on our website. 
+                        By clicking "Accept", you agree to our use of cookies. 
+                        <a href="{% url 'cookies' %}">Manage preferences</a>
+                    </div>
+                    <div class="cookie-consent-buttons">
+                        <button class="cookie-consent-btn cookie-consent-decline">Decline</button>
+                        <button class="cookie-consent-btn cookie-consent-accept">Accept</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(consentBanner);
+            consentBanner.style.display = 'block';
+            
+            // Handle accept button
+            consentBanner.querySelector('.cookie-consent-accept').addEventListener('click', function() {
+                const expiryDate = new Date();
+                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+                document.cookie = `cookie_consent=true; path=/; expires=${expiryDate.toUTCString()}`;
+                consentBanner.style.display = 'none';
+                
+                // Set default preferences if not already set
+                if (!document.cookie.includes('cookie_preferences=')) {
+                    const prefExpiry = new Date();
+                    prefExpiry.setFullYear(prefExpiry.getFullYear() + 1);
+                    document.cookie = `cookie_preferences=${encodeURIComponent(JSON.stringify({
+                        functional: true,
+                        analytics: true,
+                        marketing: true
+                    }))}; path=/; expires=${prefExpiry.toUTCString()}`;
+                }
+            });
+            
+            // Handle decline button
+            consentBanner.querySelector('.cookie-consent-decline').addEventListener('click', function() {
+                const expiryDate = new Date();
+                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+                document.cookie = `cookie_consent=true; path=/; expires=${expiryDate.toUTCString()}`;
+                document.cookie = `cookie_preferences=${encodeURIComponent(JSON.stringify({
+                    functional: true,  // Necessary cookies can't be declined
+                    analytics: false,
+                    marketing: false
+                }))}; path=/; expires=${expiryDate.toUTCString()}`;
+                consentBanner.style.display = 'none';
+            });
+        }
+
+        // Handle "Save Preferences" button click
+        const saveButton = document.querySelector('.save-preferences');
+        if (saveButton) {
+            saveButton.addEventListener('click', function() {
+                const functional = document.getElementById('functional-cookies').checked;
+                const analytics = document.getElementById('analytics-cookies').checked;
+                const marketing = document.getElementById('marketing-cookies').checked;
+
+                const preferences = {
+                    functional: functional,
+                    analytics: analytics,
+                    marketing: marketing
+                };
+
+                const expiryDate = new Date();
+                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
+                document.cookie = `cookie_preferences=${encodeURIComponent(JSON.stringify(preferences))}; path=/; expires=${expiryDate.toUTCString()}`;
+
+                alert('Your cookie preferences have been saved!');
+            });
+        }
+    });
+</script>
+{% endblock %}

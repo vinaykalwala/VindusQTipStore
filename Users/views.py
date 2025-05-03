@@ -459,3 +459,113 @@ def reset_password(request):
 
 def sellerpage(request):
     return render(request, 'dashboard/sellerpage.html')
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.conf import settings
+
+
+def home(request):
+    return render(request, 'main/home.html')
+
+def register(request):
+    if request.method == 'POST':
+        # Add your registration logic here
+        pass
+    return render(request, 'main/register.html')
+
+@login_required
+def products(request):
+    return render(request, 'main/products.html')
+
+
+def contact(request):
+    return render(request, 'main/contact.html')
+
+def faq(request):
+    return render(request, 'main/faq.html')
+
+def delivery_admin(request):
+    return render(request, 'main/delivery_admin.html')
+
+def delivery_dashboard(request):
+    return render(request, 'main/delivery_dashboard.html')
+    
+def delivery_partners(request):
+    return render(request, 'main/delivery_partners.html')
+
+def sellerpage(request):
+    return render(request, 'main/sellerpage.html')
+
+def blog_view(request):
+    return render(request, 'main/blog.html')
+
+def image_courtesy_view(request):
+    return render(request, 'main/image_courtesy.html')
+
+def product_care_view(request):
+    return render(request, 'main/product_care.html')
+
+def sitemap(request):
+    return render(request, 'main/sitemap.html')
+
+def terms(request):
+    return render(request, 'main/terms.html')
+def accept_terms(request):
+    request.session['accepted_terms'] = True
+    return redirect('home')
+
+def aboutus(request):
+    return render(request, 'main/aboutus.html')
+
+def privacypolicy(request):
+    return render(request,'main/privacypolicy.html')
+
+def b2b(request):
+    return render(request,'main/b2b.html')
+
+def affiliate(request):
+    return render(request,'main/affiliate.html')
+
+
+def cookies(request):
+    return render(request,'main/cookies.html')
+
+
+def shipping_policy(request):
+    return render(request, 'main/shipping_policy.html')
+
+def newsletter_signup(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        interests = request.POST.get('interests', '')
+        
+        # Here you would typically save to database
+        # For example:
+        # from .models import NewsletterSubscriber
+        # subscriber = NewsletterSubscriber(
+        #     first_name=first_name,
+        #     last_name=last_name,
+        #     email=email,
+        #     interests=interests
+        # )
+        # subscriber.save()
+        
+        # Send confirmation email (optional)
+        send_mail(
+            'Thanks for subscribing to QTipStore!',
+            f'Hi {first_name},\n\nThank you for subscribing to our newsletter. '
+            'You\'ll receive our latest updates and offers soon.\n\n'
+            'The QTipStore Team',
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=True,
+        )
+        
+        return render(request, 'main/newsletter.html', {'success': True})
+    
+    return render(request, 'main/newsletter.html')

@@ -1,0 +1,3130 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}Home - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #F4F7FA;
+        color: #2D2D2D;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #4A90E2 40%, #F4F7FA 80%);
+        min-height: 500px;
+        position: relative;
+        overflow: hidden;
+        gap: 2rem;
+    }
+    
+    .hero-section:hover {
+        transform: scale(1.01);
+        background: linear-gradient(135deg,  #4A90E2 0%, #4A90E2 100%);
+    }
+
+    .hero-content {
+        flex: 1;
+        max-width: 600px;
+        z-index: 2;
+        padding-right: 2rem;
+    }
+    
+  
+    .hero-title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: #fff;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        color: #fff;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+    }
+
+    .hero-btn {
+        background:  #F4F7FA;
+        color: var(--primary-color);
+        padding: 0.8rem 2rem;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .hero-btn:hover {
+        background: var(--secondary-color);
+        color: var(--background-color);
+    }
+    .contact-btn {
+        {% comment %} background: transparent; {% endcomment %}
+        {% comment %} border: 2px solid var(--primary-color); {% endcomment %}
+        {% comment %} color: var(--primary-color); {% endcomment %}
+    }
+    
+    .contact-btn:hover {
+        {% comment %} background: var(--primary-color); {% endcomment %}
+        color: var(--background-color);;
+    }
+
+    .hero-image {
+        max-width: 45%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+        position: relative; /* Changed from absolute */
+        right: auto; /* Remove absolute positioning */
+        top: auto; /* Remove absolute positioning */
+        transform: none; /* Remove transform */
+    }
+    .hero-section:hover .hero-image {
+        transform: translateY(-5%) scale(1.05);
+    }
+
+    /* Category Navigation */
+    .category-nav {
+        background: white;
+        padding: 1rem 0;
+        position: sticky;
+        top: 120px;
+        z-index: 90;
+    }
+
+    .category-list {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        list-style: none;
+        overflow-x: auto;
+        padding: 0.5rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .category-list::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+    .category-item {
+        text-align: center;
+        min-width: max-content;
+    }
+
+    .category-link {
+        color: #555;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 0;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .category-link:hover {
+        color: var(--primary-color);
+    }
+
+    .category-link.active {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .category-link.active:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-color);
+    }
+
+    /* Product Grid */
+    .product-section {
+        padding: 3rem 0;
+        background: #f9f9f9;
+        
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto 2rem;
+        padding: 0 2rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        color: var(--dark-blue);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .view-all {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 2rem;
+        padding: 0 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+      
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #e74c3c;
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .product-image-container {
+        position: relative;
+        overflow: hidden;
+        height: 250px;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    .product-info {
+        padding: 1.2rem;
+    }
+    .banner-section {
+        padding: 0rem 1rem;
+        background: linear-gradient(to right,#00FFFF ,  #e3e9f2);
+        margin: 2rem 0;
+    }
+    
+    .banner-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        padding-top: 2rem;
+    }
+    
+    .banner-content {
+        flex: 1;
+        padding: 1rem;
+        padding-top: 0;
+        margin-bottom: 2rem;
+    }
+    
+    .banner-title {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+    
+    .banner-text {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 1.5rem;
+        
+    }
+    
+    .banner-btn {
+        display: inline-block;
+        padding: 0.8rem 1.5rem;
+        background-color: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: background-color 0.3s;
+    }
+    
+    .banner-btn:hover {
+        background-color: var(--secondary-color);
+        
+    }
+    .banner-image-gallery {
+        width: 100%;
+        height: 500px;
+        overflow: hidden;
+        position: relative;
+        margin-top: 2rem;
+    }
+    .gallery-wrapper {
+        display: flex;
+        flex-direction: column;
+        animation: scrollVertical 20s linear infinite;
+    }
+    
+    /* Individual gallery columns */
+    .gallery-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .gallery-image {
+        width: 100%;
+        max-width: 300px;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .gallery-image:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Hover pause */
+    .gallery-wrapper:hover {
+        animation-play-state: paused;
+    }
+    
+    /* Keyframes for infinite scroll */
+    @keyframes scrollVertical {
+        0% {
+            transform: translateY(0);
+        }
+        100% {
+            transform: translateY(-50%); /* Scroll only half, because we doubled */
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .banner-container {
+            padding: 1rem;
+        }
+    
+        .banner-title {
+            font-size: 2rem;
+        }
+    
+        .gallery-image {
+            max-width: 250px;
+            height: 350px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .banner-title {
+            font-size: 1.8rem;
+        }
+    
+        .gallery-image {
+            max-width: 200px;
+            height: 300px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .banner-title {
+            font-size: 1.8rem;
+        }
+        
+        .gallery-image {
+            max-width: 200px;
+            height: 300px;
+        }
+    }
+    
+    .banner-image {
+        flex: 1;
+        max-width: 50%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .banner-image:hover {
+        transform: translateY(-5%) scale(1.05);
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        .banner-container {
+            flex-direction: column;
+        }
+        
+        .banner-image {
+            max-width: 100%;
+            order: -1;
+        }
+        
+        .banner-content {
+            text-align: center;
+        }
+        
+        .banner-title {
+            font-size: 1.8rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .banner-title {
+            font-size: 1.5rem;
+        }
+        
+        .banner-text {
+            font-size: 1rem;
+        }
+    }
+    
+    /* Existing Product Grid Styles (with enhancements) */
+    .product-section {
+        padding: 2rem 1rem;
+        background: #f9f9f9;
+    }
+    
+    .section-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        max-width: 1200px;
+        margin: 0 auto 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    @media (min-width: 600px) {
+        .section-header {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        color: var(--dark-blue);
+        margin: 0 0 0.5rem 0;
+    }
+    
+    @media (min-width: 600px) {
+        .section-title {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+    }
+    
+    .view-all {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+        padding: 0 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    @media (min-width: 480px) {
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.2rem;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 0 1.5rem;
+        }
+    }
+    
+    @media (min-width: 992px) {
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+    }
+    
+    /* Product Card Styles */
+    .product-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .product-image-container {
+        position: relative;
+        overflow: hidden;
+        height: 180px;
+    }
+    
+    @media (min-width: 480px) {
+        .product-image-container {
+            height: 200px;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .product-image-container {
+            height: 220px;
+        }
+    }
+    
+    @media (min-width: 992px) {
+        .product-image-container {
+            height: 250px;
+        }
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+    
+    .product-card:hover .product-image {
+        transform: scale(1.03);
+    }
+    
+    .product-info {
+        padding: 1rem;
+    }
+    
+    .product-title {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    @media (min-width: 768px) {
+        .product-title {
+            font-size: 1rem;
+        }
+    }
+    
+    .product-price {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.9rem;
+    }
+    
+    .current-price {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    
+    .original-price {
+        color: #999;
+        text-decoration: line-through;
+        font-size: 0.8rem;
+    }
+
+    .product-title {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .product-price {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .current-price {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .original-price {
+        color: #999;
+        text-decoration: line-through;
+        font-size: 0.9rem;
+    }
+
+    .discount {
+        color: #27ae60;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+    .product-carousel-container {
+        overflow: hidden;
+        position: relative;
+        padding: 1rem 0;
+    }
+
+    .product-carousel {
+        display: flex;
+        gap: 2rem;
+        animation: scroll 30s linear infinite;
+        width: calc(250px * 16); /* Adjust based on number of items */
+    }
+
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-250px * 8)); /* Half of total width */
+        }
+    }
+
+    .product-carousel:hover {
+        animation-play-state: paused;
+    }
+
+    .product-card {
+        min-width: 230px;
+        flex-shrink: 0;
+    }
+
+    .product-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .product-card:hover .product-actions {
+        opacity: 1;
+    }
+
+    .add-to-cart, .add-to-wishlist {
+        background: #f8f9fa;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 50%;
+        cursor: pointer;
+        color: #555;
+        transition: background 0.3s ease;
+    }
+
+    .add-to-cart:hover, .add-to-wishlist:hover {
+        background: #e9ecef;
+        color: var(--primary-color);
+    }
+    .household-banner {
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e3e9f2 100%);
+        margin: 2rem 0;
+    }
+    
+    .banner-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+    }
+    
+    .banner-content {
+        flex: 1;
+    }
+    
+    .banner-title {
+        font-size: 2.2rem;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+    
+    .banner-text {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .banner-btn {
+        display: inline-block;
+        padding: 0.8rem 2rem;
+        background-color: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .banner-btn:hover {
+        background-color: var(--secondary-color);
+        
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .small-banner-image {
+        margin-top: 1.5rem;
+        width: 100%;
+        max-width: 600px; /* Increased to accommodate two images */
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex; /* Added to enable side by side layout */
+        gap: 1rem; /* Space between images */
+    }
+    
+    .small-banner-image img {
+        width: calc(50% - 0.5rem); /* Each image takes half the space minus half the gap */
+        height: 200px; /* Fixed height for consistency */
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .small-banner-image img:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .small-banner-image {
+            max-width: 500px;
+        }
+        
+        .small-banner-image img {
+            height: 180px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .small-banner-image {
+            max-width: 400px;
+        }
+        
+        .small-banner-image img {
+            height: 150px;
+        }
+    }
+    
+    .banner-image {
+        flex: 1;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .banner-image img {
+        width: 100%;
+        height: 100%%;
+        display: block;
+        transition: transform 0.5s ease;
+    }
+    
+    .banner-image:hover img {
+        transform: scale(1.03);
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .banner-container {
+            flex-direction: column;
+        }
+        
+        .banner-image {
+            order: -1;
+            margin-bottom: 2rem;
+            max-width: 300px;
+        }
+        
+        .banner-content {
+            text-align: center;
+        }
+        .hero-section {
+            padding: 3rem 1.5rem;
+        }
+    
+        .hero-image {
+            max-width: 40%;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .banner-title {
+            font-size: 1.8rem;
+        }
+        
+        .banner-text {
+            font-size: 1rem;
+        }
+        .hero-section {
+            flex-direction: column-reverse;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+    
+        .hero-content {
+            padding-right: 0;
+            max-width: 100%;
+        }
+    
+        .hero-image {
+            max-width: 80%;
+            margin: 0 auto 2rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .household-banner {
+            padding: 2rem 1rem;
+        }
+        
+        .banner-title {
+            font-size: 1.5rem;
+        }
+        
+        .banner-btn {
+            padding: 0.7rem 1.5rem;
+        }
+        .hero-section {
+            padding: 1.5rem 1rem;
+        }
+    
+        .hero-image {
+            max-width: 100%;
+        }
+    }
+    
+    /* Product Grid Styles (existing with small enhancements) */
+    .product-section {
+        padding: 2rem 1rem;
+        background: #f9f9f9;
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto 2rem;
+        padding: 0 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        color: var(--dark-blue);
+        margin: 0;
+    }
+    
+    .view-all {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 2rem;
+        padding: 0 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .product-image-container {
+        position: relative;
+        overflow: hidden;
+        height: 250px;
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+    
+    .product-info {
+        padding: 1.2rem;
+    }
+    
+    .product-title {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .current-price {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    
+    /* Responsive Product Grid */
+    @media (max-width: 768px) {
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .product-image-container {
+            height: 200px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .product-image-container {
+            height: 180px;
+        }
+        
+        .product-info {
+            padding: 1rem;
+        }
+        
+        .product-title {
+            font-size: 0.9rem;
+        }
+        
+        .current-price {
+            font-size: 1rem;
+        }
+    }
+
+    /* Deals Section */
+    .deals-section {
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        color: white;
+    }
+
+    .deals-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .deals-content {
+        flex: 1;
+    }
+
+    .deals-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .deals-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .deals-timer {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .timer-box {
+        background: rgba(255,255,255,0.2);
+        
+        border-radius: 5px;
+        text-align: center;
+        min-width: 80px;
+    }
+
+    .timer-value {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .timer-label {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+
+    .deals-btn {
+        background: white;
+        color: var(--primary-color);
+        padding: 0.8rem 2rem;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .deals-btn:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+    .deals-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .deals-image {
+        flex: 1;
+        text-align: right;
+    }
+
+    /* Add these CSS styles in the style section */
+@keyframes dealsImageGlow {
+    0% { filter: brightness(1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.2)); }
+    50% { filter: brightness(1.1) drop-shadow(0 0 20px rgba(255, 255, 255, 0.4)); }
+    100% { filter: brightness(1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.2)); }
+}
+
+.deals-image img {
+    max-width: 100%;
+    height: auto;
+    animation: dealsImageGlow 3s infinite;
+    transition: transform 0.3s ease;
+    border-radius:10px;
+}
+
+.deals-image img:hover {
+    transform: scale(1.05);
+}
+/* Bags Banner Styles */
+.bags-banner {
+    width: 100%;
+    max-height: 400px;
+    background: linear-gradient(135deg, #4A90E2 60%, #357ABD 40%);
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.bags-banner-container {
+    display: flex;
+    {% comment %} flex-direction: column; {% endcomment %}
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.bags-banner-content {
+    width: 100%;
+    padding-right: 0;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.bags-banner-title {
+    font-size: 1.8rem;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.bags-banner-text {
+    font-size: 1rem;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.bags-banner-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: white;
+    color: var(--primary-color);
+    text-decoration: none;
+    border-radius: 24px;
+    transition: background-color 0.3s;
+    margin-bottom: 15px;
+}
+
+.bags-banner-btn:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+
+
+
+.bags-banner-image {
+    width: 100%;
+}
+
+.bags-banner-image img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+}
+
+/* Bags Product Section Styles */
+.bags-product-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.bags-section-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.bags-section-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.bags-view-all {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.bags-view-all:hover {
+    text-decoration: underline;
+}
+
+.bags-product-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+}
+
+.bags-product-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.bags-product-card:hover {
+    transform: translateY(-5px);
+}
+
+.bags-product-image-container {
+    width: 100%;
+    height: 200px;
+}
+
+.bags-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bags-product-info {
+    padding: 15px;
+    text-align: center;
+}
+
+.bags-product-title {
+    font-size: 1rem;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.bags-product-price {
+    color: #666;
+    font-weight: bold;
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .bags-banner-container {
+        flex-direction: row;
+        padding: 30px;
+    }
+    
+    .bags-banner-content {
+        width: 50%;
+        padding-right: 20px;
+        text-align: left;
+        margin-bottom: 0;
+    }
+    
+    .bags-banner-title {
+        font-size: 2rem;
+    }
+    
+ 
+    
+    .bags-banner-image {
+        width: 50%;
+    }
+    
+    .bags-banner-image img {
+        max-height: 350px;
+    }
+    
+    .bags-section-header {
+        flex-direction: row;
+        text-align: left;
+    }
+    
+    .bags-view-all {
+        margin-top: 0;
+    }
+    
+    .bags-product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .bags-product-info {
+        text-align: left;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .bags-product-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .bags-product-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+/* Sale Banner Styles */
+.sale-banner {
+    width: 100%;
+    background: linear-gradient(135deg, #ff4e4e, #ff8e8e);
+    margin: 20px 0;
+    color: white;
+    overflow: hidden;
+}
+
+.sale-banner-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.sale-banner-content {
+    position: relative;
+    z-index: 2;
+    padding: 20px 0;
+}
+
+.sale-tag {
+    background-color: white;
+    color: #ff4e4e;
+    display: inline-block;
+    padding: 5px 15px;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    animation: pulse 2s infinite;
+}
+
+.sale-banner-title {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.sale-banner-text {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+.sale-timer {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+#countdown {
+    background-color: rgba(0,0,0,0.2);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.sale-banner-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: white;
+    color: #ff4e4e;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.sale-banner-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.sale-banner-badges {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.sale-badge {
+    background-color: rgba(255,255,255,0.2);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+.sale-banner-image {
+    position: relative;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.sale-banner-image img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    animation: popUpAnimation 2s infinite;
+    transform-origin: center;
+    border-radius: 100px;
+}
+
+@keyframes popUpAnimation {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Optional: Pause animation on hover */
+.sale-banner-image:hover img {
+    animation-play-state: paused;
+}
+
+.sale-price-tag {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.original-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 0.9rem;
+}
+
+.discounted-price {
+    color: #ff4e4e;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Animation */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .sale-banner-container {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .sale-banner-content {
+        width: 50%;
+        padding-right: 30px;
+    }
+    
+    .sale-banner-image {
+        width: 50%;
+        margin-top: 0;
+    }
+    
+    .sale-banner-title {
+        font-size: 2.5rem;
+    }
+}
+.card-carousel-section {
+    padding: 2rem 0;
+    background: #f8f9fa;
+}
+
+.card-carousel {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* smooth scroll */
+    gap: 20px; /* add gap between cards */
+}
+
+.card-carousel-container {
+    overflow: hidden; /* hide overflow */
+    position: relative;
+}
+
+
+.carousel-card {
+    flex: 0 0 calc(25% - 15px); /* 4 cards with gap */
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.carousel-card:hover {
+    transform: translateY(-5px);
+}
+
+.carousel-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.carousel-card-content {
+    padding: 1rem;
+}
+
+.carousel-card-content h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.carousel-card-content p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.carousel-arrow:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.prev-arrow {
+    left: 0;
+}
+
+.next-arrow {
+    right: 0;
+}
+
+@media (max-width: 992px) {
+    .carousel-card {
+        flex: 0 0 calc(33.333% - 13.333px); /* 3 cards with gap */
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-card {
+        flex: 0 0 calc(50% - 10px); /* 2 cards with gap */
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-card {
+        flex: 0 0 100%; /* 1 card */
+    }
+}
+.brand-deals-banner {
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+    margin: 2rem 0;
+}
+
+.brand-deals-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.brand-deals-content {
+    flex: 1;
+    color: white;
+}
+
+.brand-tag {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.brand-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.brand-text {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+.brand-badges {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.brand-badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+.brand-btn {
+    display: inline-block;
+    background: white;
+    color: #4A90E2;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.brand-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.brand-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    max-width: 600px;
+}
+
+.brand-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.brand-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.brand-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.brand-card-content {
+    padding: 1rem;
+    text-align: center;
+    background: white;
+}
+
+.brand-card-content h3 {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+.brand-card-content p {
+    color: #555;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 992px) {
+    .brand-deals-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .brand-badges {
+        justify-content: center;
+    }
+
+    .brand-cards {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .brand-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .brand-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-title {
+        font-size: 1.8rem;
+    }
+
+    .brand-text {
+        font-size: 1rem;
+    }
+}
+.trending-deals {
+    padding: 2rem 1rem;
+    background: #f8f9fa;
+}
+
+.trending-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.trending-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.deals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.deal-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 1rem;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.deal-card:hover {
+    transform: translateY(-5px);
+}
+
+.deal-content {
+    text-align: center;
+}
+
+.deal-content h3 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.deal-content p {
+    font-size: 0.9rem;
+    color: #e74c3c;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.deal-content img {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .deals-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .deal-content h3 {
+        font-size: 0.9rem;
+    }
+
+    .deal-content p {
+        font-size: 0.8rem;
+    }
+
+    .deal-content img {
+        height: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .deals-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .trending-title {
+        font-size: 1.3rem;
+    }
+}
+    /* Features Section */
+    .features {
+        padding: 3rem 0;
+        background: white;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .feature-card {
+        text-align: center;
+        padding: 2rem 1rem;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--dark-blue);
+    }
+
+    .feature-desc {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    /* Newsletter Section */
+    .newsletter {
+        padding: 3rem 0;
+        background: #f5f7fa;
+        text-align: center;
+    }
+
+    .newsletter-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .newsletter-title {
+        font-size: 1.8rem;
+        color: var(--dark-blue);
+        margin-bottom: 1rem;
+    }
+
+    .newsletter-subtitle {
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+    .newsletter-form {
+        display: flex;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .newsletter-input {
+        flex-grow: 1;
+        padding: 0.8rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 30px 0 0 30px;
+        font-size: 1rem;
+    }
+
+    .newsletter-btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0 1.5rem;
+        border-radius: 0 30px 30px 0;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .hero-section {
+            padding: 3rem 1.5rem;
+        }
+    
+        .hero-image {
+            max-width: 40%;
+        }
+    }
+    @media (min-width: 600px) {
+        .section-header {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-title {
+            margin: 0;
+            font-size: 1.6rem;
+        }
+        
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            flex-direction: column-reverse;
+            text-align: center;
+            padding: 2rem 1rem;
+            gap: 1.5rem;
+        }
+    
+        .hero-content {
+            padding-right: 0;
+           
+        }
+    
+        .hero-image {
+            max-width: 80%;
+            margin: 0 auto;
+        }
+    
+        .hero-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 1rem auto;
+            text-align: center;
+        }
+        .deals-container {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .deals-image img {
+            max-width: 100%;
+            height: auto;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            margin-top:2rem;
+        }
+
+        .hero-content {
+            left: 5%;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+        }
+        .product-section {
+            padding: 3rem 1.5rem;
+        }
+        
+        .section-header {
+            margin-bottom: 2rem;
+            padding: 0 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+        }
+        
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 0 1.5rem;
+        }
+        
+        .product-image-container {
+            height: 220px;
+        }
+        
+        .product-title {
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.2rem;
+        }
+        
+        .product-image-container {
+            height: 200px;
+        }
+
+        .category-list {
+            justify-content: flex-start;
+        }
+
+        .hero-section {
+            padding: 1.5rem 1rem;
+            min-height: auto;
+        }
+    
+        .hero-image {
+            max-width: 100%;
+        }
+    
+        .hero-title {
+            font-size: 1.8rem;
+        }
+    
+        .hero-subtitle {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+    
+        .hero-btn {
+            padding: 0.7rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .newsletter-form {
+            flex-direction: column;
+        }
+
+        .newsletter-input {
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+
+        .newsletter-btn {
+            border-radius: 30px;
+            padding: 0.8rem;
+        }
+           
+    }
+    @media (min-width: 992px) {
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
+        }
+        
+        .product-image-container {
+            height: 250px;
+        }
+    }
+    
+    /* For very small screens (below 360px) */
+    @media (max-width: 359px) {
+        
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+        
+        .product-image-container {
+            height: 150px;
+        }
+        
+        .product-info {
+            padding: 0.8rem;
+        }
+        
+        .product-title {
+            font-size: 0.8rem;
+        }
+        
+        .product-price {
+            font-size: 0.8rem;
+        }
+        
+        .current-price {
+            font-size: 0.9rem;
+        }
+        
+    }
+    .scroll-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #4A90E2;
+        color: white;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+
+    .scroll-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .scroll-to-top:hover {
+        background-color: #FF6B35;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+        .scroll-to-top {
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+        }
+    }
+    .hero-gif {
+        position: absolute;
+        right: 60px;
+        bottom: -20px;
+        max-width: 150px;
+        z-index: 3;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .floating-gif {
+        width: 140%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,-0.9);
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-gif {
+            right: 0;
+            bottom: -10px;
+            max-width: 120px;
+        }
+    }
+    
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Summer Collection 2025</h1>
+        <p class="hero-subtitle">Discover our new arrivals with up to 50% off on selected items</p>
+        <a href="{% if user.is_authenticated %}{% url 'home' %}{% else %}{% url 'user-login' %}{% endif %}" class="hero-btn">Shop Now</a>
+        <a href="{% url 'contact' %}" class="hero-btn contact-btn">Contact Us</a>
+    </div>
+    <img src="{% static 'main/banner.png' %}" alt="Fashion Model" class="hero-image">
+    <div class="hero-gif">
+        <!-- Replace the src with your GIF path -->
+        <img src="{% static 'main/gif.gif' %}" alt="Animation" class="floating-gif">
+    </div>
+</section>
+<!-- Featured Products -->
+<section class="product-section">
+    <div class="section-header">
+        <h2 class="section-title">Trending Sarees</h2>
+        <a href="#" class="view-all">View All</a>
+    </div>
+    <div class="product-carousel-container">
+        <div class="product-carousel">
+            <!-- First set of products (visible) -->
+            <div class="product-card">
+                <span class="product-badge">Sale</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree3.jpeg' %}" alt="Banarasi Silk Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Banarasi Silk Saree with Zari Work</h3>
+                    <div class="product-price">
+                       
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">New</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree2.jpeg' %}" alt="Georgette Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Floral Printed Georgette Saree</h3>
+                    <div class="product-price">
+                        
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">Trending</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree1.jpeg' %}" alt="Cotton Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Handloom Cotton Saree</h3>
+                    <div class="product-price">
+                       
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">Sale</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree4.jpeg' %}" alt="Silk Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Pure Silk Wedding Saree</h3>
+                    <div class="product-price">
+                       
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">Bestseller</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree5.jpeg' %}" alt="Chiffon Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Designer Chiffon Saree</h3>
+                    <div class="product-price">
+                       
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">Premium</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree6.jpeg' %}" alt="Designer Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Embroidered Designer Saree</h3>
+                    <div class="product-price">
+                       
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">New</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree7.jpeg' %}" alt="Net Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Embellished Net Saree</h3>
+                    <div class="product-price">
+                       
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">Limited</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree8.jpeg' %}" alt="Party Wear Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Party Wear Designer Saree</h3>
+                    <div class="product-price">
+                        
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Duplicate set of products (for continuous scrolling) -->
+            <div class="product-card">
+                <span class="product-badge">Sale</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree3.jpeg' %}" alt="Banarasi Silk Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Banarasi Silk Saree with Zari Work</h3>
+                    <div class="product-price">
+                      
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">New</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree2.jpeg' %}" alt="Georgette Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Floral Printed Georgette Saree</h3>
+                    <div class="product-price">
+                       
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">Trending</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree1.jpeg' %}" alt="Cotton Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Handloom Cotton Saree</h3>
+                    <div class="product-price">
+                      
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="product-badge">Sale</span>
+                <div class="product-image-container">
+                    <img src="{% static 'main/saree4.jpeg' %}" alt="Silk Saree" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Pure Silk Wedding Saree</h3>
+                    <div class="product-price">
+                       
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Deals Section -->
+<section class="deals-section">
+    <div class="deals-container">
+        <div class="deals-content">
+            <h2 class="deals-title">Flash Sale!</h2>
+            <p class="deals-subtitle">Limited time offer. Don't miss out on these amazing deals.</p>
+            <div class="deals-timer" id="dealsTimer">
+                <div class="timer-box">
+                    <div class="timer-value" id="hours">00</div>
+                    <div class="timer-label">HOURS</div>
+                </div>
+                <div class="timer-box">
+                    <div class="timer-value" id="minutes">00</div>
+                    <div class="timer-label">MINUTES</div>
+                </div>
+                <div class="timer-box">
+                    <div class="timer-value" id="seconds">00</div>
+                    <div class="timer-label">SECONDS</div>
+                </div>
+            </div>
+            <div class="deals-buttons">
+                <a href="{% if user.is_authenticated %}{% url 'Products:product_list' %}{% else %}{% url 'user-login' %}{% endif %}" class="deals-btn">Shop Now</a>
+                <a href="#" class="deals-btn">Become a Merchant</a>
+            </div>
+        </div>
+        <div class="deals-image">
+            <img src="{% static 'main/new.png' %}" alt="Deals">
+        </div>
+    </div>
+</section>
+
+<!-- Popular Categories -->
+<section class="product-section">
+    <div class="section-header">
+        <h2 class="section-title">Popular Categories</h2>
+        <a href="#" class="view-all">View All</a>
+    </div>
+    <div class="product-grid">
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/kurti.jpeg' %}" alt="Kurtis" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Kurtis</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/lehanga.jpeg' %}" alt="Lehengas" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Lehengas</h3>
+                <div class="product-price">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/set.jpeg' %}" alt="Kurta Sets" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Kurta Sets</h3>
+                <div class="product-price">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/dupatta.jpeg' %}" alt="Dupattas" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Dupattas</h3>
+                <div class="product-price">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/blouse.jpeg' %}" alt="Blouses" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Blouses</h3>
+                <div class="product-price">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/suit.jpeg' %}" alt="Suits" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Suits</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/jewellery.jpeg' %}" alt="Jewellery" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Jewellery</h3>
+                <div class="product-price">
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/footware.jpeg' %}" alt="Footwear" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Footwear</h3>
+                <div class="product-price">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Banner Section -->
+<section class="banner-section">
+    <div class="banner-container">
+        <div class="banner-content">
+            <h2 class="banner-title">New Arrivals for Men</h2>
+            <p class="banner-text">Discover our latest collection of men's fashion</p>
+            <a href="#" class="banner-btn">Shop Now</a>
+            <div class="banner-image-gallery">
+                <div class="gallery-wrapper">
+                    <div class="gallery-column">
+                        <!-- Your images here, no duplicates needed now -->
+                        <img src="{% static 'main/mensnew1.jpg' %}" alt="Men's Fashion" class="gallery-image">
+                        <img src="{% static 'main/mensnew2.jpg' %}" alt="Men's Fashion" class="gallery-image">
+                        <img src="{% static 'main/mensnew3.jpeg' %}" alt="Men's Fashion" class="gallery-image">
+                        <img src="{% static 'main/mensnew4.jpg' %}" alt="Men's Fashion" class="gallery-image">
+                    </div>
+                    <div class="gallery-column">
+                        <!-- Repeat images once manually for seamless scroll -->
+                        <img src="{% static 'main/mensnew1.jpg' %}" alt="Men's Fashion" class="gallery-image">
+                        <img src="{% static 'main/mensnew2.jpg' %}" alt="Men's Fashion" class="gallery-image">
+                        <img src="{% static 'main/mensnew3.jpeg' %}" alt="Men's Fashion" class="gallery-image">
+                        <img src="{% static 'main/mensnew4.jpg' %}" alt="Men's Fashion" class="gallery-image">
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <img src="{% static 'main/mensnew.jpeg' %}" alt="Men's Fashion" class="banner-image">
+    </div>
+</section>
+
+<!-- Men's Products Section -->
+<section class="product-section">
+    <div class="section-header">
+        <h2 class="section-title">Men's Collection</h2>
+        <a href="#" class="view-all">View All</a>
+    </div>
+    <div class="product-grid">
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/formal.jpeg' %}" alt="Formal Shirts" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Formal Shirts</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/casual.jpeg' %}" alt="Casual T-Shirts" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Casual T-Shirts</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/jeans.jpeg' %}" alt="Jeans" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Jeans</h3>
+                <div class="product-price">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/menkutas.jpeg' %}" alt="Kurtas" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Kurtas</h3>
+                <div class="product-price">
+                  
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/mensshoe.jpeg' %}" alt="Footwear" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Footwear</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/watch.jpeg' %}" alt="Watches" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Watches</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/accesories.jpeg' %}" alt="Accessories" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Accessories</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/mensuit.jpeg' %}" alt="Suits" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Suits</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="household-banner">
+    <div class="banner-container">
+        <div class="banner-content">
+            <h2 class="banner-title">Home & Kitchen Essentials</h2>
+            <p class="banner-text">Upgrade your living space with our premium collection</p>
+            <a href="#" class="banner-btn">Shop Now</a>
+            <div class="small-banner-image">
+                <img src="{% static 'main/nnn.jpeg' %}" alt="Home & Kitchen Essentials">
+                <img src="{% static 'main/cook.png' %}" alt="Home & Kitchen Essentials">
+            </div>
+        </div>
+        <div class="banner-image">
+            <img src="{% static 'main/homeki.jpeg' %}" alt="Home & Kitchen Essentials">
+        </div>
+    </div>
+</section>
+
+<!-- Household Products Section -->
+<section class="product-section">
+    <div class="section-header">
+        <h2 class="section-title">Household Products</h2>
+        <a href="#" class="view-all">View All</a>
+    </div>
+    <div class="product-grid">
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/kitchenware.jpeg' %}" alt="Kitchenware" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Kitchenware</h3>
+                <div class="product-price">
+                  
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/decor.png' %}" alt="Home Decor" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Home Decor</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/ki.jpeg' %}" alt="Cookware" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Cookware</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/storage.jpeg' %}" alt="Storage Solutions" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Storage Solutions</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/clean.png' %}" alt="Cleaning Essentials" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Cleaning Essentials</h3>
+                <div class="product-price">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/furniture.jpeg' %}" alt="Furniture" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Furniture</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/bed.png' %}" alt="Bed & Bath Linen" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Bed & Bath Linen</h3>
+                <div class="product-price">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="{% static 'main/light.jpeg' %}" alt="Lighting" class="product-image">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Lighting</h3>
+                <div class="product-price">
+                
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Bags Section Banner -->
+<section class="bags-banner">
+    <div class="bags-banner-container">
+        <div class="bags-banner-content">
+            <h2 class="bags-banner-title">Stylish Bags Collection</h2>
+            <p class="bags-banner-text">Carry your essentials in style with our premium bags</p>
+            <a href="#" class="bags-banner-btn">Shop Now</a>
+           
+        </div>
+        <div class="bags-banner-image">
+            <img src="{% static 'main/bag.png' %}" alt="Bags Collection">
+            
+        </div>
+    </div>
+</section>
+
+<!-- Bags Products Section -->
+<section class="bags-product-section">
+    <div class="bags-section-header">
+        <h2 class="bags-section-title">Featured Bags</h2>
+        <a href="#" class="bags-view-all">View All</a>
+    </div>
+    <div class="bags-product-grid">
+        <div class="bags-product-card">
+            <div class="bags-product-image-container">
+                <img src="{% static 'main/bag3.jpeg' %}" alt="Backpacks" class="bags-product-image">
+            </div>
+            <div class="bags-product-info">
+                <h3 class="bags-product-title">Backpacks</h3>
+                <div class="bags-product-price">
+                    <!-- Price would go here -->
+                </div>
+            </div>
+        </div>
+        <div class="bags-product-card">
+            <div class="bags-product-image-container">
+                <img src="{% static 'main/bag7.png' %}" alt="Handbags" class="bags-product-image">
+            </div>
+            <div class="bags-product-info">
+                <h3 class="bags-product-title">Handbags</h3>
+                <div class="bags-product-price">
+                    <!-- Price would go here -->
+                </div>
+            </div>
+        </div>
+        <div class="bags-product-card">
+            <div class="bags-product-image-container">
+                <img src="{% static 'main/bag5.jpeg' %}" alt="Tote Bags" class="bags-product-image">
+            </div>
+            <div class="bags-product-info">
+                <h3 class="bags-product-title">Tote Bags</h3>
+                <div class="bags-product-price">
+                    <!-- Price would go here -->
+                </div>
+            </div>
+        </div>
+        <div class="bags-product-card">
+            <div class="bags-product-image-container">
+                <img src="{% static 'main/bag4.png' %}" alt="Travel Bags" class="bags-product-image">
+            </div>
+            <div class="bags-product-info">
+                <h3 class="bags-product-title">Travel Bags</h3>
+                <div class="bags-product-price">
+                    <!-- Price would go here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="sale-banner">
+    <div class="sale-banner-container">
+        <div class="sale-banner-content">
+            <div class="sale-tag">SALE</div>
+            <h2 class="sale-banner-title">MEGA SALE IS ON!</h2>
+            <p class="sale-banner-text">Up to 50% OFF on all products</p>
+            <p class="sale-timer">Offer ends in: <span id="countdown">24:59:59</span></p>
+            <a href="#" class="sale-banner-btn">Shop Now</a>
+            <div class="sale-banner-badges">
+                <span class="sale-badge">Free Shipping</span>
+                <span class="sale-badge">Limited Time</span>
+            </div>
+        </div>
+        <div class="sale-banner-image">
+            <img src="{% static 'main/sale.png' %}" alt="Bag Sale Collection">
+            <div class="sale-price-tag">
+                <span class="original-price">₹999</span>
+                <span class="discounted-price">₹499</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="card-carousel-section">
+    <div class="card-carousel-container">
+        <button class="carousel-arrow prev-arrow" onclick="moveCarousel(-1)" style="display: none;">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="card-carousel">
+            <!-- Card 1 -->
+            <div class="carousel-card">
+                <img src="{% static 'main/offer1.jpeg' %}" alt="Card 1">
+                <div class="carousel-card-content">
+                    <h3>Special Offer</h3>
+                    <p>Limited time deals</p>
+                </div>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="carousel-card">
+                <img src="{% static 'main/offer6.jpeg' %}" alt="Card 2">
+                <div class="carousel-card-content">
+                    <h3>New Arrivals</h3>
+                    <p>Fresh collection</p>
+                </div>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="carousel-card">
+                <img src="{% static 'main/offer3.jpeg' %}" alt="Card 3">
+                <div class="carousel-card-content">
+                    <h3>Trending Now</h3>
+                    <p>Most popular items</p>
+                </div>
+            </div>
+            
+            <!-- Card 4 -->
+            <div class="carousel-card">
+                <img src="{% static 'main/offer4.jpeg' %}" alt="Card 4">
+                <div class="carousel-card-content">
+                    <h3>Flash Sale</h3>
+                    <p>24-hour deals</p>
+                </div>
+            </div>
+            
+            <!-- Card 5 -->
+            <div class="carousel-card">
+                <img src="{% static 'main/offer5.jpeg' %}" alt="Card 5">
+                <div class="carousel-card-content">
+                    <h3>Clearance</h3>
+                    <p>Best prices</p>
+                </div>
+            </div>
+            
+            <!-- Card 6 -->
+            <div class="carousel-card">
+                <img src="{% static 'main/offer2.png' %}" alt="Card 6">
+                <div class="carousel-card-content">
+                    <h3>Season Sale</h3>
+                    <p>End of season</p>
+                </div>
+            </div>
+            
+            <!-- Card 7 -->
+            <div class="carousel-card">
+                <img src="{% static 'main/offer7.png' %}" alt="Card 7">
+                <div class="carousel-card-content">
+                    <h3>Bundle Deals</h3>
+                    <p>Save more</p>
+                </div>
+            </div>
+        </div>
+        
+        <button class="carousel-arrow next-arrow" onclick="moveCarousel(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
+
+
+<!-- Features Section -->
+<section class="features">
+    <div class="features-grid">
+        <div class="feature-card">
+            <i class="fas fa-truck feature-icon"></i>
+            <h3 class="feature-title">Free Shipping</h3>
+            <p class="feature-desc">Free delivery on orders above ₹499</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-undo feature-icon"></i>
+            <h3 class="feature-title">Easy Returns</h3>
+            <p class="feature-desc">15-day easy return policy</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-shield-alt feature-icon"></i>
+            <h3 class="feature-title">Secure Payments</h3>
+            <p class="feature-desc">100% secure payment methods</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-headset feature-icon"></i>
+            <h3 class="feature-title">24/7 Support</h3>
+            <p class="feature-desc">Dedicated customer support</p>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter">
+    <div class="newsletter-container">
+        <h2 class="newsletter-title">Subscribe to Our Newsletter</h2>
+        <p class="newsletter-subtitle">Get updates on special offers and new arrivals</p>
+        <form class="newsletter-form">
+            <input type="email" class="newsletter-input" placeholder="Enter your email address">
+            <button type="submit" class="newsletter-btn">Subscribe</button>
+        </form>
+    </div>
+</section>
+<button class="scroll-to-top" id="scrollToTop">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollToTopButton = document.getElementById('scrollToTop');
+    
+        // Show/hide button based on scroll position
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollToTopButton.classList.add('visible');
+            } else {
+                scrollToTopButton.classList.remove('visible');
+            }
+        });
+    
+        // Smooth scroll to top when button is clicked
+        scrollToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    });
+    </script>
+<script>
+    // Optional: JavaScript for smoother control
+    document.addEventListener('DOMContentLoaded', function() {
+        const carousel = document.querySelector('.product-carousel');
+        const container = document.querySelector('.product-carousel-container');
+        
+        // Pause on hover
+        container.addEventListener('mouseenter', () => {
+            carousel.style.animationPlayState = 'paused';
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            carousel.style.animationPlayState = 'running';
+        });
+    });
+</script>
+
+<script>
+    // Set the date we're counting down to (24 hours from now)
+    const countDownDate = new Date().getTime() + (24 * 60 * 60 * 1000);
+    
+    // Update the countdown every 1 second
+    const countdownTimer = setInterval(function() {
+        // Get current date and time
+        const now = new Date().getTime();
+        
+        // Find the distance between now and the countdown date
+        const distance = countDownDate - now;
+        
+        // Time calculations for hours, minutes and seconds
+        const hours = Math.floor((distance % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        const minutes = Math.floor((distance % (60 * 60 * 1000)) / (60 * 1000));
+        const seconds = Math.floor((distance % (60 * 1000)) / 1000);
+        
+        // Add leading zeros if needed
+        const formatNumber = (number) => number < 10 ? `0${number}` : number;
+        
+        // Display the result
+        document.getElementById("hours").textContent = formatNumber(hours);
+        document.getElementById("minutes").textContent = formatNumber(minutes);
+        document.getElementById("seconds").textContent = formatNumber(seconds);
+        
+        // If the countdown is finished, clear the interval
+        if (distance < 0) {
+            clearInterval(countdownTimer);
+            document.getElementById("dealsTimer").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+    </script>
+    <script>
+        let currentIndex = 0;
+        const carousel = document.querySelector('.card-carousel');
+        const cards = document.querySelectorAll('.carousel-card');
+        const prevArrow = document.querySelector('.prev-arrow');
+        const nextArrow = document.querySelector('.next-arrow');
+        const totalCards = cards.length;
+        let cardsToShow = 4;
+        let cardWidth = 0;
+    
+        function updateCardsToShow() {
+            if (window.innerWidth <= 480) {
+                cardsToShow = 1;
+            } else if (window.innerWidth <= 768) {
+                cardsToShow = 2;
+            } else if (window.innerWidth <= 992) {
+                cardsToShow = 3;
+            } else {
+                cardsToShow = 4;
+            }
+        }
+    
+        function updateCardWidth() {
+            if (cards.length > 0) {
+                cardWidth = cards[0].offsetWidth + 20; // 20px margin/gap
+            }
+        }
+    
+        function updateCarousel() {
+            updateCardsToShow();
+            updateCardWidth();
+    
+            const maxVisibleCards = totalCards - cardsToShow;
+            const maxIndex = Math.max(maxVisibleCards, 0);
+    
+            // Clamp currentIndex
+            currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
+    
+            const moveX = currentIndex * cardWidth;
+            carousel.style.transform = `translateX(-${moveX}px)`;
+    
+            // Show or hide arrows
+            prevArrow.style.display = currentIndex === 0 ? 'none' : 'flex';
+            nextArrow.style.display = currentIndex >= maxIndex ? 'none' : 'flex';
+        }
+    
+        function moveCarousel(step) {
+            currentIndex += step;
+            updateCarousel();
+        }
+    
+        window.addEventListener('resize', () => {
+            // Don't reset index on resize
+            updateCarousel();
+        });
+    
+        updateCarousel();
+    </script>
+    
+    
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set the date we're counting down to (24 hours from now)
+    const countDownDate = new Date();
+    countDownDate.setHours(countDownDate.getHours() + 24);
+    
+    // Update the count down every 1 second
+    const x = setInterval(function() {
+        // Get today's date and time
+        const now = new Date().getTime();
+        
+        // Find the distance between now and the count down date
+        const distance = countDownDate - now;
+        
+        // Time calculations for hours, minutes and seconds
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        // Display the result
+        document.getElementById("countdown").innerHTML = 
+            (hours < 10 ? "0" + hours : hours) + ":" + 
+            (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+            (seconds < 10 ? "0" + seconds : seconds);
+        
+        // If the count down is finished
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("countdown").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+});
+</script>
+{% endblock %}

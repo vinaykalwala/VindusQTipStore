@@ -2,6 +2,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+    path('', home, name='home'),
     path('register/customer/', register_customer, name='register_customer'),
     path('register/vendor/', register_vendor, name='register_vendor'),
     path('register/delivery/', register_delivery_person, name='register_delivery_person'),
@@ -19,5 +20,23 @@ urlpatterns = [
     path('forgot-password/', forgot_password, name='forgot_password'),
     path('verify-otp/', verify_otp, name='verify_otp'),
     path('reset-password/',reset_password, name='reset_password'),
-    path('seller',sellerpage, name='sellerpage'),
+    path('sellerpage/',sellerpage,name='sellerpage'),
+    path('/contact',contact, name='contact'),
+    path('faq/', faq, name='faq'),
+    path('delivery_admin/', delivery_admin, name='delivery_admin'),
+    path('delivery_dashboard/',delivery_dashboard, name='delivery_dashboard'),
+    path('delivery_partners/', delivery_partners, name='delivery_partners'),
+    path('blog/', blog_view, name='blog'),
+    path('image-courtesy/', image_courtesy_view, name='image_courtesy'),
+    path('product-care/', product_care_view, name='product_care'),
+    path('sitemap/', sitemap, name='sitemap'),
+    path('terms/', terms, name='terms'),
+    path('accept-terms/', accept_terms, name='accept_terms'),
+    path('aboutus/',aboutus,name='about-us'),
+    path('privacypolicy/',privacypolicy, name='privacy-policy'),
+    path('b2b/',b2b,name='b2b'),
+    path('affiliate/',affiliate,name='affiliate'),
+    path('cookies/',cookies,name='cookies'),
+    path('newsletter/', newsletter_signup, name='newsletter-signup'),
+    path('shipping-policy/', shipping_policy, name='shipping-policy'),
 ]

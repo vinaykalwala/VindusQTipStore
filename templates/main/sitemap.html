@@ -1,0 +1,368 @@
+{% extends "main/index.html" %}
+{% load static %}
+
+{% block title %}Sitemap - QTipStore{% endblock %}
+{% block extra_head %}
+<style>
+    .sitemap-container {
+        max-width: 1200px;
+        margin: 4rem auto;
+        padding: 0 2rem;
+    }
+    
+    .sitemap-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .sitemap-header h1 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .sitemap-header h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--secondary-color);
+        border-radius: 2px;
+    }
+    
+    .sitemap-header p {
+        font-size: 1.1rem;
+        color: var(--text-color);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .sitemap-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+    
+    .sitemap-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .sitemap-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+    
+    .sitemap-card h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .sitemap-card h2 i {
+        font-size: 1.5rem;
+    }
+    
+    .sitemap-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .sitemap-list li {
+        margin-bottom: 1rem;
+        position: relative;
+        padding-left: 1.5rem;
+    }
+    
+    .sitemap-list li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.7rem;
+        width: 8px;
+        height: 8px;
+        background: var(--secondary-color);
+        border-radius: 50%;
+    }
+    
+    .sitemap-list a {
+        color: var(--text-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .sitemap-list a i {
+        font-size: 0.8rem;
+        color: var(--primary-color);
+        transition: transform 0.3s ease;
+    }
+    
+    .sitemap-list a:hover {
+        color: var(--primary-color);
+    }
+    
+    .sitemap-list a:hover i {
+        transform: translateX(3px);
+    }
+    
+    .sitemap-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+    }
+    
+    .sitemap-breadcrumb a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    
+    .sitemap-breadcrumb span {
+        color: #888;
+    }
+    
+    @media (max-width: 768px) {
+        .sitemap-header h1 {
+            font-size: 2rem;
+        }
+        
+        .sitemap-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .sitemap-card {
+            padding: 1.5rem;
+        }
+    }
+    .more-details-creative {
+     
+        text-align: center;
+    }
+    
+    .slide-reveal {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+    
+        border-radius: 30px;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+        font-size: 1.1rem;
+        animation: floaty 3s ease-in-out infinite;
+        transition: all 0.4s ease;
+    }
+    
+    .slide-reveal:hover {
+       
+        transform: scale(1.05);
+    }
+    
+    .slide-reveal .icon i {
+        animation: pulseRotate 2s infinite;
+        font-size: 1.3rem;
+    }
+    
+    @keyframes floaty {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+    
+    @keyframes pulseRotate {
+        0% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(15deg) scale(1.2); }
+        100% { transform: rotate(0deg) scale(1); }
+    }
+    
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sitemap-container">
+    <div class="sitemap-breadcrumb">
+        <a href="{% url 'home' %}">Home</a>
+        <span>/</span>
+        <span>Sitemap</span>
+    </div>
+    
+    <div class="sitemap-header">
+        <h1>QTipStore Sitemap</h1>
+        <p>Explore our complete website structure and find exactly what you're looking for</p>
+    </div>
+    
+    <div class="sitemap-grid">
+        <!-- Shopping Section -->
+        <div class="sitemap-card">
+            <h2><i class="fas fa-shopping-bag"></i> Shopping</h2>
+            <ul class="sitemap-list">
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> New Arrivals</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> New Arrivals</a></li>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'sellerpage' %}"><i class="fas fa-chevron-right"></i> Best Sellers</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Best Sellers</a></li>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Sale & Offers</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Sale & Offers</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <!-- Categories Section -->
+        <div class="sitemap-card">
+            <h2><i class="fas fa-tags"></i> Shop Categories</h2>
+            <ul class="sitemap-list">
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Men's Collection</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Men's Collection</a></li>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Women's Collection</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Women's Collection</a></li>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Kids & Baby</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Kids & Baby</a></li>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Accessories</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Accessories</a></li>
+                {% endif %}
+        
+                <!-- Special More Details Tag -->
+                <div class="more-details-creative">
+                    <a href="{% url 'home' %}" class="slide-reveal">
+                        <span class="text">More Details</span>
+                        <span class="icon"><i class="fas fa-arrow-down"></i></span>
+                    </a>
+                </div>
+        
+            </ul>
+        </div>
+        
+        
+        <!-- Customer Service -->
+        <div class="sitemap-card">
+            <h2><i class="fas fa-headset"></i> Customer Service</h2>
+            <ul class="sitemap-list">
+                <li><a href="{% url 'contact' %}"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                <li><a href="{% url 'faq' %}"><i class="fas fa-chevron-right"></i> FAQs</a></li> 
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Track Your Order</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Track Your Order</a></li>
+                {% endif %}
+                <li><a href="{% url 'product_care' %}"><i class="fas fa-chevron-right"></i> Product Care & Size Guide</a></li>
+            </ul>
+        </div>
+        
+        <!-- My Account -->
+        <div class="sitemap-card">
+            <h2><i class="fas fa-user-circle"></i> My Account</h2>
+            <ul class="sitemap-list">
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Login / Register</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Order History</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Order History</a></li>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Wishlist</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Wishlist</a></li>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Account Settings</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Account Settings</a></li>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Address Book</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Address Book</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <!-- About QTipStore -->
+        <div class="sitemap-card">
+            <h2><i class="fas fa-store"></i> About QTipStore</h2>
+            <ul class="sitemap-list">
+                <li><a href="{% url 'about-us' %}"><i class="fas fa-chevron-right"></i> Our Story</a></li>
+                <li><a href="{% url 'blog' %}"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                {% comment %} <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Store Locations</a></li> {% endcomment %}
+            </ul>
+        </div>
+        
+        <!-- Policies -->
+        <div class="sitemap-card">
+            <h2><i class="fas fa-file-alt"></i> Policies</h2>
+            <ul class="sitemap-list">
+                <li><a href="{% url 'privacy-policy' %}"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                <li><a href="{% url 'terms' %}"><i class="fas fa-chevron-right"></i> Terms & Conditions</a></li>
+                <li><a href="{% url 'cookies' %}"><i class="fas fa-chevron-right"></i> Cookie Policy</a></li>
+               
+            </ul>
+        </div>
+        
+        <!-- Business Services -->
+        <div class="sitemap-card">
+            <h2><i class="fas fa-briefcase"></i> Business Services</h2>
+            <ul class="sitemap-list">
+                <li><a href="{% url 'sellerpage' %}"><i class="fas fa-chevron-right"></i> Become a Supplier</a></li>
+                <li><a href="{% url 'b2b' %}"><i class="fas fa-chevron-right"></i> Bulk Orders / B2B</a></li>
+                <li><a href="{% url 'affiliate' %}"><i class="fas fa-chevron-right"></i> Affiliate Program</a></li>
+                <li><a href="{% url 'contact' %}"><i class="fas fa-chevron-right"></i> Wholesale Inquiries</a></li>
+            </ul>
+        </div>
+        
+        <!-- Social & Community -->
+        <div class="sitemap-card">
+            <h2><i class="fas fa-users"></i> Social & Community</h2>
+            <ul class="sitemap-list">
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Instagram</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Facebook</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Pinterest</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Twitter</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> YouTube</a></li>
+               
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

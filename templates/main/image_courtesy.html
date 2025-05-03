@@ -1,0 +1,353 @@
+{% extends "main/index.html" %}
+{% load static %}
+{% block title %}Image Credits - QTipStore{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Image Courtesy Page Styles */
+    .courtesy-container {
+        max-width: 1200px;
+        margin: 4rem auto;
+        padding: 0 2rem;
+    }
+    
+    .courtesy-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .courtesy-header h1 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .courtesy-header p {
+        font-size: 1.1rem;
+        color: var(--text-color);
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+    
+    .brand-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+    }
+    
+    .brand-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 0.5rem;
+    }
+    
+    .brand-list {
+        column-count: 3;
+        column-gap: 2rem;
+    }
+    
+    .brand-list p {
+        margin-bottom: 0.5rem;
+        break-inside: avoid;
+    }
+    
+    .attribution-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+    }
+    
+    .attribution-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 0.5rem;
+    }
+    
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .image-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .image-preview {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .image-source {
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .image-source a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .image-source a:hover {
+        text-decoration: underline;
+    }
+    
+    .license-type {
+        font-size: 0.8rem;
+        color: #888;
+        margin-top: 0.3rem;
+    }
+    
+    .copyright-notice {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        border-radius: 4px;
+    }
+    
+    .license-info ul {
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+    }
+    
+    .license-info li {
+        margin-bottom: 0.5rem;
+        color: #555;
+    }
+    
+    .license-info {
+        margin-top: 3rem;
+        padding: 1.5rem;
+        background: #f9f9f9;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    
+    @media (max-width: 768px) {
+        .courtesy-header h1 {
+            font-size: 2rem;
+        }
+        
+        .brand-list {
+            column-count: 2;
+        }
+        
+        .image-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .brand-list {
+            column-count: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="courtesy-container">
+    <div class="courtesy-header">
+        <h1>Image Courtesy</h1>
+        <p>At QTipstore we are humble to feature the products from a variety of Global as well as Indian brands. We would like to express the gratitude, courtesy to the following reputed brands for their contribution to the Qtipstore.</p>
+    </div>
+    
+    <div class="brand-section">
+        <h2>Electronic Brands (Phones/Laptops):</h2>
+        <div class="brand-list">
+            <p>1. Apple</p>
+            <p>2. Vivo</p>
+            <p>3. Samsung</p>
+            <p>4. HP</p>
+            <p>5. Lenovo</p>
+            <p>6. Coca</p>
+            <p>7. Digiclues</p>
+            <p>8. Tunfi</p>
+            <p>9. Upoza</p>
+            <p>10. Noise</p>
+            <p>11. Digiwins</p>
+            <p>12. Oneplus</p>
+            <p>13. Boult</p>
+            <p>14. Snowbody</p>
+            <p>15. Asus</p>
+            <p>16. Dell</p>
+            <p>17. boAt</p>
+            <p>18. Toad</p>
+        </div>
+    </div>
+    
+    <div class="brand-section">
+        <h2>Makeup & Beauty Brands:</h2>
+        <div class="brand-list">
+            <p>1. A Thousand Wishes</p>
+            <p>2. Garnier</p>
+            <p>3. SERY</p>
+            <p>4. Forestessential</p>
+            <p>5. L.A. Girl</p>
+            <p>6. Coloressence</p>
+            <p>7. Swiss Beauty</p>
+            <p>8. Just Herbs</p>
+            <p>9. Plum</p>
+            <p>10. Organic harvest</p>
+            <p>11. Sirona</p>
+            <p>12. St. Botanica</p>
+            <p>13. My Glamm</p>
+            <p>14. Revlon</p>
+            <p>15. Elle18</p>
+            <p>16. Huda Beauty</p>
+            <p>17. MAC Cosmetics</p>
+            <p>18. Nyka</p>
+            <p>19. Colorbar</p>
+            <p>20. Sugar Cosmetics</p>
+            <p>21. Lotus herbal</p>
+            <p>22. Maybeline</p>
+            <p>23. Blackberrys</p>
+            <p>24. Glowcent</p>
+            <p>25. Loreal</p>
+            <p>26. Laviche</p>
+            <p>27. The Moms Co</p>
+            <p>28. Mamaearth</p>
+            <p>29. The Body Shop</p>
+            <p>30. Pears</p>
+            <p>31. mCaffine</p>
+            <p>32. Softech</p>
+            <p>33. Piligrim</p>
+            <p>34. Into the night</p>
+            <p>35. Botique</p>
+            <p>36. Howells</p>
+            <p>37. Ponds</p>
+            <p>38. Novax ceramic</p>
+            <p>39. Baby mom</p>
+            <p>40. Minimalist</p>
+            <p>41. Cetaphil</p>
+            <p>42. Nivea</p>
+            <p>43. Wow</p>
+            <p>44. Dot & Key</p>
+            <p>45. Ikonic</p>
+            <p>46. OVIKING mini</p>
+            <p>47. Hector Professional</p>
+            <p>48. Phillips</p>
+            <p>49. Baby moon</p>
+            <p>50. Syska</p>
+            <p>51. Vega</p>
+            <p>52. Glam21</p>
+            <p>53. Maliao</p>
+            <p>54. Kiss Beauty</p>
+            <p>55. Faces Canada</p>
+            <p>56. Dazzler</p>
+            <p>57. Lakme</p>
+        </div>
+    </div>
+    
+    <div class="brand-section">
+        <h2>Fashion Brands:</h2>
+        <div class="brand-list">
+            <p>1. Adidas</p>
+            <p>2. Krishna Creation</p>
+            <p>3. Biba</p>
+            <p>4. Koskii</p>
+            <p>5. The Indian Ethnic Co</p>
+            <p>6. Lenin Club</p>
+            <p>7. Jack & Jones</p>
+            <p>8. Louis Philippe</p>
+            <p>9. Mochi</p>
+            <p>10. Dot & Key</p>
+            <p>11. Nicobar</p>
+            <p>12. Allensolly</p>
+            <p>13. Pepe Jeans</p>
+            <p>14. Levi's</p>
+            <p>15. FabIndia</p>
+            <p>16. Swatantra</p>
+        </div>
+    </div>
+    
+    <div class="attribution-section">
+        <h2>Product Photography</h2>
+        <div class="image-grid">
+            <div class="image-item">
+                <img src="{% static 'main/unsplash.png' %}" alt="Product photography example" class="image-preview">
+                <p class="image-source">Photography by <a href="https://unsplash.com/" target="_blank" rel="noopener">Unsplash Contributors</a></p>
+                <p class="license-type">Licensed under Unsplash License</p>
+            </div>
+            
+            <div class="image-item">
+                <img src="{% static 'main/Pixabay.png' %}" alt="Product photography example" class="image-preview">
+                <p class="image-source">Images from <a href="https://pixabay.com/" target="_blank" rel="noopener">Pixabay Community</a></p>
+                <p class="license-type">Pixabay License (Free for commercial use)</p>
+            </div>
+            
+            <div class="image-item">
+                <img src="{% static 'main/Pexels.png' %}" alt="Product photography example" class="image-preview">
+                <p class="image-source">Contributed by <a href="https://pexels.com/" target="_blank" rel="noopener">Pexels Photographers</a></p>
+                <p class="license-type">Pexels License</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="attribution-section">
+        <h2>Marketing & Promotional Images</h2>
+        <div class="image-grid">
+            <div class="image-item">
+                <img src="{% static 'main/Freepik.png' %}" alt="Marketing visual" class="image-preview">
+                <p class="image-source">Designed by <a href="https://freepik.com/" target="_blank" rel="noopener">Freepik Artists</a></p>
+                <p class="license-type">Freepik Premium License</p>
+            </div>
+            
+            <div class="image-item">
+                <img src="{% static 'main/istockphoto.png' %}" alt="Promotional content" class="image-preview">
+                <p class="image-source">Licensed from <a href="https://istockphoto.com/" target="_blank" rel="noopener">iStock</a></p>
+                <p class="license-type">Standard License</p>
+            </div>
+        </div>
+    </div>
+    <div class="attribution-section">
+        <h2>Brand Assets & Interface Elements</h2>
+        <div class="image-grid">
+            <div class="image-item">
+                <img src="{% static 'main/logo.jpeg' %}" alt="QTipStore Logo" class="image-preview">
+                <p class="image-source">Created by <a href="#" target="_blank" rel="noopener">QTipStore Design Team</a></p>
+                <p class="license-type">© 2023 QTipStore. All rights reserved.</p>
+            </div>
+            
+            <div class="image-item">
+                <img src="{% static 'main/Fontawesome.png' %}" alt="UI Icons" class="image-preview">
+                <p class="image-source">Icons by <a href="https://fontawesome.com/" target="_blank" rel="noopener">Font Awesome</a></p>
+                <p class="license-type">Font Awesome Free License</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="license-info">
+        
+        <p>We are committed to showcasing high-quality products from trusted brands to provide our customers with an exceptional shopping experience. If you are a brand featured on our website and have any concerns regarding the use of your products' images or trademarks, please contact us, and we will address them promptly.</p>
+        
+        <p>Thank you to all the brands whose products contribute to the success of Qtipstore.</p>
+        
+        <p>Sincerely,<br>
+        Qtipstore</p>
+        
+        <div class="copyright-notice">
+            <p><strong>Note:</strong> All visual content on QTipStore.com falls under proper licensing agreements. For specific licensing details or to report a copyright concern, please <a href="{% url 'contact' %}">contact our legal team</a>.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
