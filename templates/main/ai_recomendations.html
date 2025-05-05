@@ -1,0 +1,448 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block title %}Personalized Recommendations{% endblock %}
+
+{% block content %}
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .hero-section {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .hero-banner {
+        width: 100%;
+        height: 60vh;
+        display: block;
+        object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+        .hero-banner {
+            height: 40vh;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-banner {
+            height: 30vh;
+        }
+    }
+
+    .intro-section {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+        gap: 30px;
+        background-color: #ffffff;
+        margin: 40px auto;
+        max-width: 1400px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .intro-image {
+        margin-top: 50px;
+        text-align: center;
+    }
+
+    .intro-image img {
+        width: 100%;
+        max-width: 350px;
+        height: 350px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .intro-content {
+        flex: 1 1 500px;
+        padding: 10px;
+    }
+
+    .intro-content h3 {
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-align: center;
+        color: #222;
+    }
+
+    .intro-content p {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #555;
+        text-align: justify;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .intro-section {
+            padding: 25px 15px;
+            gap: 25px;
+        }
+
+        .intro-image img {
+            max-width: 300px;
+            height: 200px;
+        }
+
+        .intro-content h3 {
+            font-size: 26px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .intro-content h3 {
+            font-size: 22px;
+        }
+
+        .intro-content p {
+            font-size: 14px;
+        }
+
+        .intro-image img {
+            max-width: 250px;
+            height: 180px;
+        }
+    }
+
+    .how-it-works-section {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+        gap: 30px;
+        background-color: #ffffff;
+        margin: 40px auto;
+        max-width: 1400px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .how-it-works-content {
+        flex: 1 1 500px;
+        padding: 10px;
+    }
+
+    .how-it-works-content h3 {
+        font-size: 30px;
+        font-weight: 700;
+        margin-top: -40px;
+        margin-bottom: 10px;
+        text-align: center;
+        color: #222;
+    }
+
+    .how-it-works-content ul {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #555;
+        text-align: justify;
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .how-it-works-image {
+        margin-top: 50px;
+        text-align: center;
+    }
+
+    .how-it-works-image img {
+        width: 100%;
+        max-width: 350px;
+        height: 350px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .how-it-works-section {
+            padding: 40px 15px;
+            gap: 20px;
+        }
+
+        .how-it-works-image img {
+            max-width: 300px;
+            height: 200px;
+        }
+
+        .how-it-works-content h3 {
+            font-size: 26px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .how-it-works-content h3 {
+            font-size: 22px;
+        }
+
+        .how-it-works-content ul {
+            font-size: 14px;
+        }
+
+        .how-it-works-image img {
+            max-width: 250px;
+            height: 180px;
+        }
+    }
+
+    .types-section {
+        background-color: #f6f9fc;
+        margin: 40px auto;
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .types-section h2 {
+        font-size: 36px;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 40px;
+    }
+
+    .types-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .type-card {
+        background-color: #ffffff;
+        padding: 30px 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        width: 200px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .type-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .type-card i {
+        font-size: 48px;
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    .type-card h4 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #ff5e00;
+        margin-bottom: 15px;
+    }
+
+    .type-card p {
+        font-size: 15px;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 992px) {
+        .type-card {
+            width: 45%;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .type-card {
+            width: 100%;
+        }
+
+        .types-section h2 {
+            font-size: 28px;
+        }
+    }
+
+    .benefits-section {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+        gap: 30px;
+        background-color: #ffffff;
+        margin: 40px auto;
+        max-width: 1400px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .benefits-content {
+        flex: 1 1 500px;
+        padding: 10px;
+    }
+
+    .benefits-content h3 {
+        font-size: 30px;
+        font-weight: 700;
+        margin-top: -40px;
+        margin-bottom: 10px;
+        text-align: center;
+        color: #222;
+    }
+
+    .benefits-content p {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #555;
+        text-align: justify;
+        margin: 0;
+    }
+
+    .benefits-image {
+        margin-top: 50px;
+        text-align: center;
+    }
+
+    .benefits-image img {
+        width: 100%;
+        max-width: 350px;
+        height: 350px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .benefits-section {
+            padding: 40px 15px;
+            gap: 20px;
+        }
+
+        .benefits-image img {
+            max-width: 300px;
+            height: 200px;
+        }
+
+        .benefits-content h3 {
+            font-size: 26px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .benefits-content h3 {
+            font-size: 22px;
+        }
+
+        .benefits-content p {
+            font-size: 14px;
+        }
+
+        .benefits-image img {
+            max-width: 250px;
+            height: 180px;
+        }
+    }
+</style>
+
+<section class="hero-section">
+    <div class="hero-banner">
+        <img src="{% static 'images/ai_recommendations_banner.jpg' %}" alt="AI Recommendations Banner" class="hero-banner" />
+    </div>
+</section>
+
+<section class="intro-section">
+    <div class="intro-image">
+        <img src="{% static 'images/ai_personalization.jpg' %}" alt="AI Personalization" />
+    </div>
+    <div class="intro-content">
+        <h3>Welcome to Personalized Shopping</h3>
+        <p>
+            Experience shopping like never before with our AI-powered personalized recommendations! 
+            Using advanced Artificial Intelligence and machine learning algorithms, we curate product 
+            suggestions tailored specifically to your preferences, shopping habits, and style. 
+            Say goodbye to generic suggestions and hello to a smarter, more intuitive way to shop.
+            <br><br>
+            Our system ensures that every recommendation feels handpicked for you, saving you time 
+            and helping you discover products you'll love. Whether you're browsing for fashion, 
+            electronics, or home goods, our AI makes your shopping journey seamless and enjoyable.
+        </p>
+    </div>
+</section>
+
+<section class="how-it-works-section">
+    <div class="how-it-works-content">
+        <h3>How It Works</h3>
+        <p>Our AI system analyzes various data points to create a unique profile for you:</p>
+        <ul>
+            <li><strong>Browsing Behavior:</strong> Pages you view, time spent, and search terms used.</li>
+            <li><strong>Purchase History:</strong> Items you've bought and how frequently.</li>
+            <li><strong>Wishlist & Favorites:</strong> Products you’ve saved for later.</li>
+            <li><strong>Interaction Patterns:</strong> Products you click, add to cart, or remove.</li>
+            <li><strong>Category Interest:</strong> Frequent visits to specific product categories.</li>
+            <li><strong>Similar User Profiles:</strong> Recommendations based on customers with similar tastes.</li>
+        </ul>
+        <p>By combining these insights, we deliver intelligent, dynamic product suggestions that evolve with your needs.</p>
+    </div>
+    <div class="how-it-works-image">
+        <img src="{% static 'images/ai_how_it_works.jpg' %}" alt="How AI Works" />
+    </div>
+</section>
+
+<section class="types-section">
+    <h2>Types of Recommendations</h2>
+    <div class="types-container">
+        <div class="type-card">
+            <i class="fas fa-eye"></i>
+            <h4>Because You Viewed...</h4>
+            <p>Items similar to those you’ve already explored.</p>
+        </div>
+        <div class="type-card">
+            <i class="fas fa-fire"></i>
+            <h4>Trending for You</h4>
+            <p>Popular products among shoppers with similar interests.</p>
+        </div>
+        <div class="type-card">
+            <i class="fas fa-cart-plus"></i>
+            <h4>Frequently Bought Together</h4>
+            <p>Complementary products to items in your cart.</p>
+        </div>
+        <div class="type-card">
+            <i class="fas fa-heart"></i>
+            <h4>Your Wishlist Matches</h4>
+            <p>Alternatives to items you’ve saved.</p>
+        </div>
+        <div class="type-card">
+            <i class="fas fa-paint-brush"></i>
+            <h4>Based on Your Style</h4>
+            <p>Curated collections based on past preferences.</p>
+        </div>
+    </div>
+</section>
+
+<section class="benefits-section">
+    <div class="benefits-content">
+        <h3>Why It Matters</h3>
+        <p>
+            Our AI-driven recommendations are designed to enhance your shopping experience by 
+            saving you time and effort. With personalized suggestions, you can:
+            <br><br>
+            - Find relevant products faster without endless scrolling.<br>
+            - Discover new items tailored to your tastes and needs.<br>
+            - Enjoy better deals and offers based on your shopping history.
+            <br><br>
+            We prioritize your privacy, handling all data securely and ethically. You can manage 
+            your personalization settings at any time. Plus, our system continuously improves, 
+            getting smarter with every interaction to deliver an ever-evolving, intuitive experience.
+        </p>
+    </div>
+    <div class="benefits-image">
+        <img src="{% static 'images/ai_benefits.jpg' %}" alt="Benefits of AI Recommendations" />
+    </div>
+</section>
+
+{% endblock %}

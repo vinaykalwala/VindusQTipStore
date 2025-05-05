@@ -39,4 +39,5 @@ urlpatterns = [
     path('cookies/',cookies,name='cookies'),
     path('newsletter/', newsletter_signup, name='newsletter-signup'),
     path('shipping-policy/', shipping_policy, name='shipping-policy'),
+    path('ai_recomendations/', ai_recomendations, name='ai_recomendations')
 ]

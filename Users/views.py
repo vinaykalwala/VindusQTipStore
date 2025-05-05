@@ -569,3 +569,6 @@ def newsletter_signup(request):
         return render(request, 'main/newsletter.html', {'success': True})
     
     return render(request, 'main/newsletter.html')
+
+def ai_recomendations(request):
+    return render(request, 'main/ai_recomendations.html')
