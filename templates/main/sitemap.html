@@ -213,22 +213,24 @@
             <h2><i class="fas fa-shopping-bag"></i> Shopping</h2>
             <ul class="sitemap-list">
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
-                {% if user.is_authenticated %}
+
+               
+               {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> New Arrivals</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> New Arrivals</a></li>
-                {% endif %}
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> New Arrivals</a></li>
+                {% endif %} 
 
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'sellerpage' %}"><i class="fas fa-chevron-right"></i> Best Sellers</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Best Sellers</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Best Sellers</a></li>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Sale & Offers</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Sale & Offers</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Sale & Offers</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -240,25 +242,25 @@
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Men's Collection</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Men's Collection</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Men's Collection</a></li>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Women's Collection</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Women's Collection</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Women's Collection</a></li>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Kids & Baby</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Kids & Baby</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Kids & Baby</a></li>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Accessories</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Accessories</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Accessories</a></li>
                 {% endif %}
         
                 <!-- Special More Details Tag -->
@@ -282,7 +284,7 @@
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Track Your Order</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Track Your Order</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Track Your Order</a></li>
                 {% endif %}
                 <li><a href="{% url 'product_care' %}"><i class="fas fa-chevron-right"></i> Product Care & Size Guide</a></li>
             </ul>
@@ -292,29 +294,29 @@
         <div class="sitemap-card">
             <h2><i class="fas fa-user-circle"></i> My Account</h2>
             <ul class="sitemap-list">
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Login / Register</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> user-login / Register</a></li>
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Order History</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Order History</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Order History</a></li>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Wishlist</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Wishlist</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Wishlist</a></li>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Account Settings</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Account Settings</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Account Settings</a></li>
                 {% endif %}
 
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Address Book</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}"><i class="fas fa-chevron-right"></i> Address Book</a></li>
+                <li><a href="{% url 'user-login' %}"><i class="fas fa-chevron-right"></i> Address Book</a></li>
                 {% endif %}
             </ul>
         </div>

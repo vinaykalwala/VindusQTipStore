@@ -798,7 +798,7 @@ padding: 12px 24px;
             <h1>Sell online to 100's of customers</h1>
             <p>Join QTip as a seller and grow your business across India effortlessly!</p>
             <p><span class="badge">NEW</span> Don’t have a GSTIN? You can still sell on QTib. <a href="{% if user.is_authenticated %}{% url 'home' %}{% else %}{% url 'sellerpage' %}{% endif %}" >Know more</a></p>
-            <a href="{% url 'register' %}" class="register-btn">Register as Seller</a>
+            <a href="{% url 'register_vendor' %}" class="register-btn">Register as Seller</a>
         </div>
         <div class="hero-image">
             <img src="{% static 'images/sellerpagebanner.png' %}" alt="Seller Banner">
