@@ -18,23 +18,33 @@
 
     .hero-banner {
         width: 100%;
-        height: 60vh;
+        height: 75vh;
         display: block;
         object-fit: cover;
     }
 
-    @media (max-width: 768px) {
+    /* @media (max-width: 768px) {
         .hero-banner {
             height: 40vh;
         }
-    }
+    } */
 
-    @media (max-width: 480px) {
+    /* @media (max-width: 480px) {
         .hero-banner {
             height: 30vh;
         }
-    }
+    } */
 
+    .intro-section {
+    transform: translateY(50px);
+    opacity: 0;
+    transition: all 1.5s ease-out;
+}
+
+.intro-section.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
     .intro-section {
         display: flex;
         flex-wrap: wrap;
@@ -63,9 +73,11 @@
     }
 
     .intro-content {
-        flex: 1 1 500px;
-        padding: 10px;
-    }
+    flex: 1 1 500px;
+    padding: 10px;
+    align-self: flex-start;
+}
+
 
     .intro-content h3 {
         font-size: 30px;
@@ -347,11 +359,93 @@
             height: 180px;
         }
     }
+
+    .ai-benefits-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    gap: 30px;
+    background-color: #ffffff;
+    margin: 40px auto;
+    max-width: 1400px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.ai-benefits-content {
+    flex: 1 1 500px;
+    padding: 10px;
+}
+
+.ai-benefits-content h3 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-top: -40px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #222;
+}
+
+.ai-benefits-content ul {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #555;
+    text-align: justify;
+    margin: 0;
+    padding-left: 20px;
+}
+
+.ai-benefits-image {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.ai-benefits-image img {
+    width: 100%;
+    max-width: 350px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .ai-benefits-section {
+        padding: 40px 15px;
+        gap: 20px;
+    }
+
+    .ai-benefits-image img {
+        max-width: 300px;
+        height: 200px;
+    }
+
+    .ai-benefits-content h3 {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ai-benefits-content h3 {
+        font-size: 22px;
+    }
+
+    .ai-benefits-content ul {
+        font-size: 14px;
+    }
+
+    .ai-benefits-image img {
+        max-width: 250px;
+        height: 180px;
+    }
+}
+
 </style>
 
 <section class="hero-section">
     <div class="hero-banner">
-        <img src="{% static 'images/ai_recommendations_banner.jpg' %}" alt="AI Recommendations Banner" class="hero-banner" />
+        <img src="{% static 'images/qtipsaibanner3.webp' %}" alt="AI Recommendations Banner" class="hero-banner" />
     </div>
 </section>
 
@@ -370,8 +464,20 @@
             Our system ensures that every recommendation feels handpicked for you, saving you time 
             and helping you discover products you'll love. Whether you're browsing for fashion, 
             electronics, or home goods, our AI makes your shopping journey seamless and enjoyable.
+            <br><br>
+            Not sure what you're looking for? Let our AI guide you. It learns from your behavior, 
+            adapts to your changing tastes, and grows smarter with every interaction—making every visit 
+            feel uniquely yours.
+            <br><br>
+            From trending styles to hidden gems, our AI surfaces products that match your personality 
+            and budget. Plus, with improved accuracy over time, you can trust the system to deliver 
+            recommendations that are relevant, reliable, and exciting.
+            <br><br>
+            Join thousands of shoppers who’ve already embraced the future of e-commerce—where convenience, 
+            intelligence, and satisfaction come together in one powerful platform.
         </p>
     </div>
+    
 </section>
 
 <section class="how-it-works-section">
@@ -444,5 +550,48 @@
         <img src="{% static 'images/ai_benefits.jpg' %}" alt="Benefits of AI Recommendations" />
     </div>
 </section>
+
+<section class="ai-benefits-section">
+    <div class="ai-benefits-content">
+        <h3>AI-Powered Benefits</h3>
+        <p>Our AI technology isn't just smart—it works for you. Here's how it improves your shopping experience:</p>
+        <ul>
+            <li><strong>Smarter Recommendations:</strong> Get suggestions that align with your unique shopping style.</li>
+            <li><strong>Faster Decision-Making:</strong> Instantly view top-rated and trending products.</li>
+            <li><strong>Visual Recognition:</strong> Find products by uploading photos, not just typing text.</li>
+            <li><strong>Voice-Assisted Shopping:</strong> Use voice commands to search and navigate with ease.</li>
+            <li><strong>Reduced Returns:</strong> AI ensures better fit and preference matching, reducing order returns.</li>
+            <li><strong>Seamless Personalization:</strong> Homepage, offers, and emails tailor themselves just for you.</li>
+        </ul>
+        <p>These AI-driven features help save your time, improve satisfaction, and create a smarter shopping journey.</p>
+    </div>
+    <div class="ai-benefits-image">
+        <img src="{% static 'images/qtipsaibenefits.jpeg' %}" alt="AI Benefits in E-commerce" />
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const introSection = document.querySelector(".intro-section");
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        introSection.classList.add("visible");
+                    } else {
+                        introSection.classList.remove("visible");
+                    }
+                });
+            },
+            {
+                threshold: 0.2,
+            }
+        );
+
+        observer.observe(introSection);
+    });
+</script>
+
 
 {% endblock %}
