@@ -2,7 +2,9 @@
 {% load static %}
 {% block content %}
 
-<div class="signup-wrapper d-flex align-items-center justify-content-center min-vh-100 py-2" style="background: linear-gradient(135deg, #F4F7FA 0%, #E8EFF5 100%);">
+<div class="signup-wrapper d-flex align-items-center justify-content-center min-vh-100 py-2"
+     style="background: url('{% static "main/register.jpg" %}') no-repeat center center fixed; background-size: cover;">
+
     <div class="signup-box row g-0 rounded-3 overflow-hidden w-100" style="max-width: 900px; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);">
 
         <!-- Left Form Section -->
@@ -99,7 +101,7 @@
         <!-- Right Image Section -->
         <div class="col-lg-6 d-none d-lg-flex align-items-center p-0" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));">
             <div class="position-relative w-100 h-100">
-                <img src="{% static 'registration_pic.jpeg' %}" alt="Happy shoppers" class="img-fluid h-100 w-100 object-fit-cover" style="opacity: 0.6;">
+                <img src="{% static 'main/regis.png' %}" alt="Happy shoppers" class="img-fluid h-100 w-100 object-fit-cover" style="opacity: 0.6;">
                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-white p-4" style="background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(6px);">
                     <div class="text-center px-3">
                         <h3 class="fw-bold mb-3 glow-text" style="font-size: 1.25rem; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);">Welcome to Our Shop Family!</h3>

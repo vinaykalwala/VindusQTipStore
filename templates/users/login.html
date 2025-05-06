@@ -2,7 +2,8 @@
 {% load static %}
 {% block content %}
 
-<div class="signup-wrapper d-flex align-items-center justify-content-center min-vh-100">
+<div class="signup-wrapper d-flex align-items-center justify-content-center min-vh-100"
+     style="background: url('{% static 'main/logg.jpeg' %}') no-repeat center center fixed; background-size: cover;">
     <div class="signup-box row g-0 shadow-lg rounded-5 overflow-hidden w-100" style="max-width: 950px;">
 
         <!-- Left Form Section -->
@@ -52,7 +53,7 @@
 
         <!-- Right Image Section -->
         <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center" style="background: #fff;">
-            <img src="{% static 'login_pic.jpg' %}" alt="Login Visual" class="img-fluid rounded-4 shadow" style="max-height: 90%; max-width: 90%;">
+            <img src="{% static 'main/login.png' %}" alt="Login Visual" class="img-fluid rounded-4 shadow" style="max-height: 90%; max-width: 90%;">
         </div>
     </div>
 </div>
